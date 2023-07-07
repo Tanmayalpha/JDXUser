@@ -208,12 +208,9 @@ class _SignInScreenState extends State<SignInScreen> {
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-      print("jhakjdhakjhfjk${response.statusCode}");
       var finalResponse = await response.stream.bytesToString();
       final jsonResponse = json.decode(finalResponse);
-      print("Working@@@@@@@@ ${jsonResponse}");
 
-      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> HomeScreen()));
       if(jsonResponse['status'] == true){
         Fluttertoast.showToast(msg: '${jsonResponse['message']}');
         print("json response new one here ${jsonResponse}");

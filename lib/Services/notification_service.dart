@@ -47,6 +47,12 @@ class LocalNotificationService {
         print("FirebaseMessaging.instance.getInitialMessage");
         if (message != null) {
           print("New Notification");
+          print('${message.notification}_________3________');
+          print('${message.notification!.body}_________body3____');
+          print("message.data13 ${message.data}");
+          if(message.data['driver_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+          }
           // if (message.data['_id'] != null) {
           //   Navigator.of(context).push(
           //     MaterialPageRoute(
@@ -64,12 +70,16 @@ class LocalNotificationService {
           (message) {
         print("FirebaseMessaging.onMessage______________");
         if (message.notification != null) {
-          print('${message.notification}_________________');
+          print('${message.notification}___________1______');
           print('${message.notification!.body}_________body____');
+          print("message.data11 ${message.data['driver_id']}");
           print("message.data11 ${message.data}");
+          print("message.data11 ${message.data['user_fullname']}");
+          if(message.data['driver_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+          }
+          // display(message);
 
-         // display(message);
-          Get.to(const FeedbackScreen());
           //handleNotification(message.data);
 
         }
@@ -80,12 +90,15 @@ class LocalNotificationService {
           (message) {
         print("FirebaseMessaging.onMessageOpenedApp___________");
         if (message.notification != null) {
-          print('_____________${message.notification}_______________');
+          print('_____________${message.notification}______2_________');
           print('_____________${message.notification?.title}_______________');
           print(message.notification!.body);
           print("message.data22 ${message.data}");
+          if(message.data['driver_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+          }
 
-           Get.to(FeedbackScreen());
+          // Get.to(FeedbackScreen());
           //handleNotification(message.data);
 
          // HomeScreenState().setSegmentValue(2) ;

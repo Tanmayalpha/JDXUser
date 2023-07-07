@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:job_dekho_app/Jdx_screens/Mywallet.dart';
 import 'package:job_dekho_app/Jdx_screens/parcel_history.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
 import 'package:job_dekho_app/Model/slider_response.dart';
@@ -186,8 +187,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 14),
-                    height: MediaQuery.of(context).size.height / 1.1,
+                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 3),
+                    //height: MediaQuery.of(context).size.height / 1.1,
                     decoration: const BoxDecoration(
                         color: Color(0xffF9F9F9),
                         borderRadius:
@@ -200,59 +201,55 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Material(
-                              elevation: 0,
-                              borderRadius: BorderRadius.circular(0),
-                              child: Container(
-                                decoration:  BoxDecoration(
-                                    color: splashcolor,
-                                    borderRadius:
-                                    const BorderRadius.only(topLeft: Radius.circular(10),bottomLeft:Radius.circular(10) )),
+                            Container(
+                              decoration:  BoxDecoration(
+                                  color: splashcolor,
+                                  borderRadius:
+                                  const BorderRadius.only(topLeft: Radius.circular(10),bottomLeft:Radius.circular(10) )),
 
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                height: 50,
-                                child: TextField(
-                                  readOnly: true,
-                                  controller: addressC,
-                                  maxLines: 1,
-                                  onTap: () {
-                                    //_getLocation();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => PlacePicker(
-                                          apiKey: Platform.isAndroid
-                                              ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                              : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
-                                          onPlacePicked: (result) {
-                                            print(result.formattedAddress);
-                                            setState(() {
-                                              addressC.text =
-                                                  result.formattedAddress.toString();
-                                              lat = result.geometry!.location.lat;
-                                              long = result.geometry!.location.lng;
-                                            });
-                                            Navigator.of(context).pop();
-                                          },
-                                          initialPosition: LatLng(
-                                              22.719568,75.857727),
-                                          useCurrentLocation: true,
-                                        ),
+                              width: MediaQuery.of(context).size.width / 1.26,
+                              height: 50,
+                              child: TextField(
+                                readOnly: true,
+                                controller: addressC,
+                                maxLines: 1,
+                                onTap: () {
+                                  //_getLocation();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PlacePicker(
+                                        apiKey: Platform.isAndroid
+                                            ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
+                                            : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                                        onPlacePicked: (result) {
+                                          print(result.formattedAddress);
+                                          setState(() {
+                                            addressC.text =
+                                                result.formattedAddress.toString();
+                                            lat = result.geometry!.location.lat;
+                                            long = result.geometry!.location.lng;
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                        initialPosition: LatLng(
+                                            22.719568,75.857727),
+                                        useCurrentLocation: true,
                                       ),
-                                    );
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  decoration: InputDecoration(
-                                    border: const OutlineInputBorder(
-                                        borderSide: BorderSide.none),
-                                    hintText: "Current Location",
-                                    hintStyle:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    prefixIcon: Image.asset(
-                                      'assets/ProfileAssets/locationIcon.png',
-                                      scale: 1.6,
-                                      color: primaryColor,
                                     ),
+                                  );
+                                },
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  border: const OutlineInputBorder(
+                                      borderSide: BorderSide.none),
+                                  hintText: "Current Location",
+                                  hintStyle:
+                                      TextStyle(fontWeight: FontWeight.bold),
+                                  prefixIcon: Image.asset(
+                                    'assets/ProfileAssets/locationIcon.png',
+                                    scale: 1.6,
+                                    color: primaryColor,
                                   ),
                                 ),
                               ),
@@ -261,11 +258,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 padding: const EdgeInsets.only(right: 10),
                                 height: 50,
-                                
+
                                 decoration:  BoxDecoration(
                                     color: splashcolor,
                                     borderRadius:
-                                    const BorderRadius.only(topRight: Radius.circular(10),bottomRight:Radius.circular(10) )),
+                                    const BorderRadius.only(topRight: Radius.circular(0),bottomRight:Radius.circular(0) )),
                                 child: InkWell(
                                     onTap: () {
                                       Navigator.push(
@@ -280,6 +277,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )),
                               ),
                             ),
+
+                            Expanded(
+                              flex: 1,
+                              child: InkWell(
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyWallet()));
+                                  },
+                                child: Container(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    height: 50,
+
+                                    decoration:  BoxDecoration(
+                                        color: splashcolor,
+                                        borderRadius:
+                                        const BorderRadius.only(topRight: Radius.circular(10),bottomRight:Radius.circular(10) )),
+                                    child: Icon(Icons.account_balance_wallet, color: primaryColor,)),
+                              ),
+                            )
 
 
                           ],

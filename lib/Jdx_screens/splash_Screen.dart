@@ -30,10 +30,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration(seconds: 2),(){
       if(userid == null || userid == ""){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SignInScreen()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const SignInScreen()));
       }
       else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyStatefulWidget()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
       }
     });
   }

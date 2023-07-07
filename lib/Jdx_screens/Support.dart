@@ -287,6 +287,17 @@ class _SupportScreensState extends State<SupportScreens> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10,),
+                  ticketDataList.isEmpty? const SizedBox.shrink() : Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(children: [
+                        Icon(Icons.history_outlined, color: primaryColor,),
+                        const SizedBox(width: 10,),
+                        const Text("TicketHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
+                      ],),
+                    ),),
                   ticketDataList.isEmpty? const SizedBox.shrink() :
                   ListView.builder(
                     reverse: true,
@@ -295,7 +306,7 @@ class _SupportScreensState extends State<SupportScreens> {
                     itemCount: ticketDataList.length,
                     itemBuilder: (context, index) {
                       var item = ticketDataList[index];
-                    return InkWell(
+                    return  ticketWidgets(item);/*InkWell(
                       onTap: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => Chat(id: item.id),));
                       },
@@ -325,11 +336,11 @@ class _SupportScreensState extends State<SupportScreens> {
                                     fontSize: 14.0, fontWeight: FontWeight.bold),
                               ),
                               const SizedBox(height: 5.0),
-                              /*Text(
+                              *//*Text(
                                 'Parcel Id: ${item.saleId}',
                                 style: const TextStyle(
                                     fontSize: 14.0, fontWeight: FontWeight.bold),
-                              ),*/
+                              ),*//*
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -350,7 +361,7 @@ class _SupportScreensState extends State<SupportScreens> {
                           ),
                         ),
                       ),
-                    );
+                    );*/
                   },),
                   SizedBox(height: 60,),
 
@@ -520,5 +531,157 @@ class _SupportScreensState extends State<SupportScreens> {
     else {
       print(response.reasonPhrase);
     }
+  }
+
+
+  Widget ticketWidgets(TicketHistoryData item) {
+    String status = item.status == '0' ? 'Open' : 'Close' ;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ClipPath(
+        clipper: TicketClipper(),
+        child: Container(
+          height: 250,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black,
+              width: 1.0,
+              style: BorderStyle.solid,
+            ),
+          ),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Ticket ID: ${item.id}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
+                          ),
+                          Text(
+                            'Status: ${status}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                              color: _getStatusColor(item.status ?? ''),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16.0),
+                      const Text(
+                        'Comment:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        '${item.description}',
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                      const Text(
+                        'Date',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        '${item.dateCreated}',
+                        style: TextStyle(fontSize: 14.0),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: InkWell(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Chat(id: item.id),));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _getStatusColor(item.status ?? ''),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(16.0),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: const Text(
+                      'VIEW DETAILS',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ) ;
+  }
+
+  Color _getStatusColor(String status) {
+    if (status == '0') {
+      return Colors.green;
+    } else if (status == '2') {
+      return Colors.red;
+    } else if (status == 'Closed') {
+      return Colors.red;
+    } else {
+      return Colors.black;
+    }
+  }
+}
+
+class TicketClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(0, size.height)
+      ..lineTo(size.width - 30, size.height)
+      ..quadraticBezierTo(
+        size.width,
+        size.height,
+        size.width,
+        size.height - 30,
+      )
+      ..lineTo(size.width, 0)
+      ..close();
+
+    final dotsPath = Path();
+
+    for (double i = 0; i < size.height; i += 4) {
+      dotsPath.moveTo(size.width - 30, i);
+      dotsPath.lineTo(size.width - 30, i + 2);
+    }
+
+    path.addPath(dotsPath, Offset.zero);
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) {
+    return false;
   }
 }

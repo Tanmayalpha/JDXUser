@@ -17,7 +17,9 @@ import 'MyProfile.dart';
 import 'notification_Screen.dart';
 
 class FeedbackScreen extends StatefulWidget {
-  const FeedbackScreen({Key? key}) : super(key: key);
+  const FeedbackScreen({Key? key,this.driverName, this.driverId,this.parcelId}) : super(key: key, );
+
+  final String? driverName, driverId, parcelId;
 
   @override
   State<FeedbackScreen> createState() => _FeedbackScreenState();
@@ -34,43 +36,7 @@ var selectedItem;
 
 List <OrderDetailDataList> orderDetailData = [];
 List <DriverDetailDataList> driverDetailList = [];
-  feedback() async{
 
-    if(selectedItem == null ){
-      Fluttertoast.showToast(msg: 'please Select an order id ');
-    }else if(ratings == null ){
-      Fluttertoast.showToast(msg: 'please give star ratings ');
-    }else if(reviewController.text.isEmpty){
-      Fluttertoast.showToast(msg: 'please add review in Text Field  ');
-    }else if(driverDetailList.isEmpty){
-      Fluttertoast.showToast(msg: "Parcel id can't be empty"  );
-    } else{
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? userid = prefs.getString('userid');
-      var headers = {
-        'Cookie': 'ci_session=2b3a4313604d71cb336c5de783a5eacb4c306145'
-      };
-      var request = http.MultipartRequest(
-          'POST', Uri.parse('${ApiPath.baseUrl}Payment/delivery_boy_feedback'));
-      request.fields.addAll({
-        'delivery_boy_id': driverDetailList.first.userId.toString(),
-        'user_id': userid.toString(),
-        'rating': ratings ?? '',
-        'comments': reviewController.text,
-        'parcel_id': driverDetailList.first.parcelId.toString()
-      });
-
-      request.headers.addAll(headers);
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: 'Review Updated');
-        Navigator.pop(context);
-        print(await response.stream.bytesToString());
-      } else {
-        print(response.reasonPhrase);
-      }
-    }
-  }
 
 final reviewController   = TextEditingController();
 
@@ -111,7 +77,7 @@ final reviewController   = TextEditingController();
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Center(
+            /*Center(
               child: Column(
                 children: [
                   const SizedBox(height: 20,),
@@ -124,13 +90,13 @@ final reviewController   = TextEditingController();
                       child: DropdownButton(
                           underline: Container(),
 
-                        icon: Padding(
-                          padding: const EdgeInsets.only(right: 20),
-                          child: const Icon(Icons.keyboard_arrow_down,
+                        icon: const Padding(
+                          padding: EdgeInsets.only(right: 20),
+                          child: Icon(Icons.keyboard_arrow_down,
                               color: Color(0xFFBF2331)),
                         ),
-                        hint: Padding(
-                          padding: const EdgeInsets.all(5.0),
+                        hint: const Padding(
+                          padding: EdgeInsets.all(5.0),
                           child: Text("Select Order Id"),
                         ),
                         //mode of dropdown
@@ -160,12 +126,13 @@ final reviewController   = TextEditingController();
                   ),
                   const SizedBox(height: 30,),
                 ],),
-            ),
+            ),*/
+            SizedBox(height: 50,),
              Padding(
               padding: EdgeInsets.all(8.0),
               child: Row(children: [
                 Text("Parcel ID : "),
-                driverDetailList.isEmpty ?SizedBox() :Text(driverDetailList.first.parcelId.toString())
+                Text(widget.parcelId.toString())
               ],),
 
             ),
@@ -173,7 +140,7 @@ final reviewController   = TextEditingController();
                 padding: EdgeInsets.all(8.0),
               child: Row(children: [
                 Text("Driver Name : "),
-                driverDetailList.isEmpty ?SizedBox() : Text(driverDetailList.first.userFullname.toString())
+                 Text(widget.driverName.toString())
               ],),
             ),
             Column(
@@ -275,6 +242,44 @@ final reviewController   = TextEditingController();
     } catch (e) {
       Fluttertoast.showToast(msg: "Invalid Email & Password");
     } finally {}
+  }
+
+  feedback() async{
+
+   /* if(selectedItem == null ){
+      Fluttertoast.showToast(msg: 'please Select an order id ');
+    }else if(ratings == null ){
+      Fluttertoast.showToast(msg: 'please give star ratings ');
+    }else if(reviewController.text.isEmpty){
+      Fluttertoast.showToast(msg: 'please add review in Text Field  ');
+    }else if(driverDetailList.isEmpty){
+      Fluttertoast.showToast(msg: "Parcel id can't be empty"  );
+    } else{*/
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userid = prefs.getString('userid');
+      var headers = {
+        'Cookie': 'ci_session=2b3a4313604d71cb336c5de783a5eacb4c306145'
+      };
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('${ApiPath.baseUrl}Payment/delivery_boy_feedback'));
+      request.fields.addAll({
+        'delivery_boy_id': widget.driverId ?? '',
+        'user_id': userid.toString(),
+        'rating': ratings ?? '',
+        'comments': reviewController.text,
+        'parcel_id': widget.parcelId ?? ''
+      });
+
+      request.headers.addAll(headers);
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: 'Review Updated');
+        Navigator.pop(context);
+        print(await response.stream.bytesToString());
+      } else {
+        print(response.reasonPhrase);
+      }
+
   }
 
 }

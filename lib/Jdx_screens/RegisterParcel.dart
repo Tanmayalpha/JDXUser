@@ -68,7 +68,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
      receiverList.add(
          {"meterial_category": "${selectedValue.toString()}",
            "parcel_weight": "${selectedValue1.toString()}",
-           "receiver_address": "${recipientnewAddressCtr.text}",
+           "receiver_address": "${recipientAddressCtr.text}",
            "receiver_latitude": "${lat2}",
            "receiver_longitude": "${long2}",
            "receiver_name": "${recipientNameController.text}",
@@ -693,7 +693,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                 Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       Material(
                         color: splashcolor,
                         elevation: 1,
@@ -724,7 +724,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       Material(
                         color: splashcolor,
                         elevation: 1,
@@ -758,7 +758,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       // _addressField(context),
                       Material(
                         color: splashcolor,
@@ -821,7 +821,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       Material(
                           color: splashcolor,
                           elevation: 1,
@@ -850,7 +850,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                       scale: 1.7, color: primaryColor,
                                     ),
                                   )))),
-                      SizedBox(height: 20,),
+                      const SizedBox(height: 20,),
                       Material(
                           color: splashcolor,
                           elevation: 1,
@@ -896,7 +896,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                 Center(
                     child: Column(
                       children: [
-                        SizedBox(height: 20,),
+                        const SizedBox(height: 20,),
                         Material(
                           color: splashcolor,
                           elevation: 1,
@@ -1034,7 +1034,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                 receiverList.add(
                                     {"meterial_category": "${selectedValue.toString()}",
                                     "parcel_weight": "${selectedValue1.toString()}",
-                                    "receiver_address": "${recipientnewAddressCtr.text}",
+                                    "receiver_address": "${recipientAddressCtr.text}",
                                     "receiver_latitude": "${lat2}",
                                     "receiver_longitude": "${long2}",
                                     "receiver_name": "${recipientNameController.text}",

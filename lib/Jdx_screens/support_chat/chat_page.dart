@@ -383,7 +383,7 @@ class _ChatState extends State<Chat> {
           child: Align(
             alignment: Alignment.bottomRight,
             child: Text(message.dateCreated!,
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.black26,
                     fontSize: 9)),
           ),

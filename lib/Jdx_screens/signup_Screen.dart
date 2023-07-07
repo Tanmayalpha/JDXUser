@@ -86,22 +86,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
+      print('___________${finalResponse}__________');
       final jsonResponse = json.decode(finalResponse);
+      Fluttertoast.showToast(msg: '${jsonResponse['message']}');
 
-      String userid = jsonResponse['data']['user_id'];
+     // String userid = jsonResponse['data']['user_id'];
 
-      prefs.setString('userid', userid.toString());
+     // prefs.setString('userid', userid.toString());
 
-      print("user id is here ${userid.toString()}");
-      print("Response Here@@@@ ${jsonResponse}");
       if(jsonResponse['status'] == true){
         Fluttertoast.showToast(msg: '${jsonResponse['message']}');
-        print("json response ${jsonResponse}");
         setState(() {
-          print("final response>>>>> ${jsonResponse}");
         });
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MyStatefulWidget()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SignInScreen()));
       }
       else{
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
