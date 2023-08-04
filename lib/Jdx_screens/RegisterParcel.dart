@@ -74,6 +74,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
            "receiver_name": "${recipientNameController.text}",
            "receiver_phone": "${recipientMobileController.text}",
            "reciver_full_address": "${receiverfulladdressCtr.text}",
+           "pacel_value" : "${valueController.text}"
          });
    }
 
@@ -1010,7 +1011,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                           width: MediaQuery.of(context).size.width,
                         child:  Text('We will compensate the value of lost item '
                             'within three working days according to rules. '
-                            'maximum compensation -${amt}', style: TextStyle(fontSize: 12, color: Colors.grey,),)),
+                            'maximum compensation -${amt}', style: const TextStyle(fontSize: 12, color: Colors.grey,),)),
                         const SizedBox(height: 50,),
                         InkWell(
                           onTap: () {
@@ -1029,22 +1030,37 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                 .toString()} kg",
                           }*/
 
-                            if (_formKey.currentState!.validate())
-                              setState(() {
-                                receiverList.add(
-                                    {"meterial_category": "${selectedValue.toString()}",
-                                    "parcel_weight": "${selectedValue1.toString()}",
-                                    "receiver_address": "${recipientAddressCtr.text}",
-                                    "receiver_latitude": "${lat2}",
-                                    "receiver_longitude": "${long2}",
-                                    "receiver_name": "${recipientNameController.text}",
-                                    "receiver_phone": "${recipientMobileController.text}",
-                                    "reciver_full_address": "${receiverfulladdressCtr.text}",
-                                  });
-                              });
-                            print("Checking Parcel ${selectedValue1.toString()}");
-                            print("checking hereeeee ${receiverList.length} and ${receiverList}");
-                            // Navigator.pop(context);
+                            if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            receiverList.add({
+                              "meterial_category":
+                                  "${selectedValue.toString()}",
+                              "parcel_weight": "${selectedValue1.toString()}",
+                              "receiver_address": "${recipientAddressCtr.text}",
+                              "receiver_latitude": "${lat2}",
+                              "receiver_longitude": "${long2}",
+                              "receiver_name":
+                                  "${recipientNameController.text}",
+                              "receiver_phone":
+                                  "${recipientMobileController.text}",
+                              "reciver_full_address":
+                                  "${receiverfulladdressCtr.text}",
+                              "pacel_value" : "${valueController.text}"
+                            });
+                          });
+                          print("Checking Parcel ${selectedValue1.toString()}");
+                          print(
+                              "checking hereeeee ${receiverList.length} and ${receiverList}");
+
+                          recipientNameController.clear();
+                          recipientnewAddressCtr.clear();
+                          recipientAddressCtr.clear();
+                          recipientMobileController.clear();
+                          receiverfulladdressCtr.clear();
+                          valueController.clear();
+
+                        }
+                        // Navigator.pop(context);
                             // setState(() {});
                             //
                             // int materialValue = 0;
@@ -1096,11 +1112,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             //   print("Parcel Details Value ${recmobValue}");
                             //   setState(() {});
                             // }
-                            recipientNameController.clear();
-                            recipientnewAddressCtr.clear();
-                            recipientAddressCtr.clear();
-                            recipientMobileController.clear();
-                            receiverfulladdressCtr.clear();
+
                             //  Get.to(MyStatefulWidget());
                           },
                           child: Container(
@@ -1114,7 +1126,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                 borderRadius: BorderRadius.circular(30),
                                 color: Secondry
                             ),
-                            child: Text("Add More", style: TextStyle(
+                            child: const Text("Add More", style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,),),

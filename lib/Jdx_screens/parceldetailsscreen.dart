@@ -306,7 +306,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        Row(
+                                        widget.isFromParcelHistory ?   Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           crossAxisAlignment:
@@ -325,7 +325,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                     "${orderStatus(item.status ?? '')}"),
                                               ],
                                             ),
-                                            Column(
+                                            driverRating.isEmpty ? SizedBox() : Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
@@ -337,7 +337,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                               ],
                                             ),
                                           ],
-                                        ),
+                                        ) : SizedBox(),
                                         const SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
