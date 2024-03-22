@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:job_dekho_app/Jdx_screens/Mywallet.dart';
 import 'package:job_dekho_app/Jdx_screens/parcel_history.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
+import 'package:job_dekho_app/Model/cancel_reason_response.dart';
 import 'package:job_dekho_app/Model/slider_response.dart';
 
 //import 'package:place_picker/entities/location_result.dart';
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<String> myIds = [];
 
-  bool isLoading = false ;
+  bool isLoading = false;
 
   String? planStatus;
 
@@ -60,18 +61,14 @@ class _HomeScreenState extends State<HomeScreen> {
   ParcelhistoryModel? parcelhistory;
   String? userid;
 
-
-
   void initState() {
     // TODO: implement initState
     super.initState();
 
-      parcelHistory(1);
+    parcelHistory(1);
     getbanner();
-
+    cancelReason();
   }
-
-  
 
   // @override
   // void initState() {
@@ -97,18 +94,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   SliderDataResponse? bannerModel;
 
+  CancelReasonResponse? cancelReasonResponse;
+
   getbanner() async {
     var headers = {
       'Cookie': 'ci_session=cf3c69364b479a1553327c57f04f890a05359969'
     };
-    var request = http.Request('GET', Uri.parse('${ApiPath.baseUrl}Payment/slider'));
+    var request =
+        http.Request('GET', Uri.parse('${ApiPath.baseUrl}Payment/slider'));
 
     request.headers.addAll(headers);
 
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = SliderDataResponse.fromJson(json.decode(finalResult));
+      final jsonResponse =
+          SliderDataResponse.fromJson(json.decode(finalResult));
       setState(() {
         bannerModel = jsonResponse;
         print('__________${bannerModel?.amount}___banner__________');
@@ -187,7 +188,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 3),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 18, horizontal: 3),
                     //height: MediaQuery.of(context).size.height / 1.1,
                     decoration: const BoxDecoration(
                         color: Color(0xffF9F9F9),
@@ -202,11 +204,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              decoration:  BoxDecoration(
+                              decoration: BoxDecoration(
                                   color: splashcolor,
-                                  borderRadius:
-                                  const BorderRadius.only(topLeft: Radius.circular(10),bottomLeft:Radius.circular(10) )),
-
+                                  borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10))),
                               width: MediaQuery.of(context).size.width / 1.26,
                               height: 50,
                               child: TextField(
@@ -225,15 +227,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                         onPlacePicked: (result) {
                                           print(result.formattedAddress);
                                           setState(() {
-                                            addressC.text =
-                                                result.formattedAddress.toString();
+                                            addressC.text = result
+                                                .formattedAddress
+                                                .toString();
                                             lat = result.geometry!.location.lat;
-                                            long = result.geometry!.location.lng;
+                                            long =
+                                                result.geometry!.location.lng;
                                           });
                                           Navigator.of(context).pop();
                                         },
-                                        initialPosition: LatLng(
-                                            22.719568,75.857727),
+                                        initialPosition:
+                                            LatLng(22.719568, 75.857727),
                                         useCurrentLocation: true,
                                       ),
                                     ),
@@ -258,18 +262,18 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: Container(
                                 padding: const EdgeInsets.only(right: 10),
                                 height: 50,
-
-                                decoration:  BoxDecoration(
+                                decoration: BoxDecoration(
                                     color: splashcolor,
-                                    borderRadius:
-                                    const BorderRadius.only(topRight: Radius.circular(0),bottomRight:Radius.circular(0) )),
+                                    borderRadius: const BorderRadius.only(
+                                        topRight: Radius.circular(0),
+                                        bottomRight: Radius.circular(0))),
                                 child: InkWell(
                                     onTap: () {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const NotificationScreen()));
+                                                  const NotificationScreen()));
                                     },
                                     child: const Icon(
                                       Icons.notification_add_outlined,
@@ -277,26 +281,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )),
                               ),
                             ),
-
                             Expanded(
                               flex: 1,
                               child: InkWell(
-                                  onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => MyWallet()));
-                                  },
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyWallet()));
+                                },
                                 child: Container(
                                     padding: const EdgeInsets.only(right: 10),
                                     height: 50,
-
-                                    decoration:  BoxDecoration(
+                                    decoration: BoxDecoration(
                                         color: splashcolor,
-                                        borderRadius:
-                                        const BorderRadius.only(topRight: Radius.circular(10),bottomRight:Radius.circular(10) )),
-                                    child: Icon(Icons.account_balance_wallet, color: primaryColor,)),
+                                        borderRadius: const BorderRadius.only(
+                                            topRight: Radius.circular(10),
+                                            bottomRight: Radius.circular(10))),
+                                    child: Icon(
+                                      Icons.account_balance_wallet,
+                                      color: primaryColor,
+                                    )),
                               ),
                             )
-
-
                           ],
                         ),
                         const SizedBox(
@@ -408,12 +415,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         SizedBox(
                           height: 150,
                           width: MediaQuery.of(context).size.width,
-                          child:bannerModel== null ?  Center(child: CircularProgressIndicator(color: splashcolor,)) :  ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                 '${ApiPath.imgUrl}${bannerModel?.amount}',
-                                fit: BoxFit.fill,
-                              )),
+                          child: bannerModel == null
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                  color: splashcolor,
+                                ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    '${ApiPath.imgUrl}${bannerModel?.amount}',
+                                    fit: BoxFit.fill,
+                                  )),
                         ),
                         const SizedBox(
                           height: 20,
@@ -442,12 +454,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         _segmentButton(),
                         SizedBox(
-
                           child: isLoading
                               ? const Center(
                                   child: CircularProgressIndicator(),
                                 )
-                              : parcelhistory?.data?.isEmpty ??false
+                              : parcelhistory?.data?.isEmpty ?? false
                                   ? const Center(
                                       child: Text(
                                         "Not any order",
@@ -459,141 +470,164 @@ class _HomeScreenState extends State<HomeScreen> {
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       scrollDirection: Axis.vertical,
-                                      itemCount:int.parse((parcelhistory!.data!.length).toStringAsFixed(0))
-                                          ,
+                                      itemCount: int.parse(
+                                          (parcelhistory!.data!.length)
+                                              .toStringAsFixed(0)),
                                       itemBuilder: (c, i) {
-                                        return parcelhistory?.data?[i].parcelDetails?.isEmpty ?? true ? SizedBox():  Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 0),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ParceldetailsScreen(
-                                                            orderid: parcelhistory!
-                                                                .data![i].orderId,isFromParcelHistory: true,
-                                                          )));
-                                            },
-                                            child: Card(
-                                              elevation: 1,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10)),
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 10),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
-                                                  children: [
-                                                     CircleAvatar(
+                                        return parcelhistory?.data?[i]
+                                                    .parcelDetails?.isEmpty ??
+                                                true
+                                            ? SizedBox()
+                                            : Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 0),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ParceldetailsScreen(
+                                                                  orderid:
+                                                                      parcelhistory!
+                                                                          .data![
+                                                                              i]
+                                                                          .orderId,
+                                                                  isFromParcelHistory:
+                                                                      true,
+                                                                )));
+                                                  },
+                                                  child: Card(
+                                                    elevation: 1,
+                                                    color: changeColorStatus(
+                                                        parcelhistory!.data![i]
+                                                                .orderStatus ??
+                                                            '0'),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 10),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundColor:
+                                                                whiteColor,
+                                                            radius: 40,
+                                                            child: Image.asset(
+                                                              'assets/order.png',
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 10,
+                                                          ),
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Text(
+                                                                "Order ID",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              Text(
+                                                                "${parcelhistory!.data![i].orderId}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
 
-                                                       backgroundColor: whiteColor,
-
-
-                                                      radius: 40,
-                                                      child: Image.asset('assets/order.png',),
-                                                    ),
-                                                    const SizedBox(
-                                                      height: 10,
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          "Order ID",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].orderId}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-
-                                                        // Text("202",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
-                                                        const Text(
-                                                          "Total Amount",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].orderAmount}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        const Text(
-                                                          "Order Status",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              fontFamily:
-                                                              'Lora'),
-                                                        ),
-                                                        SizedBox(height: 5,),
-                                                       /* InkWell(
+                                                              // Text("202",style: TextStyle(color: Colors.black,fontSize: 14,fontWeight: FontWeight.w500,fontFamily: 'Lora'),),
+                                                              const Text(
+                                                                "Total Amount",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              Text(
+                                                                "${parcelhistory!.data![i].orderAmount}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              const Text(
+                                                                "Order Status",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              /* InkWell(
                                                           onTap: (){
-                                                           *//* String lat =
+                                                           */ /* String lat =
                                                                 parcelhistory!.data![i].senderLatitude.toString() ?? '';//'22.7177'; //
                                                             String lon =
                                                                 parcelhistory!.data![i].senderLongitude.toString() ?? '';//'75.8545'; //
                                                             String CURENT_LAT =
                                                                 parcelhistory!.data![i].receiverLatitude.toString() ?? '';
                                                             String CURENT_LONG =
-                                                                item.receiverLongitude.toString() ?? '';*//*
+                                                                item.receiverLongitude.toString() ?? '';*/ /*
 
-                                                           *//* final Uri url = Uri.parse(
+                                                           */ /* final Uri url = Uri.parse(
                                                                 'https://www.google.com/maps/dir/?api=1&origin=' +
                                                                     CURENT_LAT +
                                                                     ',' +
@@ -604,7 +638,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     lon.toString() +
                                                                     '&travelmode=driving&dir_action=navigate');
 
-                                                            _launchURL(url);*//*
+                                                            _launchURL(url);*/ /*
 
                                                           },
                                                           child: Container(
@@ -626,109 +660,137 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             ),
                                                           ),
                                                         )*/
-
-                                                      ],
-                                                    ),
-                                                    Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          "Parcel Count",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].parcelDetails?.length}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        const Text(
-                                                          "Order Date",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                        Text(
-                                                          "${parcelhistory!.data![i].onDate.toString().substring(0, 10)}",
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 16,
-                                                              fontFamily:
-                                                                  'Lora'),
-                                                        ),
-                                                         Text(
-                                                          orderStatus(parcelhistory!.data![i].orderStatus ?? 'cancel'),
-                                                          style: const TextStyle(
-                                                              color: Colors
-                                                                  .black,
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              fontFamily:
-                                                              'Lora'),
-                                                        ),
-                                                        const SizedBox(height: 5,),
-                                               parcelhistory!.data![i].orderStatus == '7' ? InkWell(
-                                                          onTap: (){
-                                                            cancelOrder(parcelhistory!.data![i].orderId ?? '44', i);
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                            const EdgeInsets.only(
-                                                                left: 10,
-                                                                right: 10,
-                                                                top: 2,
-                                                                bottom: 2),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius:
-                                                                BorderRadius
-                                                                    .circular(15),
-                                                                color: primaryColor),
-                                                            child: const Text(
-                                                              'Cancel',
-                                                              style: TextStyle(
-                                                                  color: Colors.white),
-                                                            ),
+                                                            ],
                                                           ),
-                                                        ) : SizedBox.shrink()
-                                                      ],
-                                                    )
-                                                  ],
+                                                          Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              const Text(
+                                                                "Parcel Count",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              Text(
+                                                                "${parcelhistory!.data![i].parcelDetails?.length}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              const Text(
+                                                                "Order Date",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              Text(
+                                                                "${parcelhistory!.data![i].onDate.toString().substring(0, 10)}",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              Text(
+                                                                orderStatus(parcelhistory!
+                                                                        .data![
+                                                                            i]
+                                                                        .orderStatus ??
+                                                                    'cancel'),
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 5,
+                                                              ),
+                                                              parcelhistory!.data![i].orderStatus ==
+                                                                          '0' ||
+                                                                      parcelhistory!
+                                                                              .data![
+                                                                                  i]
+                                                                              .orderStatus ==
+                                                                          '1'
+                                                                  ? InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        shoCancelDialog(parcelhistory!.data![i].orderId ?? '44',i);
+                                                                        /* cancelOrder(
+                                                                            parcelhistory!.data![i].orderId ??
+                                                                                '44',
+                                                                            i);*/
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        padding: const EdgeInsets.only(
+                                                                            left:
+                                                                                10,
+                                                                            right:
+                                                                                10,
+                                                                            top:
+                                                                                2,
+                                                                            bottom:
+                                                                                2),
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(15),
+                                                                            color: primaryColor),
+                                                                        child:
+                                                                            const Text(
+                                                                          'Cancel',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : SizedBox
+                                                                      .shrink()
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                              );
                                       }),
                         )
                       ],
@@ -741,30 +803,44 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-String orderStatus(String status ){
-  print('__________${status}_____________');
-    if(status == '0'){
+  String orderStatus(String status) {
+    print('__________${status}_____________');
+    if (status == '0') {
       return 'Searching Driver';
-    }else if(status == '1'){
+    } else if (status == '1') {
       return 'Confirm';
-    }else if(status == '2'){
+    } else if (status == '2') {
       return 'Order Received';
-    }else if(status == '3'){
+    } else if (status == '3') {
       return 'Order Picked up';
-    }else if(status == '4'){
+    } else if (status == '4') {
       return 'Complete';
-    }else if(status == '5'){
+    } else if (status == '5') {
       return 'Order Delivered';
-    }else if(status == '6'){
+    } else if (status == '6') {
       return 'Order Complete';
-    }else {
-
+    } else {
       return 'cancel';
     }
+  }
 
-}
+  Color changeColorStatus(String status) {
+    if (status == '0') {
+      return Colors.white;
+    } else if (status == '1') {
+      return Colors.white;
+    } else if (status == '2') {
+      return Colors.white;
+    } else if (status == '3') {
+      return Colors.green;
+    } else if (status == '4') {
+      return Colors.green;
+    } else {
+      return Colors.grey;
+    }
+  }
 
- /* _getLocation() async {
+  /* _getLocation() async {
     LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => PlacePicker(
               "AIzaSyCqQW9tN814NYD_MdsLIb35HRY65hHomco",
@@ -790,91 +866,88 @@ String orderStatus(String status ){
     } else if (i == 1) {
       parcelHistory(2);
     }
-    setState(() {
-
-    });
-   // getOrderList(status: status);
-
+    setState(() {});
+    // getOrderList(status: status);
   }
 
   Widget _segmentButton() => Container(
-    padding: const EdgeInsets.all(5),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(45),
-      color: Colors.white,
-    ),
-    margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
-    child: Row(
-      children: [
-        Expanded(
-          child: Container(
-            height: 30,
-            decoration: ShapeDecoration(
-                shape: const StadiumBorder(),
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: selectedSegmentVal == 0
-                        ? [primaryColor, Colors.redAccent]
-                        : [Colors.transparent, Colors.transparent])),
-            child: MaterialButton(
-              shape: const StadiumBorder(),
-              onPressed: () => setSegmentValue(0),
-              child: Text(
-                'Active',
-                style:  TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 14,
-                    color: selectedSegmentVal == 0
-                        ? Colors.white
-                        : Colors.black),
-              ),
-            ),
-          ),
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(45),
+          color: Colors.white,
         ),
-        Expanded(
-          child: Container(
-            height: 30,
-            decoration: ShapeDecoration(
-                shape: const StadiumBorder(),
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: selectedSegmentVal == 1
-                        ? [primaryColor, Colors.redAccent]
-                        : [Colors.transparent, Colors.transparent])),
-            child: MaterialButton(
-              shape: const StadiumBorder(),
-              onPressed: () => setSegmentValue(1),
-              child: FittedBox(
-                child: Text(
-                  'Complete',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 14,
-                      color: selectedSegmentVal == 1
-                          ? Colors.white
-                          : Colors.black),
+        margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
+        child: Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: 30,
+                decoration: ShapeDecoration(
+                    shape: const StadiumBorder(),
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: selectedSegmentVal == 0
+                            ? [primaryColor, Colors.redAccent]
+                            : [Colors.transparent, Colors.transparent])),
+                child: MaterialButton(
+                  shape: const StadiumBorder(),
+                  onPressed: () => setSegmentValue(0),
+                  child: Text(
+                    'Active',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: selectedSegmentVal == 0
+                            ? Colors.white
+                            : Colors.black),
+                  ),
                 ),
               ),
             ),
-          ),
+            Expanded(
+              child: Container(
+                height: 30,
+                decoration: ShapeDecoration(
+                    shape: const StadiumBorder(),
+                    gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: selectedSegmentVal == 1
+                            ? [primaryColor, Colors.redAccent]
+                            : [Colors.transparent, Colors.transparent])),
+                child: MaterialButton(
+                  shape: const StadiumBorder(),
+                  onPressed: () => setSegmentValue(1),
+                  child: FittedBox(
+                    child: Text(
+                      'Complete',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: selectedSegmentVal == 1
+                              ? Colors.white
+                              : Colors.black),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   parcelHistory(int? status) async {
     isLoading = true;
     SharedPreferences preferences = await SharedPreferences.getInstance();
-   userid = preferences.getString("userid");
+    userid = preferences.getString("userid");
     var headers = {
       'Cookie': 'ci_session=c4d89ea1aafd386c2dd6a6d1913c38e59c817e3d'
     };
     var request = http.MultipartRequest(
         'POST', Uri.parse('${ApiPath.baseUrl}payment/parcel_history'));
-    request.fields.addAll({
-      'user_id': userid.toString(),
-      'status': status.toString()
-    });
+    request.fields
+        .addAll({'user_id': userid.toString(), 'status': status.toString()});
     print("${request.fields}");
     print("${request}");
 
@@ -884,7 +957,7 @@ String orderStatus(String status ){
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
       final jsonResponse =
-      ParcelhistoryModel.fromJson(json.decode(finalResult));
+          ParcelhistoryModel.fromJson(json.decode(finalResult));
       //log("Response Here===========>${jsonResponse}");
       log("Final Result Here===========>${finalResult}");
       setState(() {
@@ -896,28 +969,130 @@ String orderStatus(String status ){
     }
   }
 
-  cancelOrder(String orderId, int i) async{
-    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/JDX/api/Authentication/update_parcel_status'));
-    request.fields.addAll({
-      'user_id': userid ?? '315',
-      'order_id': orderId,
-      'status': '7'
-    });
+  cancelOrder(String orderId, int i) async {
+    print('_____________');
+    var request = http.MultipartRequest('POST',
+        Uri.parse('${ApiPath.baseUrl}Authentication/update_parcel_status'));
+    request.fields.addAll(
+        {'user_id': userid ?? '315', 'order_id': orderId, 'status': '7', 'cancel_reason' : _selectedValue.toString()});
 
-
+    print('${request.fields}');
+    print('${request.url}');
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Order Cancel successfully')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Order Cancel successfully')));
 
-      parcelhistory?.data?.removeAt(i) ;
+      parcelhistory?.data?.removeAt(i);
+      setState(() {});
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  cancelReason() async {
+    var request = http.Request(
+        'GET', Uri.parse('${ApiPath.baseUrl}Authentication/cancel_reason'));
+
+    //   request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      var finalResult = await response.stream.bytesToString();
+      final jsonResponse =
+          CancelReasonResponse.fromJson(json.decode(finalResult));
       setState(() {
-
+        cancelReasonResponse = jsonResponse;
       });
+    } else {
+      print(response.reasonPhrase);
     }
-    else {
-    print(response.reasonPhrase);
-    }
+  }
+
+  String? _selectedValue;
+
+  shoCancelDialog(String orderId, int i) async {
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, myState) {
+          return AlertDialog(
+              title: const Text('Select cancel reason'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: List<Widget>.generate(
+                cancelReasonResponse?.data?.length ?? 0,
+                    (index) => RadioListTile(
+                  title: Text('${cancelReasonResponse?.data?[index].title}'),
+                  // Display the title for option 1
+                  //subtitle: Text('Subtitle for Option 1'),
+                  // Display a subtitle for option 1
+                  value: cancelReasonResponse?.data?[index].title,
+                  // Assign a value of 1 to this option
+                  groupValue: _selectedValue,
+                  // Use _selectedValue to track the selected option
+                  onChanged: (value) {
+
+                    _selectedValue = value.toString() ?? '';
+                    print(_selectedValue.toString());
+                    myState((){});
+                    // Update _selectedValue when option 1 is selected
+
+                  },
+                ),
+              ),),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: primaryColor,
+                  ),
+                  height: 40,
+                  width: 80,
+                  child: Center(
+                    child: Text(
+                      "Back",
+                      style: TextStyle(color: whiteColor,fontSize: 15),
+                    ),
+                  ),
+                ),
+                InkWell(
+                onTap: (){
+                  Navigator.pop(context);
+                  cancelOrder( orderId,  i);
+                },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: primaryColor,
+                    ),
+                    height: 40,
+                    width: 80,
+                    child: Center(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: whiteColor,fontSize: 15),
+                      ),
+                    ),
+                  ),
+                )
+              ],),
+              const SizedBox(height: 20,)
+            ],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+            actionsPadding: EdgeInsets.zero,
+
+
+          );
+        }
+      ),
+    );
   }
 }

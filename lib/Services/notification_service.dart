@@ -1,9 +1,4 @@
-/*
 import 'dart:math';
-*/
-
-import 'dart:math';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
@@ -78,9 +73,9 @@ class LocalNotificationService {
           if(message.data['driver_id']!= null) {
             Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
           }
-          // display(message);
+           display(message);
 
-          //handleNotification(message.data);
+          handleNotification(message.data);
 
         }
       },
@@ -99,7 +94,7 @@ class LocalNotificationService {
           }
 
           // Get.to(FeedbackScreen());
-          //handleNotification(message.data);
+          handleNotification(message.data);
 
          // HomeScreenState().setSegmentValue(2) ;
 
@@ -137,7 +132,7 @@ class LocalNotificationService {
             "JdxApp",
             "JdxApp",
             importance: Importance.max,
-            priority: Priority.high,
+            priority: Priority.max,
           ));
       //print("my id is ${id.toString()}");
       await _flutterLocalNotificationsPlugin.show(
@@ -154,3 +149,6 @@ class LocalNotificationService {
 
 
 }
+
+
+

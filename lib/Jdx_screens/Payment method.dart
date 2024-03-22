@@ -17,7 +17,10 @@ import 'MyProfile.dart';
 class PaymentMethod extends StatefulWidget {
   final orderid;
   final totalAmount;
-  const PaymentMethod({Key? key, this.orderid, this.totalAmount}) : super(key: key);
+  final couponAmount;
+  final couponName;
+  final afterDiscountTotal;
+  const PaymentMethod({Key? key, this.orderid, this.totalAmount,this.couponName,this.couponAmount,this.afterDiscountTotal}) : super(key: key);
 
   @override
   State<PaymentMethod> createState() => _PaymentMethodState();
@@ -42,6 +45,9 @@ class _PaymentMethodState extends State<PaymentMethod> {
       'user_id': userid.toString(),
       'order_id': widget.orderid,
       'subtotal': widget.totalAmount.toString(),
+      'promo_code': widget.couponName.toString(),
+      'promo_code_discount': widget.couponAmount.toString(),
+      'total': widget.afterDiscountTotal.toString(),
     });
     print("Param ${request.fields}");
     request.headers.addAll(headers);

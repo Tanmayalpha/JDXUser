@@ -103,17 +103,19 @@ class ParcelDetailDataList {
   String? senderLongitude;
   String? receiverLatitude;
   String? receiverLongitude;
-  Null? parcelPhoto;
+  String? parcelPhoto;
   Null? isCodOrderVerify;
   Null? accountName;
   Null? accountNumber;
   String? parcelHistory;
+  String? extraCharge;
   String? otp;
   MaterialInfo? materialInfo;
   DriverDetails? driverDetails;
 
   ParcelDetailDataList(
       {this.saleId,
+        this.extraCharge,
         this.orderId,
         this.barcode,
         this.barcodeLink,
@@ -184,6 +186,8 @@ class ParcelDetailDataList {
 
   ParcelDetailDataList.fromJson(Map<String, dynamic> json) {
     saleId = json['sale_id'];
+
+    extraCharge = json['extra_charge_parcel'];
     orderId = json['order_id'];
     barcode = json['barcode'];
     barcodeLink = json['barcode_link'];
@@ -243,7 +247,7 @@ class ParcelDetailDataList {
     senderLongitude = json['sender_longitude'];
     receiverLatitude = json['receiver_latitude'];
     receiverLongitude = json['receiver_longitude'];
-    parcelPhoto = json['parcel_photo'];
+    parcelPhoto = json['parcel_photo'] ?? '';
     isCodOrderVerify = json['is_cod_order_verify'];
     accountName = json['account_name'];
     accountNumber = json['account_number'];

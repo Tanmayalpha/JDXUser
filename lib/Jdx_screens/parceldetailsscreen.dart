@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:job_dekho_app/Jdx_screens/coupon_Screen.dart';
 import 'package:job_dekho_app/Jdx_screens/share_qr.dart';
 import 'package:job_dekho_app/Model/coupon_code_response.dart';
 import 'package:job_dekho_app/Model/distance_data_fee_response.dart';
@@ -14,6 +15,7 @@ import 'package:job_dekho_app/Model/get_driver_rating_response.dart';
 import 'package:job_dekho_app/Model/weight_data_fee_response.dart';
 import 'package:job_dekho_app/Services/api.dart';
 import 'package:job_dekho_app/Services/api_client.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Model/parceldetailsmodel.dart';
@@ -42,7 +44,6 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
 
   GetWeightFeeResponse? weightFeesRangeList;
 
-  CouponCodeResponse? couponCode;
   GetAppUrl? appUrl;
 
   bool isloader = false;
@@ -54,6 +55,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
   double _deliveryCharge = 10.0;
   double _discount = 0.0;
   double _finalPrice = 0.0;
+  double _extaPrice = 0.0;
   double totalKm = 0;
 
   double totalKg = 0;
@@ -65,6 +67,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
   double totalPrice = 0;
 
   double couponValue = 0;
+  String couponName = '';
 
   List<String> driverRating = [];
 
@@ -72,10 +75,10 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     // TODO: implement initState
     super.initState();
 
-    ParcelDetails();
+    parcelDetailsApi();
 
-    getWeightFeeData();
-    getCoupon();
+    // getWeightFeeData();
+    //getCoupon();
     getAppUrl();
   }
 
@@ -306,38 +309,49 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                           ],
                                         ),
                                         const SizedBox(height: 10),
-                                        widget.isFromParcelHistory ?   Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text("Parcel Status",
-                                                    style: TextStyle(
-                                                        color: Colors.red)),
-                                                Text(
-                                                    "${orderStatus(item.status ?? '')}"),
-                                              ],
-                                            ),
-                                            driverRating.isEmpty ? SizedBox() : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                    "Driver Rating         ",
-                                                    style: TextStyle(
-                                                        color: Colors.red)),
-                                                Text("${driverRating.first}"),
-                                              ],
-                                            ),
-                                          ],
-                                        ) : SizedBox(),
+                                        widget.isFromParcelHistory
+                                            ? Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Text(
+                                                          "Parcel Status",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red)),
+                                                      Text(
+                                                          "${orderStatus(item.status ?? '')}"),
+                                                    ],
+                                                  ),
+                                                  driverRating.isEmpty
+                                                      ? const SizedBox()
+                                                      : Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const Text(
+                                                                "Driver Rating         ",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red)),
+                                                            Text(
+                                                                "${driverRating.first}"),
+                                                          ],
+                                                        ),
+                                                ],
+                                              )
+                                            : SizedBox(),
                                         const SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
@@ -384,8 +398,9 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                     style: TextStyle(
                                                         color: Colors.red)),
                                                 SizedBox(
-                                                  width: 100,
-                                                    child: Text("${item.receiverAddress}")),
+                                                    width: 100,
+                                                    child: Text(
+                                                        "${item.receiverAddress}")),
                                               ],
                                             ),
                                             Column(
@@ -462,109 +477,194 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                             ),
                                           ],
                                         ),
-                                        item.status == '5' ? SizedBox() : Column(children: [
-                                          widget.isFromParcelHistory
-                                              ? Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            children: [
-                                              const Text("Track Parcel:",
+                                        item.status == '5'
+                                            ? const SizedBox()
+                                            : Column(
+                                                children: [
+                                                  widget.isFromParcelHistory
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const Text(
+                                                                "Track Parcel:",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red)),
+                                                            const SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            InkWell(
+                                                              onTap: () {
+                                                                String lat = item
+                                                                        .senderLatitude
+                                                                        .toString() ??
+                                                                    ''; //'22.7177'; //
+                                                                String lon = item
+                                                                        .senderLongitude
+                                                                        .toString() ??
+                                                                    ''; //'75.8545'; //
+                                                                String CURENT_LAT = item
+                                                                        .driverDetails
+                                                                        ?.latitude
+                                                                        .toString() ??
+                                                                    '';
+                                                                String CURENT_LONG = item
+                                                                        .driverDetails
+                                                                        ?.longitude
+                                                                        .toString() ??
+                                                                    '';
+
+                                                                final Uri url = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
+                                                                    CURENT_LAT +
+                                                                    ',' +
+                                                                    CURENT_LONG +
+                                                                    ' &destination=' +
+                                                                    lat.toString() +
+                                                                    ',' +
+                                                                    lon.toString() +
+                                                                    '&travelmode=driving&dir_action=navigate');
+
+                                                                _launchURL(url);
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            10,
+                                                                        right:
+                                                                            10,
+                                                                        top: 5,
+                                                                        bottom:
+                                                                            5),
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            15),
+                                                                    color:
+                                                                        primaryColor),
+                                                                child:
+                                                                    const Text(
+                                                                  'Track',
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                              width: 10,
+                                                            ),
+                                                            const Text("OTP:",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red)),
+                                                            const SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            Text("${item.otp}",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black))
+                                                          ],
+                                                        )
+                                                      : const SizedBox(),
+                                                  widget.isFromParcelHistory
+                                                      ? const Align(
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          child: Text(
+                                                              "Driver Detail:",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red)),
+                                                        )
+                                                      : const SizedBox(),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: const [
+                                                          Text("Parcel Image",
+                                                              style: TextStyle(
+                                                                  color: Colors.red)),
+                                                          /*SizedBox(
+                                                    width: 100,
+                                                    child: Text(
+                                                        "${item.receiverAddress}")),*/
+                                                        ],
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                        children: [
+                                                          /*const Text(
+                                                  "Share QR",
                                                   style: TextStyle(
-                                                      color: Colors.red)),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  String lat = item
-                                                      .senderLatitude
-                                                      .toString() ??
-                                                      ''; //'22.7177'; //
-                                                  String lon = item
-                                                      .senderLongitude
-                                                      .toString() ??
-                                                      ''; //'75.8545'; //
-                                                  String CURENT_LAT = item
-                                                      .driverDetails
-                                                      ?.latitude
-                                                      .toString() ??
-                                                      '';
-                                                  String CURENT_LONG = item
-                                                      .driverDetails
-                                                      ?.longitude
-                                                      .toString() ??
-                                                      '';
-
-                                                  final Uri url = Uri.parse(
-                                                      'https://www.google.com/maps/dir/?api=1&origin=' +
-                                                          CURENT_LAT +
-                                                          ',' +
-                                                          CURENT_LONG +
-                                                          ' &destination=' +
-                                                          lat.toString() +
-                                                          ',' +
-                                                          lon.toString() +
-                                                          '&travelmode=driving&dir_action=navigate');
-
-                                                  _launchURL(url);
-                                                },
-                                                child: Container(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      left: 10,
-                                                      right: 10,
-                                                      top: 5,
-                                                      bottom: 5),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(15),
-                                                      color: primaryColor),
-                                                  child: const Text(
-                                                    'Track',
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.white),
+                                                      fontSize: 13,
+                                                      color: Colors.red),
+                                                ),*/
+                                                          Row(
+                                                            children: [
+                                                              InkWell(
+                                                                  onTap: () {
+                                                                  },
+                                                                  child: Image.network(item.parcelPhoto ?? '',height: 100,width: 100,errorBuilder: (context, error, stackTrace) => Image.asset('assets/ezgif.com-crop.gif', height: 100,width: 100),)
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
                                                   ),
-                                                ),
+                                                  widget.isFromParcelHistory && item.driverDetails?.userImage !=null && item.status !='4'
+                                                      ?    drivercard(
+                                                          image: item
+                                                              .driverDetails
+                                                              ?.userImage,
+                                                          name: item
+                                                              .driverDetails
+                                                              ?.userFullname,
+                                                          phone: item
+                                                              .driverDetails
+                                                              ?.userPhone,
+                                                          email: item
+                                                              .driverDetails
+                                                              ?.userEmail,
+                                                          vehicleNo: item
+                                                              .driverDetails
+                                                              ?.vehicleNo)
+                                                      : const SizedBox()
+                                                ],
                                               ),
-                                              const SizedBox(
-                                                width: 10,
+                                        item.status == '4' ? InkWell(
+                                          onTap: () {
+                                            //_launchURL(Uri.parse('https://developmentalphawizz.com/JDX/index.php/Admin/GenerateOrderPdfs/?id=5'));
+                                            launchUrl(Uri.parse('${ApiPath.imgUrl}index.php/Admin/GenerateOrderPdfs?id=${item.orderId}'),mode:  LaunchMode.externalApplication);
+                                          },
+                                          child: Container(
+                                            height: 50,
+                                            width: MediaQuery.of(context).size.width / 1.4,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(30),
+                                                color: Secondry),
+                                            child: const Text(
+                                              "Download Invoice",
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 14,
                                               ),
-                                              const Text("OTP:",
-                                                  style: TextStyle(
-                                                      color: Colors.red)),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              Text("${item.otp}",
-                                                  style: TextStyle(
-                                                      color: Colors.black))
-                                            ],
-                                          )
-                                              : const SizedBox(),
-                                          widget.isFromParcelHistory
-                                              ? const Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text("Driver Detail:",
-                                                style: TextStyle(
-                                                    color: Colors.red)),
-                                          )
-                                              : SizedBox(),
-                                          widget.isFromParcelHistory
-                                              ? drivercard(
-                                              image: item
-                                                  .driverDetails?.userImage,
-                                              name: item.driverDetails
-                                                  ?.userFullname,
-                                              phone: item
-                                                  .driverDetails?.userPhone,
-                                              email: item
-                                                  .driverDetails?.userEmail,
-                                              vehicleNo: item
-                                                  .driverDetails?.vehicleNo)
-                                              : SizedBox()
-                                        ],)
+                                            ),
+                                          ),
+                                        ) : SizedBox()
+
                                       ],
                                     ),
                                   ),
@@ -574,7 +674,48 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       },
                     ),
                   ),
-                  widget.isFromParcelHistory
+                  widget.isFromParcelHistory ? const SizedBox.shrink() : Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    child: Card(
+                      color: splashcolor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 15),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Coupon',
+                                style: TextStyle(
+                                    color: Colors.black54.withOpacity(0.8)),
+                              ),
+                              InkWell(
+                                onTap: (){
+
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  CouponScreen(totalPrice: totalPrice ?? 0.0),)).then((value) {
+                                    if(value !=null){
+
+                                      couponValue = value[0];
+                                      couponName =  value[1];
+
+                                      _calculateFinalPrice();
+
+                                      couponSucsessFullyApplyed();
+
+                                    }
+
+                                  });
+
+                                },
+                                child: Text('Apply Coupon',
+                                    style: TextStyle(color: primaryColor,fontWeight: FontWeight.w700)),
+                              )
+                            ]),
+                      ),
+                    ),
+                  ),
+                  /*widget.isFromParcelHistory
                       ? const SizedBox.shrink()
                       : SizedBox(
                           height: 50,
@@ -594,7 +735,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                         Text(
                                           couponCode?.data?[index].couponCode ??
                                               '',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
                                         InkWell(
@@ -627,7 +768,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                               );
                             },
                           ),
-                        ),
+                        ),*/
                   widget.isFromParcelHistory
                       ? const SizedBox.shrink()
                       : Container(
@@ -658,7 +799,12 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                         ),
                         SizedBox(height: 10.0),*/
                               Text(
-                                'Discount: ₹$_discount',
+                                'Extra Charge: ₹ $_extaPrice',
+                                style: const TextStyle(fontSize: 20.0),
+                              ),
+                              const SizedBox(height: 10.0),
+                              Text(
+                                'Discount: ₹ $couponValue',
                                 style: const TextStyle(fontSize: 20.0),
                               ),
                               const SizedBox(height: 10.0),
@@ -683,9 +829,9 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       ? const SizedBox.shrink()
                       : InkWell(
                           onTap: () {
-                            Get.to(PaymentMethod(
+                            Get.to( PaymentMethod(
                               orderid: parceldetails?.data![0].orderId,
-                              totalAmount: _finalPrice,
+                              totalAmount: _finalPrice,couponAmount: couponValue,couponName: couponName,afterDiscountTotal: totalPrice,
                             ));
                             // emailPasswordLogin();
                           },
@@ -785,7 +931,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                             ),
                             InkWell(
                                 onTap: () {
-                                  whatsAppLaunch(phone ??'');
+                                  whatsAppLaunch(phone ?? '');
                                 },
                                 child: Image.asset(
                                   'assets/whatsapplogo.webp',
@@ -808,30 +954,30 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
         ));
   }
 
-  void whatsAppLaunch( String num) async{
-      var whatsapp = "${num}";
-      // var whatsapp = "+919644595859";
-      var whatsappURl_android = "whatsapp://send?phone=" + whatsapp +
-          "&text=Hello, I am messaging from Courier Delivery App, I am interested to send my parcel, Can we have chat? ";
-      var whatappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
-      if (Platform.isIOS) {
-        // for iOS phone only
-        if (await canLaunch(whatappURL_ios)) {
-          await launch(whatappURL_ios, forceSafariVC: false);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content:  Text("Whatsapp does not exist in this device")));
-        }
+  void whatsAppLaunch(String num) async {
+    var whatsapp = "${num}";
+    // var whatsapp = "+919644595859";
+    var whatsappURl_android = "whatsapp://send?phone=" +
+        whatsapp +
+        "&text=Hello, I am messaging from Courier Delivery App, I am interested to send my parcel, Can we have chat? ";
+    var whatappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
+    if (Platform.isIOS) {
+      // for iOS phone only
+      if (await canLaunch(whatappURL_ios)) {
+        await launch(whatappURL_ios, forceSafariVC: false);
       } else {
-        // android , web
-        if (await canLaunch(whatsappURl_android)) {
-          await launch(whatsappURl_android);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content:  Text("Whatsapp does not exist in this device")));
-        }
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Whatsapp does not exist in this device")));
       }
-
+    } else {
+      // android , web
+      if (await canLaunch(whatsappURl_android)) {
+        await launch(whatsappURl_android);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Whatsapp does not exist in this device")));
+      }
+    }
   }
 
   void _launchURL(Uri url) async {
@@ -854,8 +1000,9 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
 
   void _calculateFinalPrice() {
     setState(() {
-      totalPrice = kmPrice + kgPrice;
-      _finalPrice = totalPrice - couponValue;
+      //totalPrice = kmPrice + kgPrice;
+      print('${totalPrice}');
+      _finalPrice = (totalPrice + _extaPrice) - couponValue;
     });
   }
 
@@ -882,7 +1029,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     }
   }
 
-  ParcelDetails() async {
+  parcelDetailsApi() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? userid = preferences.getString("userid");
     // SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -903,16 +1050,27 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
-      print(finalResult);
-      final jsonResponse =
-          Parceldetailsmodel.fromJson(json.decode(finalResult));
-      String totalAmount = jsonResponse.data![0].totalAmount.toString();
+      parceldetails = Parceldetailsmodel.fromJson(json.decode(finalResult));
+      String totalAmount = parceldetails!.data![0].totalAmount.toString();
       preferences.setString('totalAmount', totalAmount.toString());
 
       //print("thiss is total amount=========>${totalAmount}");
       // print("parcel detailss===>${jsonResponse}");
       //print("this is my Final resultss${finalResult}");
-      await getDistanceFeeData();
+
+      parceldetails?.data?.forEach((element) {
+        print('${element.extraCharge}____________extaPrice');
+        if (element.extraCharge != '' && element.extraCharge != null) {
+          _extaPrice += double.parse(element.extraCharge ?? '0.0');
+        }
+      });
+      _finalPrice = (parceldetails?.totalCost ?? 0).toDouble();
+      totalPrice = _finalPrice - _extaPrice;
+
+      setState(() {});
+
+      //_finalPrice = (jsonResponse?.totalCost ?? 0).toDouble();
+      /*await getDistanceFeeData();
       jsonResponse.data?.forEach((element) {
         getDriverRating(element.deliveryBoyId ?? '300');
       });
@@ -928,7 +1086,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
 
           _calculateFinalWeit(element.totalKg ?? '0.0');
         });
-      });
+      });*/
     } else {
       print(response.reasonPhrase);
     }
@@ -982,33 +1140,8 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     }
   }
 
-  void getCoupon() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? userid = preferences.getString("userid");
 
-    var headers = {
-      'Content-Type': 'application/json',
-      'Cookie': 'ci_session=9a6cdba1ed76b7e3ccb05196897d2a5afac87be7'
-    };
-    var request =
-        http.Request('GET', Uri.parse('${ApiPath.baseUrl}Products/couponList'));
-    request.body = json.encode({"user_id": userid});
 
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      var finalResult = await response.stream.bytesToString();
-      final jsonResponse =
-          CouponCodeResponse.fromJson(json.decode(finalResult));
-      setState(() {
-        couponCode = jsonResponse;
-      });
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
 
   String calculateDistance(late1, lone1, late2, lone2) {
     double lat1, lat2, lon1, lon2;
@@ -1119,5 +1252,93 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     } else {
       print(response.reasonPhrase);
     }
+  }
+
+
+  Future couponSucsessFullyApplyed() {
+    return Get.defaultDialog(
+      title: "",
+      content: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            // height: 270,
+            width: Get.size.width,
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                Container(
+                  height: 80,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    image: DecorationImage(
+                      image: AssetImage("assets/discount-voucher.png"),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Text(
+                  "${"Yey! You've saved ${couponValue} ${"With this coupon"}"}",
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Supporting small businesses has never been so rewarding!",
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: TextStyle(
+                    height: 1.2,
+                    fontSize: 15,
+                  ),
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+                InkWell(
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Text(
+                    "Awesome!",
+                    style: TextStyle(
+                      color: gradient.defoultColor,
+                      fontSize: 17,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+          ),
+          Positioned(
+            top: -160,
+            left: 0,
+            right: 0,
+            child: Container(
+              color: Colors.transparent,
+              child: Lottie.asset(
+                'assets/L6o2mVij1E.json',
+                repeat: false,
+                fit: BoxFit.fill,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

@@ -3,13 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:job_dekho_app/Jdx_screens/Dashbord.dart';
 import 'package:job_dekho_app/Jdx_screens/Editrecipentcart.dart';
 import 'package:job_dekho_app/Jdx_screens/parceldetailsscreen.dart';
+
 //import 'package:place_picker/entities/location_result.dart';
 //import 'package:place_picker/widgets/place_picker.dart';
 import 'package:http/http.dart' as http;
@@ -59,25 +62,25 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
 
   Registerparcelmodel? parcelDetailsModel;
 
- List receiverList = [];
+  List receiverList = [];
 
   // List<String>  selectedvalue = [];
 
   senParcel() async {
-   if(receiverList.isEmpty){
-     receiverList.add(
-         {"meterial_category": "${selectedValue.toString()}",
-           "parcel_weight": "${selectedValue1.toString()}",
-           "receiver_address": "${recipientAddressCtr.text}",
-           "receiver_latitude": "${lat2}",
-           "receiver_longitude": "${long2}",
-           "receiver_name": "${recipientNameController.text}",
-           "receiver_phone": "${recipientMobileController.text}",
-           "reciver_full_address": "${receiverfulladdressCtr.text}",
-           "pacel_value" : "${valueController.text}"
-         });
-   }
-
+    if (receiverList.isEmpty) {
+      receiverList.add({
+        "meterial_category": "${selectedValue.toString()}",
+        "parcel_weight": "${selectedValue1.toString()}",
+        "receiver_address": "${recipientAddressCtr.text}",
+        "receiver_latitude": "${lat2}",
+        "receiver_longitude": "${long2}",
+        "receiver_name": "${recipientNameController.text}",
+        "receiver_phone": "${recipientMobileController.text}",
+        "reciver_full_address": "${receiverfulladdressCtr.text}",
+        "pacel_value": "${valueController.text}"
+      });
+      parcelImageList.add(imageFile);
+    }
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userid = prefs.getString('userid');
@@ -106,10 +109,11 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
-      print("Working Now Here");
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = Registerparcelmodel.fromJson(json.decode(finalResult));
+      final jsonResponse =
+          Registerparcelmodel.fromJson(json.decode(finalResult));
       String orderid = jsonResponse.orderId.toString();
+      await uploadeParcelImage(orderid);
       prefs.setString('orderid', orderid.toString());
       print("thiss is order id=========>${orderid}");
       // String? orderid = preferences.getString("orderid");
@@ -117,16 +121,21 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       // print("Result Noww@@@@@@ ${finalResult}");
       setState(() {
         parcelDetailsModel = jsonResponse;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ParceldetailsScreen(orderid: orderid, isFromParcelHistory: false,)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ParceldetailsScreen(
+                      orderid: orderid,
+                      isFromParcelHistory: false,
+                    )));
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
 
   MaterialCategoryModel? materialCategoryModel;
+
   materialCategory() async {
     var headers = {
       'Cookie': 'ci_session=18b59dc18c8193fd4e5e1c025a6904983b2ca7e4'
@@ -139,18 +148,16 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
     if (response.statusCode == 200) {
       print("Material category");
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = MaterialCategoryModel.fromJson(
-          json.decode(finalResult));
+      final jsonResponse =
+          MaterialCategoryModel.fromJson(json.decode(finalResult));
       print("final Result>>>>>>> ${finalResult.toString()}");
       setState(() {
         materialCategoryModel = jsonResponse;
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
-
 
   ParcelWeightModel? parcelWeightModel;
 
@@ -170,13 +177,43 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       setState(() {
         parcelWeightModel = jsonResponse;
       });
-    }
-    else {
+    } else {
       print("Enterrrrrrrrrr");
       print(response.reasonPhrase);
     }
   }
 
+  uploadeParcelImage(String orderId) async {
+    var headers = {
+      'Cookie': 'ci_session=18b59dc18c8193fd4e5e1c025a6904983b2ca7e4'
+    };
+    var request = http.MultipartRequest(
+        'Post', Uri.parse('${ApiPath.baseUrl}Payment/send_image'));
+    request.fields.addAll({
+      'order_id': orderId
+    });
+
+    request.headers.addAll(headers);
+
+
+
+       for(int i=0; i<parcelImageList.length; i++){
+         request.files.add(await http.MultipartFile.fromPath(
+             'images[]', parcelImageList[i]?.path ?? ''));
+       }
+
+       print('${request.files.length}__________________');
+
+
+    http.StreamedResponse response = await request.send();
+    print('${response.statusCode}__________________');
+    print('${await response.stream.bytesToString()}__________________');
+
+    if (response.statusCode == 200) {
+
+
+    }
+  }
 
   @override
   void initState() {
@@ -189,15 +226,14 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       return parcelWeight();
     });
     _getCompensationAmmount();
-
   }
 
   final _formKey = GlobalKey<FormState>();
   String? selectedValue;
   String? selectedValue1;
   String? amt;
-  double?  lat;
-  double?  long;
+  double? lat;
+  double? long;
 
   @override
   Widget build(BuildContext context) {
@@ -214,10 +250,14 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
           child: Icon(Icons.arrow_back, color: whiteColor, size: 20),
           //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
         ),*/
-        title: Text('Register Parcel', style: TextStyle(color: whiteColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Lora'),),
+        title: Text(
+          'Register Parcel',
+          style: TextStyle(
+              color: whiteColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Lora'),
+        ),
         // actions: [
         //   Padding(
         //     padding: EdgeInsets.only(right: 10),
@@ -231,39 +271,42 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
         // ],
       ),
       body: SingleChildScrollView(
-        child:
-        Form(
+        child: Form(
           key: _formKey,
           child: Container(
-            child:
-            Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
+
                 ///senderdetails
                 Column(
                   children: const [
                     Padding(
                       padding: EdgeInsets.only(left: 30.0),
-                      child: Text("Sender Details", style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Sender Details",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
                 Center(
                   child: Column(
                     children: [
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
                             validator: (value) {
@@ -275,26 +318,26 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             controller: senderNameController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Sender Name",
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon awesome-user.png',
-                                scale: 2.1, color: primaryColor,),
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
                             maxLength: 10,
@@ -308,28 +351,28 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Sender Mobile No.",
                               counterText: "",
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon ionic-ios-call.png',
-                                scale: 2.1, color: primaryColor,),
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       // _addressField(context),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: SizedBox(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
                             validator: (value) {
@@ -361,8 +404,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                       });
                                       Navigator.of(context).pop();
                                     },
-                                    initialPosition: LatLng(
-                                        22.719568,75.857727),
+                                    initialPosition:
+                                        LatLng(22.719568, 75.857727),
                                     useCurrentLocation: true,
                                   ),
                                 ),
@@ -371,26 +414,26 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Sender Address",
                               prefixIcon: Image.asset(
                                 'assets/ProfileAssets/locationIcon.png',
-                                scale: 1.5, color: primaryColor,),
+                                scale: 1.5,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 80,
                           child: TextFormField(
                             validator: (value) {
@@ -407,13 +450,15 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               hintText: "flat number,floor,building name,etc",
                               prefixIcon: Image.asset(
                                 'assets/ProfileAssets/locationIcon.png',
-                                scale: 1.7, color: primaryColor,
+                                scale: 1.7,
+                                color: primaryColor,
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],),
+                    ],
+                  ),
                 ),
 
                 ///Card Generate
@@ -435,48 +480,49 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             elevation: 2,
                             color: splashcolor,
                             child: SizedBox(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 1.1,
+                              width: MediaQuery.of(context).size.width / 1.1,
                               // height: 230,
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                   children: [
+
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Column(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          crossAxisAlignment: CrossAxisAlignment
-                                              .start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const Padding(
-                                              padding: EdgeInsets.only(
-                                                  right: 8.0),
+                                              padding:
+                                                  EdgeInsets.only(right: 8.0),
                                               child: Text("Recipient Name",
-                                                  style: TextStyle(fontSize: 13,
-                                                      color: Color(
-                                                          0xFFBF2331))),
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color:
+                                                          Color(0xFFBF2331))),
                                             ),
                                             Text(
                                                 "${receiverList[index]['receiver_name']}"),
                                           ],
                                         ),
-                                        SizedBox(width: 60,),
+                                        SizedBox(
+                                          width: 60,
+                                        ),
                                         Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 28.0),
+                                          padding:
+                                              const EdgeInsets.only(left: 28.0),
                                           child: InkWell(
                                               onTap: () {
                                                 showDialog(
                                                     context: context,
                                                     barrierDismissible: false,
-                                                    builder: (
-                                                        BuildContext context) {
+                                                    builder:
+                                                        (BuildContext context) {
                                                       return AlertDialog(
                                                         title: Text(
                                                             "Delete Account"),
@@ -484,8 +530,9 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                             "Are you sure you want to delete the order"),
                                                         actions: <Widget>[
                                                           ElevatedButton(
-                                                            style: ElevatedButton
-                                                                .styleFrom(
+                                                            style:
+                                                                ElevatedButton
+                                                                    .styleFrom(
                                                               primary: Color(
                                                                   0xFFBF2331),
                                                             ),
@@ -493,13 +540,11 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                             onPressed: () {
                                                               receiverList
                                                                   .removeAt(
-                                                                  index);
+                                                                      index);
                                                               Navigator.of(
-                                                                  context)
+                                                                      context)
                                                                   .pop();
-                                                              setState(() {
-
-                                                              });
+                                                              setState(() {});
                                                               // deleteAccount();
                                                               // SystemNavigator.pop();
                                                               // Navigator.pop(context, MaterialPageRoute(builder: (context) => Login()));
@@ -508,43 +553,46 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                           ElevatedButton(
                                                             style: ElevatedButton
                                                                 .styleFrom(
-                                                              // primary: colors.primary
-                                                            ),
+                                                                    // primary: colors.primary
+                                                                    ),
                                                             child: Text("NO"),
                                                             onPressed: () {
                                                               Navigator.of(
-                                                                  context)
+                                                                      context)
                                                                   .pop();
                                                             },
                                                           )
                                                         ],
                                                       );
-                                                    }
-                                                );
+                                                    });
                                                 Column(
                                                   children: [
                                                     Padding(
-                                                      padding: const EdgeInsets
-                                                          .only(left: 10),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 10),
                                                       child: Container(
                                                         height: 45,
-                                                        width: MediaQuery
-                                                            .of(context)
-                                                            .size
-                                                            .width / 1.5,
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width /
+                                                            1.5,
                                                         decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius
-                                                                .circular(20),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
                                                             color: Color(
                                                                 0xFFBF2331)),
-                                                        child:
-                                                        const Center(
+                                                        child: const Center(
                                                           child: Text(
                                                             "Delete Account",
                                                             style: TextStyle(
                                                                 fontSize: 15,
-                                                                fontWeight: FontWeight
-                                                                    .w500),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
                                                           ),
                                                         ),
                                                       ),
@@ -553,8 +601,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                 );
                                               },
                                               child: Icon(Icons.delete,
-                                                  color: Color(0xFFBF2331))
-                                          ),
+                                                  color: Color(0xFFBF2331))),
                                         ),
                                         InkWell(
                                             onTap: () {
@@ -564,39 +611,46 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                 color: Color(0xFFBF2331))),
                                       ],
                                     ),
-                                    SizedBox(height: 6,),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text("Mobile No",
-                                                style: TextStyle(fontSize: 13,
-                                                    color: Color(0xFFBF2331)),),
+                                              Text(
+                                                "Mobile No",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331)),
+                                              ),
                                               Text(
                                                   "${receiverList[index]['receiver_phone']}"),
                                             ],
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 0),
+                                            padding:
+                                                const EdgeInsets.only(right: 0),
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment
-                                                  .start,
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text("Material category",
-                                                  style: TextStyle(fontSize: 13,
-                                                      color: Color(
-                                                          0xFFBF2331)),),
+                                                Text(
+                                                  "Material category",
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Color(0xFFBF2331)),
+                                                ),
                                                 Text(
                                                     "${receiverList[index]['meterial_category']}"),
                                               ],
@@ -605,41 +659,50 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 6,),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              const Text("Recipient Address",
-                                                style: TextStyle(fontSize: 13,
-                                                    color: Color(0xFFBF2331)),),
+                                              const Text(
+                                                "Recipient Address",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331)),
+                                              ),
                                               SizedBox(
                                                   width: 180,
                                                   child: Text(
-                                                    "${receiverList[index]['receiver_address']}", maxLines: 3,)),
+                                                    "${receiverList[index]['receiver_address']}",
+                                                    maxLines: 3,
+                                                  )),
                                             ],
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 7),
+                                            padding:
+                                                const EdgeInsets.only(right: 7),
                                             child: Column(
-                                              mainAxisAlignment: MainAxisAlignment
-                                                  .start,
-                                              crossAxisAlignment: CrossAxisAlignment
-                                                  .start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                const Text("Parcel weight",
-                                                  style: TextStyle(fontSize: 13,
-                                                      color: Color(
-                                                          0xFFBF2331)),),
+                                                const Text(
+                                                  "Parcel weight",
+                                                  style: TextStyle(
+                                                      fontSize: 13,
+                                                      color: Color(0xFFBF2331)),
+                                                ),
                                                 Text(
                                                     "${receiverList[index]['parcel_weight']}"),
                                               ],
@@ -648,22 +711,52 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 6,),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
                                     Padding(
                                       padding: const EdgeInsets.only(left: 0),
                                       child: Row(
                                         children: [
                                           Column(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            crossAxisAlignment: CrossAxisAlignment
-                                                .start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              const Text("Receipient Flat Number",
-                                                style: TextStyle(fontSize: 13,
-                                                    color: Color(0xFFBF2331)),),
+                                              const Text(
+                                                "Receipient Flat Number",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331)),
+                                              ),
                                               Text(
                                                   "${receiverList[index]['reciver_full_address']}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 0),
+                                      child: Row(
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              const Text(
+                                                "Parcel Image",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331)),
+                                              ),
+                                              Image.file(parcelImageList[index] ?? File(''),height: 100,width: 80),
                                             ],
                                           ),
                                         ],
@@ -675,35 +768,40 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             ),
                           ),
                         );
-                      }
-                  ),
+                      }),
                 ),
-                const SizedBox(height: 15,),
+                const SizedBox(
+                  height: 15,
+                ),
 
                 ///recipentdetails
-                const SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Column(
                   children: const [
                     Padding(
                       padding: EdgeInsets.only(left: 30.0),
-                      child: Text("Recipient Details", style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Recipient Details",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
                 Center(
                   child: Column(
                     children: [
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
                             validator: (value) {
@@ -715,26 +813,26 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             controller: recipientNameController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Recipient Name",
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon awesome-user.png',
-                                scale: 2.1, color: primaryColor,),
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
                             maxLength: 10,
@@ -754,25 +852,25 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               counterText: '',
                               prefixIcon: Image.asset(
                                 'assets/AuthAssets/Icon ionic-ios-call.png',
-                                scale: 2.1, color: primaryColor,),
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       // _addressField(context),
                       Material(
                         color: splashcolor,
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
-                          width: MediaQuery
-                              .of(context)
-                              .size
-                              .width / 1.2,
+                          width: MediaQuery.of(context).size.width / 1.2,
                           height: 60,
                           child: TextFormField(
-
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Enter Recipient Address';
@@ -800,8 +898,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                       });
                                       Navigator.of(context).pop();
                                     },
-                                    initialPosition: LatLng(
-                                        22.719568,75.857727),
+                                    initialPosition:
+                                        LatLng(22.719568, 75.857727),
                                     useCurrentLocation: true,
                                   ),
                                 ),
@@ -812,26 +910,26 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                             textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Recipient Address",
                               prefixIcon: Image.asset(
                                 'assets/ProfileAssets/locationIcon.png',
-                                scale: 1.5, color: primaryColor,),
+                                scale: 1.5,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                           color: splashcolor,
                           elevation: 1,
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 1.2,
+                              width: MediaQuery.of(context).size.width / 1.2,
                               height: 80,
                               child: TextFormField(
                                   validator: (value) {
@@ -845,22 +943,23 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
-                                    hintText: "flat number,floor,building name,etc",
+                                    hintText:
+                                        "flat number,floor,building name,etc",
                                     prefixIcon: Image.asset(
                                       'assets/ProfileAssets/locationIcon.png',
-                                      scale: 1.7, color: primaryColor,
+                                      scale: 1.7,
+                                      color: primaryColor,
                                     ),
                                   )))),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Material(
                           color: splashcolor,
                           elevation: 1,
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 1.2,
+                              width: MediaQuery.of(context).size.width / 1.2,
                               height: 80,
                               child: TextFormField(
                                   validator: (value) {
@@ -874,148 +973,248 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
-                                    hintText: "flat number,floor,building name,etc",
+                                    hintText:
+                                        "flat number,floor,building name,etc",
                                     prefixIcon: Image.asset(
                                       'assets/ProfileAssets/locationIcon.png',
-                                      scale: 1.7, color: primaryColor,
+                                      scale: 1.7,
+                                      color: primaryColor,
                                     ),
                                   )))),
-                    ],),
+                    ],
+                  ),
                 ),
 
                 ///parceldetails
-                SizedBox(height: 20,),
+                const SizedBox(
+                  height: 20,
+                ),
                 Column(
-                  children: [
+                  children: const [
                     Padding(
-                      padding: const EdgeInsets.only(left: 30.0),
-                      child: Text("Parcel Details ", style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),),
+                      padding: EdgeInsets.only(left: 30.0),
+                      child: Text(
+                        "Parcel Details ",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
                 Center(
                     child: Column(
-                      children: [
-                        const SizedBox(height: 20,),
-                        Material(
-                          color: splashcolor,
-                          elevation: 1,
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Material(
+                      color: splashcolor,
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(10),
+                      child: Container(
+                        height: 55,
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        child: DropdownButton(
+                          isExpanded: true,
+                          underline: Container(),
+                          value: selectedValue,
+                          hint: const Padding(
+                            padding: EdgeInsets.all(.0),
+                            child: Text("Material Category"),
+                          ),
+                          icon: const Padding(
+                            padding: EdgeInsets.only(left: 56),
+                            child: Icon(Icons.keyboard_arrow_down,
+                                color: Color(0xFFBF2331)),
+                          ),
+                          items: materialCategoryModel?.data!.map((items) {
+                            return DropdownMenuItem(
+                              value: items.id.toString(),
+                              child: Text(items.title.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              selectedValue = newValue!;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Material(
+                      color: splashcolor,
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        height: 55,
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        child: DropdownButton(
+                          isExpanded: true,
+                          hint: const Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Text("Parcel weight"),
+                          ),
+                          underline: Container(),
+                          value: selectedValue1,
+                          icon: const Padding(
+                            padding: EdgeInsets.only(left: 140),
+                            child: Icon(Icons.keyboard_arrow_down,
+                                color: Color(0xFFBF2331)),
+                          ),
+                          items: parcelWeightModel?.data?.map((items) {
+                            return DropdownMenuItem(
+                              value: items.weightTo,
+                              child: Text(items.weightTo.toString()),
+                            );
+                          }).toList(),
+                          onChanged: (newValue) {
+                            setState(() {
+                              print("new value ${newValue}");
+                              selectedValue1 = newValue!;
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Material(
+                      color: splashcolor,
+                      elevation: 1,
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        height: 60,
+                        child: TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Enter Parcel value ';
+                            }
+                            return null;
+                          },
+                          controller: valueController,
+                          decoration: InputDecoration(
+                            border: const OutlineInputBorder(
+                                borderSide: BorderSide.none),
+                            hintText: "Parcel value",
+                            prefixIcon: IconButton(
+                                onPressed: null,
+                                icon: Image.asset(
+                                  'assets/AuthAssets/rupeesIcon.png',
+                                  color: primaryColor,
+                                  height: 20,
+                                  width: 20,
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        width: MediaQuery.of(context).size.width,
+                        child: Text(
+                          'We will compensate the value of lost item '
+                          'within three working days according to rules. '
+                          'maximum compensation -${amt}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      height: 140,
+                      width: MediaQuery.of(context).size.width / 1.2,
+                      decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                            height: 55,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width / 1.2,
-                            child: DropdownButton(
-                              isExpanded: true,
-                              underline: Container(),
-                              value: selectedValue,
-                              hint: const Padding(
-                                padding: EdgeInsets.all(.0),
-                                child: Text("Material Category"),
-                              ),
-                              icon: const Padding(
-                                padding: EdgeInsets.only(left: 56),
-                                child: Icon(Icons.keyboard_arrow_down,
-                                    color: Color(0xFFBF2331)),
-                              ),
-                              items: materialCategoryModel?.data!.map((items) {
-                                return DropdownMenuItem(
-                                  value: items.id.toString(),
-                                  child: Text(items.title.toString()
+                          border: Border.all(color: primaryColor)),
+                      child: InkWell(
+                        onTap: (){
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  height: 250,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(10),
+                                          topLeft: Radius.circular(10))),
+                                  child: Column(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Take Image From",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15)),
+                                      ListTile(
+                                        leading: Image.asset(
+                                          'assets/ProfileAssets/cameraicon.png',
+                                          scale: 1.5,
+                                        ),
+                                        title: Text('Camera',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        onTap: () {
+                                          _getFromCamera();
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Image.asset(
+                                          'assets/ProfileAssets/galleryicon.png',
+                                          scale: 1.5,
+                                        ),
+                                        title: const Text('Gallery',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        onTap: () {
+                                          _getFromGallery();
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Image.asset(
+                                          'assets/ProfileAssets/cancelicon.png',
+                                          scale: 1.5,
+                                        ),
+                                        title: const Text('Cancel',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                        },
+                                      )
+                                    ],
                                   ),
                                 );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedValue = newValue!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20,),
-                        Material(
-                          color: splashcolor,
-                          elevation: 1,
-                          borderRadius: BorderRadius.circular(10),
-                          child: SizedBox(
-                            height: 55,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width / 1.2,
-                            child: DropdownButton(
-                              isExpanded: true,
-                              hint: const Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Text("Parcel weight"),
-                              ),
-                              underline: Container(),
-                              value: selectedValue1,
-                              icon: const Padding(
-                                padding: EdgeInsets.only(left: 140),
-                                child: Icon(Icons.keyboard_arrow_down,
-                                    color: Color(0xFFBF2331)),
-                              ),
-                              items: parcelWeightModel?.data?.map((items) {
-                                return DropdownMenuItem(
-                                  value: items.weightTo,
-                                  child: Text(items.weightTo.toString()),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  print("new value ${newValue}");
-                                  selectedValue1 = newValue!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 15,),
-                        Material(
-                          color: splashcolor,
-                          elevation: 1,
-                          borderRadius: BorderRadius.circular(10),
-                          child: SizedBox(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width / 1.2,
-                            height: 60,
-                            child: TextFormField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Enter Parcel value ';
-                                }
-                                return null;
-                              },
-                              controller: valueController,
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(
-                                    borderSide: BorderSide.none
+                              });
+                        },
+                        child: Center(
+                            child: imageFile == null ?Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Upload parcel image',
+                                  style: TextStyle(color: Colors.black38),
                                 ),
-                                hintText: "Parcel value",
-                                prefixIcon: IconButton(
-                                  onPressed: null,
-                                    icon: Image.asset('assets/AuthAssets/rupeesIcon.png', color: primaryColor, height: 20,width: 20,)),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          width: MediaQuery.of(context).size.width,
-                        child:  Text('We will compensate the value of lost item '
-                            'within three working days according to rules. '
-                            'maximum compensation -${amt}', style: const TextStyle(fontSize: 12, color: Colors.grey,),)),
-                        const SizedBox(height: 50,),
-                        InkWell(
-                          onTap: () {
-                           /* "receiver_name": "${recipientNameController
+                                SizedBox(height: 5,),
+                                Icon(Icons.drive_folder_upload)
+                              ],
+                            ) : Image.file(imageFile ?? File('path'))),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        /* "receiver_name": "${recipientNameController
                                 .text}",
                             "receiver_phone": "${recipientMobileController
                                 .text}",
@@ -1030,138 +1229,145 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                 .toString()} kg",
                           }*/
 
-                            if (_formKey.currentState!.validate()) {
-                          setState(() {
-                            receiverList.add({
-                              "meterial_category":
-                                  "${selectedValue.toString()}",
-                              "parcel_weight": "${selectedValue1.toString()}",
-                              "receiver_address": "${recipientAddressCtr.text}",
-                              "receiver_latitude": "${lat2}",
-                              "receiver_longitude": "${long2}",
-                              "receiver_name":
-                                  "${recipientNameController.text}",
-                              "receiver_phone":
-                                  "${recipientMobileController.text}",
-                              "reciver_full_address":
-                                  "${receiverfulladdressCtr.text}",
-                              "pacel_value" : "${valueController.text}"
+                        if (_formKey.currentState!.validate()) {
+                          if(imageFile != null ){
+                            setState(() {
+                              receiverList.add({
+                                "meterial_category":
+                                "${selectedValue.toString()}",
+                                "parcel_weight": "${selectedValue1.toString()}",
+                                "receiver_address": "${recipientAddressCtr.text}",
+                                "receiver_latitude": "${lat2}",
+                                "receiver_longitude": "${long2}",
+                                "receiver_name":
+                                "${recipientNameController.text}",
+                                "receiver_phone":
+                                "${recipientMobileController.text}",
+                                "reciver_full_address":
+                                "${receiverfulladdressCtr.text}",
+                                "pacel_value": "${valueController.text}"
+                              });
                             });
-                          });
-                          print("Checking Parcel ${selectedValue1.toString()}");
-                          print(
-                              "checking hereeeee ${receiverList.length} and ${receiverList}");
+                            parcelImageList.add(imageFile);
 
-                          recipientNameController.clear();
-                          recipientnewAddressCtr.clear();
-                          recipientAddressCtr.clear();
-                          recipientMobileController.clear();
-                          receiverfulladdressCtr.clear();
-                          valueController.clear();
+                            imageFile = null ;
+
+
+                            recipientNameController.clear();
+                            recipientnewAddressCtr.clear();
+                            recipientAddressCtr.clear();
+                            recipientMobileController.clear();
+                            receiverfulladdressCtr.clear();
+                            valueController.clear();
+                          }else {
+                            Fluttertoast.showToast(msg: 'Please add parcel image');
+                          }
 
                         }
                         // Navigator.pop(context);
-                            // setState(() {});
-                            //
-                            // int materialValue = 0;
-                            // int parcelValue = 0;
-                            // int recnameValue = 0;
-                            // int recaddValue = 0;
-                            // int recmobValue = 0;
-                            // int recfulladdValue = 0;
-                            //
-                            // setState(() {
-                            // });
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   materialValue = int.parse(receiverList[i][''].toString());
-                            //   print("Material Valueee ${materialValue}");
-                            //   setState(() {});
-                            // }
-                            // setState(() {});
-                            //
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   parcelValue = int.parse(receiverList[i][''].toString());
-                            //   print("Parcel Details Value ${parcelValue}");
-                            //   setState(() {});
-                            // }
-                            // setState(() {});
-                            //
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   recnameValue = int.parse(receiverList[i][''].toString());
-                            //   print("Parcel Details Value ${recnameValue}");
-                            //   setState(() {});
-                            // }
-                            // setState(() {});
-                            //
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   recaddValue = int.parse(receiverList[i][''].toString());
-                            //   print("Parcel Details Value ${recaddValue}");
-                            //   setState(() {});
-                            // }
-                            // setState(() {});
-                            //
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   recfulladdValue = int.parse(receiverList[i][''].toString());
-                            //   print("Parcel Details Value ${recfulladdValue}");
-                            //   setState(() {});
-                            // }
-                            // setState(() {});
-                            //
-                            // for(var i=0; i<receiverList.length; i++){
-                            //   recmobValue = int.parse(receiverList[i][''].toString());
-                            //   print("Parcel Details Value ${recmobValue}");
-                            //   setState(() {});
-                            // }
+                        // setState(() {});
+                        //
+                        // int materialValue = 0;
+                        // int parcelValue = 0;
+                        // int recnameValue = 0;
+                        // int recaddValue = 0;
+                        // int recmobValue = 0;
+                        // int recfulladdValue = 0;
+                        //
+                        // setState(() {
+                        // });
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   materialValue = int.parse(receiverList[i][''].toString());
+                        //   print("Material Valueee ${materialValue}");
+                        //   setState(() {});
+                        // }
+                        // setState(() {});
+                        //
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   parcelValue = int.parse(receiverList[i][''].toString());
+                        //   print("Parcel Details Value ${parcelValue}");
+                        //   setState(() {});
+                        // }
+                        // setState(() {});
+                        //
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   recnameValue = int.parse(receiverList[i][''].toString());
+                        //   print("Parcel Details Value ${recnameValue}");
+                        //   setState(() {});
+                        // }
+                        // setState(() {});
+                        //
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   recaddValue = int.parse(receiverList[i][''].toString());
+                        //   print("Parcel Details Value ${recaddValue}");
+                        //   setState(() {});
+                        // }
+                        // setState(() {});
+                        //
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   recfulladdValue = int.parse(receiverList[i][''].toString());
+                        //   print("Parcel Details Value ${recfulladdValue}");
+                        //   setState(() {});
+                        // }
+                        // setState(() {});
+                        //
+                        // for(var i=0; i<receiverList.length; i++){
+                        //   recmobValue = int.parse(receiverList[i][''].toString());
+                        //   print("Parcel Details Value ${recmobValue}");
+                        //   setState(() {});
+                        // }
 
-                            //  Get.to(MyStatefulWidget());
-                          },
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width / 1.2,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Secondry
-                            ),
-                            child: const Text("Add More", style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,),),
+                        //  Get.to(MyStatefulWidget());
+                      },
+                      child: Container(
+                        height: 45,
+                        width: MediaQuery.of(context).size.width / 1.2,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Secondry),
+                        child: const Text(
+                          "Add More",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
                           ),
                         ),
-                        const SizedBox(height: 20,),
-                        InkWell(
-                            onTap: () {
-                              if(receiverList.isEmpty) {
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          if (receiverList.isEmpty) {
                             if (_formKey.currentState!.validate()) {
                               senParcel();
                               // Get.to(ParceldetailsScreen());
                             }
-                          }else {
-                                senParcel();
-                              }
+                          } else {
+                            senParcel();
+                          }
                         },
-                            child: Container(
-                              height: 45,
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .width / 1.2,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Secondry
-                              ),
-                              child: const Text("save", style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,),),
-                            )),
-                      ],
-                    )),
+                        child: Container(
+                          height: 45,
+                          width: MediaQuery.of(context).size.width / 1.2,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: Secondry),
+                          child: const Text(
+                            "save",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        )),
+                  ],
+                )),
                 // Center(
                 //   child: DropdownSearch<String>(
                 //     popupProps: PopupProps.menu(
@@ -1199,7 +1405,6 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
     );
   }
 
-
   // Widget recipietCart(int index) {
   //   return
   //     Center(
@@ -1221,7 +1426,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
   //   );
   // }
 
- /* _getLocation1() async {
+  /* _getLocation1() async {
     LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             PlacePicker(
@@ -1242,7 +1447,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
     });
   }*/
 
- /* _getLocation2() async {
+  /* _getLocation2() async {
     LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             PlacePicker(
@@ -1262,12 +1467,40 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       pincodeC.text = result.postalCode.toString();
     });
   }*/
+  final ImagePicker _picker = ImagePicker();
+  File? imageFile;
+  List<File?> parcelImageList = [];
 
-  _getCompensationAmmount()async{
+  _getFromGallery() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+        print('${imageFile}gggggg');
+      });
+      Navigator.pop(context);
+    }
+  }
+
+  _getFromCamera() async {
+    final XFile? pickedFile =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
+
+    if (pickedFile != null) {
+      setState(() {
+        imageFile = File(pickedFile.path);
+      });
+      Navigator.pop(context);
+    }
+  }
+
+  _getCompensationAmmount() async {
     var headers = {
       'Cookie': 'ci_session=406d67c24c747ae88a88a5809e8b6a01e72d97c6'
     };
-    var request = http.Request('POST', Uri.parse('${ApiPath.baseUrl}Authentication/get_compensation'));
+    var request = http.Request(
+        'POST', Uri.parse('${ApiPath.baseUrl}Authentication/get_compensation'));
 
     request.headers.addAll(headers);
 
@@ -1278,14 +1511,11 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       final jsonResponse = json.decode(finalResponse);
       amt = jsonResponse['data']['compensation'];
       print('__________${amt}_____________');
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
-
 }
-
 
 class Recipient {
   String? receiver_name;
@@ -1298,7 +1528,12 @@ class Recipient {
   String? parcel_weight;
 
   Recipient(
-      {this.meterial_category, this.parcel_weight, this.receiver_phone, this.receiver_name, this.receiver_address, this.receiver_latitude, this.receiver_longitude, this.reciver_full_address});
-
-
+      {this.meterial_category,
+      this.parcel_weight,
+      this.receiver_phone,
+      this.receiver_name,
+      this.receiver_address,
+      this.receiver_latitude,
+      this.receiver_longitude,
+      this.reciver_full_address});
 }

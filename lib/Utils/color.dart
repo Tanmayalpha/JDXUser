@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //Colors
 // final Color primaryColor = Color(0xFF5B2187);
-final Color primaryColor = Color(0xFFBF2331 );
+final Color primaryColor = Color(0xFFBF2331);
 final Color Secondry = Color(0xFFF2B304 );
 final Color whiteColor = Color(0xFFFFFFFF);
 final Color splashcolor = Color(0xFFDDEDFA);
@@ -26,8 +26,35 @@ class CustomColors {
   static const Color DarkBrownColor= Color(0xFFA55A61);
   static const Color DarkYellowColor= Color(0xFFA7785A);
 
-
-
-
 }
+class gradient {
+  // static const Gradient btnGradient = LinearGradient(
+  //   colors: [Color(0xff0c82df), Color(0xff3dc1fd)],
+  //   begin: Alignment.bottomCenter,
+  //   end: Alignment.topCenter,
+  // );
+  static const Gradient btnGradient = LinearGradient(
+    colors: [Color(0xff5D8231), Color(0xff5D8231)],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+  );
+  static const Gradient greenGradient = LinearGradient(
+    colors: [Color(0xff5D8231), Color.fromARGB(255, 100, 199, 64)],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+  );
+
+  static const Gradient lightGradient = LinearGradient(
+    colors: [Color(0xffdaedfd), Color(0xffdaedfd)],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+  );
+  static const Gradient transpharantGradient = LinearGradient(
+    colors: [Colors.transparent, Colors.transparent],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+  );
+  static const Color defoultColor = Color(0xFFBF2331);
+}
+
 
