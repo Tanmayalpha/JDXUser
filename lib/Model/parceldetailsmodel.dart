@@ -109,6 +109,7 @@ class ParcelDetailDataList {
   Null? accountNumber;
   String? parcelHistory;
   String? extraCharge;
+  String? invoiceLink;
   String? otp;
   MaterialInfo? materialInfo;
   DriverDetails? driverDetails;
@@ -181,6 +182,7 @@ class ParcelDetailDataList {
         this.accountNumber,
         this.parcelHistory,
         this.otp,
+        this.invoiceLink,
         this.materialInfo,
         this.driverDetails});
 
@@ -188,6 +190,7 @@ class ParcelDetailDataList {
     saleId = json['sale_id'];
 
     extraCharge = json['extra_charge_parcel'];
+    invoiceLink = json['invoice_link'];
     orderId = json['order_id'];
     barcode = json['barcode'];
     barcodeLink = json['barcode_link'];

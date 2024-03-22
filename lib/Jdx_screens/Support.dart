@@ -190,7 +190,7 @@ class _SupportScreensState extends State<SupportScreens> {
                         ),
                         hint: const Padding(
                           padding: EdgeInsets.all(5.0),
-                          child: Text("Select Parcel Id"),
+                          child: Text("Select Order Id"),
                         ),
 
                         items: parcelIdList.map((items) {
@@ -239,7 +239,7 @@ class _SupportScreensState extends State<SupportScreens> {
                     ),
                   ),
                   const SizedBox(height: 10,),
-                  Padding(
+                  /*Padding(
                     padding: const EdgeInsets.only(left: 18.0, right: 18),
                     child: Container(
                       decoration: BoxDecoration(
@@ -262,7 +262,7 @@ class _SupportScreensState extends State<SupportScreens> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10,),
+                  const SizedBox(height: 10,),*/
                   Padding(
                     padding: const EdgeInsets.only(left: 17.0, right: 17),
                     child: Container(
@@ -287,7 +287,7 @@ class _SupportScreensState extends State<SupportScreens> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   ticketDataList.isEmpty? const SizedBox.shrink() : Align(
                     alignment: Alignment.topLeft,
                     child: Padding(
@@ -412,9 +412,9 @@ class _SupportScreensState extends State<SupportScreens> {
       Fluttertoast.showToast(msg: 'please select an Parcel');
     } else if (commentController.text.isEmpty) {
       Fluttertoast.showToast(msg: 'please add comment');
-    } else if (emailController.text.isEmpty) {
+    } /*else if (emailController.text.isEmpty) {
       Fluttertoast.showToast(msg: 'please add email');
-    }else if (subjectController.text.isEmpty) {
+    }*/else if (subjectController.text.isEmpty) {
       Fluttertoast.showToast(msg: 'please add comment');
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -429,7 +429,7 @@ class _SupportScreensState extends State<SupportScreens> {
         'ticket_type_id': selectedItem?.id ?? '',
         'user_id': userid ?? '315',
         'subject': subjectController.text,
-        'email': emailController.text,
+        'email': '',//emailController.text
         'description': commentController.text,
         'sale_id': selectedSellItem?.saleId ?? '1'
       });
@@ -588,7 +588,7 @@ class _SupportScreensState extends State<SupportScreens> {
                       const SizedBox(height: 8.0),
                       Text(
                         '${item.description}',
-                        style: TextStyle(fontSize: 14.0),
+                        style: const TextStyle(fontSize: 14.0),
                       ),
                       const Text(
                         'Date',
@@ -600,7 +600,7 @@ class _SupportScreensState extends State<SupportScreens> {
                       const SizedBox(height: 8.0),
                       Text(
                         '${item.dateCreated}',
-                        style: TextStyle(fontSize: 14.0),
+                        style: const TextStyle(fontSize: 14.0),
                       ),
                     ],
                   ),
@@ -611,7 +611,15 @@ class _SupportScreensState extends State<SupportScreens> {
                 bottom: 0,
                 child: InkWell(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Chat(id: item.id),));
+                    if(item.status == '0') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chat(id: item.id),
+                          ));
+                    }else {
+                      //Fluttertoast.showToast(msg: 'Ticket Closed ')
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -621,9 +629,9 @@ class _SupportScreensState extends State<SupportScreens> {
                       ),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: const Text(
-                      'VIEW DETAILS',
-                      style: TextStyle(
+                    child:  Text(
+                      item.status == '0' ? 'VIEW DETAILS' : 'Ticket Closed',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
                         color: Colors.white,

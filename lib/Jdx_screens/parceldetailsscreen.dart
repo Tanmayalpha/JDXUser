@@ -196,7 +196,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const Text("Total Ammount",
+                                          const Text("Total Amount",
                                               style:
                                                   TextStyle(color: Colors.red)),
                                           SizedBox(
@@ -229,7 +229,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                     height: 14,
                                   ),
                                   Row(
-                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         mainAxisAlignment:
@@ -244,6 +244,56 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                               "${parceldetails?.data![0].senderFulladdress}"),
                                         ],
                                       ),
+                                      parceldetails!.data![0].status == '4' ? Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              launchUrl(Uri.parse(parceldetails!.data![0].invoiceLink ?? ''),mode:LaunchMode.externalApplication );
+                                            },
+                                            child: Container(
+                                              padding:
+                                              const EdgeInsets
+                                                  .only(
+                                                  left: 5,
+                                                  right: 10,
+                                                  top: 5,
+                                                  bottom: 5),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(
+                                                      15),
+                                                  color:
+                                                  primaryColor),
+                                              child: Row(
+                                                mainAxisSize:
+                                                MainAxisSize.min,
+                                                children: const [
+                                                  Icon(
+                                                    Icons.download,
+                                                    color:
+                                                    Colors.white,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Text(
+                                                    'Download invoice',
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors
+                                                            .white),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ) : const SizedBox(),
                                     ],
                                   ),
                                 ],
@@ -878,7 +928,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
         elevation: 4,
         child: Column(
           children: [
-            Text("Driver Detail",
+            const Text("Driver Detail",
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
             Padding(

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -139,11 +140,11 @@ class _HomeScreenState extends State<HomeScreen> {
           //the return value will be from "Yes" or "No" options
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
+            title: const Text(
               'Exit App',
               style: TextStyle(fontFamily: 'Lora'),
             ),
-            content: Text(
+            content: const Text(
               'Do you want to exit an App?',
               style: TextStyle(fontFamily: 'Lora'),
             ),
@@ -152,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                 onPressed: () => Navigator.of(context).pop(false),
                 //return false when click on "NO"
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -165,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Navigator.pop(context,true);
                 },
                 //return true when click on "Yes"
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -237,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           Navigator.of(context).pop();
                                         },
                                         initialPosition:
-                                            LatLng(22.719568, 75.857727),
+                                            const LatLng(22.719568, 75.857727),
                                         useCurrentLocation: true,
                                       ),
                                     ),
@@ -249,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       borderSide: BorderSide.none),
                                   hintText: "Current Location",
                                   hintStyle:
-                                      TextStyle(fontWeight: FontWeight.bold),
+                                      const TextStyle(fontWeight: FontWeight.bold),
                                   prefixIcon: Image.asset(
                                     'assets/ProfileAssets/locationIcon.png',
                                     scale: 1.6,
@@ -288,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => MyWallet()));
+                                          builder: (context) => const MyWallet()));
                                 },
                                 child: Container(
                                     padding: const EdgeInsets.only(right: 10),
@@ -477,7 +478,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         return parcelhistory?.data?[i]
                                                     .parcelDetails?.isEmpty ??
                                                 true
-                                            ? SizedBox()
+                                            ? const SizedBox()
                                             : Padding(
                                                 padding: const EdgeInsets.only(
                                                     bottom: 0),
@@ -613,7 +614,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     fontFamily:
                                                                         'Lora'),
                                                               ),
-                                                              SizedBox(
+                                                              const SizedBox(
                                                                 height: 5,
                                                               ),
                                                               /* InkWell(
@@ -781,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         ),
                                                                       ),
                                                                     )
-                                                                  : SizedBox
+                                                                  : const SizedBox
                                                                       .shrink()
                                                             ],
                                                           )
@@ -1064,8 +1065,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 InkWell(
                 onTap: (){
-                  Navigator.pop(context);
-                  cancelOrder( orderId,  i);
+                  if(_selectedValue != null){
+                    Navigator.pop(context);
+                    cancelOrder( orderId,  i);
+                  }else {
+                    Fluttertoast.showToast(msg: 'Please select a cancel reason!');
+                  }
+
                 },
                   child: Container(
                     alignment: Alignment.center,
