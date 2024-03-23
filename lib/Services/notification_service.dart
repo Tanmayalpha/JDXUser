@@ -129,10 +129,12 @@ class LocalNotificationService {
       int id = random.nextInt(1000);
       const NotificationDetails notificationDetails = NotificationDetails(
           android: AndroidNotificationDetails(
-            "JdxApp",
+            "default_notification_channel",
             "JdxApp",
             importance: Importance.max,
             priority: Priority.max,
+            playSound:true,
+            sound: RawResourceAndroidNotificationSound('test'),
           ));
       //print("my id is ${id.toString()}");
       await _flutterLocalNotificationsPlugin.show(

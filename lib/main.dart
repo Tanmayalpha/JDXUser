@@ -7,6 +7,7 @@ import 'package:job_dekho_app/Jdx_screens/splash_Screen.dart';
 
 import 'Services/notification_service.dart';
 
+@pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async {
   print(message.data.toString());
   print(message.notification!.title);
@@ -16,6 +17,8 @@ void main()async{
   await Firebase.initializeApp();
 
   LocalNotificationService.initialize();
+
+  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
   try{
     String? token = await FirebaseMessaging.instance.getToken();
