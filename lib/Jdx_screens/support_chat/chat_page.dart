@@ -198,13 +198,16 @@ class _ChatState extends State<Chat> {
             ],
           ),
         ),
-        ListView.builder(
-            itemBuilder: (context, index) {
-              return attachItem(message.attachments ?? [], index, message);
-            },
-            itemCount: message.attachments!.length,
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true),
+        SizedBox(
+          width: 120,
+          child: ListView.builder(
+              itemBuilder: (context, index) {
+                return attachItem(message.attachments ?? [], index, message);
+              },
+              itemCount: message.attachments!.length,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true),
+        ),
         message.message != null && message.message!.isNotEmpty
             ? Card(
                 elevation: 0.0,
@@ -257,7 +260,7 @@ class _ChatState extends State<Chat> {
       }
 
       String fileName = url!.substring(url.lastIndexOf("/") + 1);
-      File file = new File(_filePath + "/" + fileName);
+      File file =  File(_filePath + "/" + fileName);
       bool hasExisted = await file.exists();
 
       if (downloadlist.containsKey(mid)) {

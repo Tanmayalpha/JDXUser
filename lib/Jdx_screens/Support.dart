@@ -535,7 +535,7 @@ class _SupportScreensState extends State<SupportScreens> {
 
 
   Widget ticketWidgets(TicketHistoryData item) {
-    String status = item.status == '0' ? 'Open' : 'Close' ;
+    String status = item.status == '0' || item.status == '2' ? 'Open' : item.status == '5' ? 'Reopen' : 'Close'  ;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ClipPath(
@@ -611,7 +611,7 @@ class _SupportScreensState extends State<SupportScreens> {
                 bottom: 0,
                 child: InkWell(
                   onTap: (){
-                    if(item.status == '0') {
+                    if(item.status == '0' || item.status == '2' || item.status == '5') {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -630,7 +630,7 @@ class _SupportScreensState extends State<SupportScreens> {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     child:  Text(
-                      item.status == '0' ? 'VIEW DETAILS' : 'Ticket Closed',
+                      item.status == '0'  || item.status == '2' ? 'VIEW DETAILS' : 'Ticket $status',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
@@ -648,14 +648,17 @@ class _SupportScreensState extends State<SupportScreens> {
   }
 
   Color _getStatusColor(String status) {
+
     if (status == '0') {
       return Colors.green;
     } else if (status == '2') {
-      return Colors.red;
-    } else if (status == 'Closed') {
-      return Colors.red;
-    } else {
-      return Colors.black;
+      return Colors.green;
+    } else if (status == '4') {
+      return Colors.black38;
+    } else if (status == '5') {
+      return Colors.blueAccent;
+    }else {
+      return Colors.black38;
     }
   }
 }

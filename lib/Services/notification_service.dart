@@ -45,8 +45,8 @@ class LocalNotificationService {
           print('${message.notification}_________3________');
           print('${message.notification!.body}_________body3____');
           print("message.data13 ${message.data}");
-          if(message.data['driver_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+          if(message.data['delivery_boy_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
           }
           // if (message.data['_id'] != null) {
           //   Navigator.of(context).push(
@@ -67,11 +67,11 @@ class LocalNotificationService {
         if (message.notification != null) {
           print('${message.notification}___________1______');
           print('${message.notification!.body}_________body____');
-          print("message.data11 ${message.data['driver_id']}");
+         // print("message.data11 ${message.data['driver_id']}");
           print("message.data11 ${message.data}");
-          print("message.data11 ${message.data['user_fullname']}");
-          if(message.data['driver_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+         // print("message.data11 ${message.data['user_fullname']}");
+          if(message.data['delivery_boy_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
           }
            display(message);
 
@@ -89,8 +89,8 @@ class LocalNotificationService {
           print('_____________${message.notification?.title}_______________');
           print(message.notification!.body);
           print("message.data22 ${message.data}");
-          if(message.data['driver_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['driver_id'],driverName: message.data['user_fullname'],parcelId: message.data['parcel_id'] ,));
+          if(message.data['delivery_boy_id']!= null) {
+            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
           }
 
           // Get.to(FeedbackScreen());
@@ -135,6 +135,7 @@ class LocalNotificationService {
             priority: Priority.max,
             playSound:true,
             sound: RawResourceAndroidNotificationSound('test'),
+           // icon: '@mipmap/ic_launcher'
           ));
       //print("my id is ${id.toString()}");
       await _flutterLocalNotificationsPlugin.show(

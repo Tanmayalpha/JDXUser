@@ -9,13 +9,12 @@ import 'Services/notification_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async {
-  print(message.data.toString());
-  print(message.notification!.title);
+
+
 }
 void main()async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
   LocalNotificationService.initialize();
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);

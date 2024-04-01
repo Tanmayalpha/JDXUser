@@ -244,7 +244,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                               "${parceldetails?.data![0].senderFulladdress}"),
                                         ],
                                       ),
-                                      parceldetails!.data![0].status == '4' ? Column(
+                                      /*parceldetails!.data![0].status == '4' ?*/ Column(
                                         mainAxisAlignment:
                                         MainAxisAlignment.start,
                                         crossAxisAlignment:
@@ -293,7 +293,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                             ),
                                           ),
                                         ],
-                                      ) : const SizedBox(),
+                                      ) /*: const SizedBox(),*/
                                     ],
                                   ),
                                 ],
@@ -380,7 +380,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                               color:
                                                                   Colors.red)),
                                                       Text(
-                                                          "${orderStatus(item.status ?? '')}"),
+                                                          orderStatus(item.status ?? '')),
                                                     ],
                                                   ),
                                                   driverRating.isEmpty
@@ -532,7 +532,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                             : Column(
                                                 children: [
                                                   widget.isFromParcelHistory
-                                                      ? Row(
+                                                      ? item.status == '4' ? SizedBox() : Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .start,
@@ -546,21 +546,21 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                               width: 10,
                                                             ),
                                                             InkWell(
-                                                              onTap: () {
-                                                                String lat = item
+                                                              onTap: () async{
+                                                                String CURENT_LAT  = item
                                                                         .senderLatitude
                                                                         .toString() ??
                                                                     ''; //'22.7177'; //
-                                                                String lon = item
+                                                                String CURENT_LONG  = item
                                                                         .senderLongitude
                                                                         .toString() ??
                                                                     ''; //'75.8545'; //
-                                                                String CURENT_LAT = item
+                                                                String lat = item
                                                                         .driverDetails
                                                                         ?.latitude
                                                                         .toString() ??
                                                                     '';
-                                                                String CURENT_LONG = item
+                                                                String lon = item
                                                                         .driverDetails
                                                                         ?.longitude
                                                                         .toString() ??
@@ -576,7 +576,17 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                                     lon.toString() +
                                                                     '&travelmode=driving&dir_action=navigate');
 
-                                                                _launchURL(url);
+                                                               // String url = 'https://www.google.com/maps/dir/$CURENT_LAT,$CURENT_LONG/$lat,$lon';
+
+                                                                print('${url}');
+
+                                                                if (!await launchUrl(url,
+                                                                mode:
+                                                                LaunchMode.externalApplication)) {
+                                                                throw Exception('Could not launch');
+                                                                }
+
+                                                                //_launchURL(url);
                                                               },
                                                               child: Container(
                                                                 padding:
@@ -692,7 +702,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                       : const SizedBox()
                                                 ],
                                               ),
-                                        item.status == '4' ? InkWell(
+                                        /*item.status == '4' ? InkWell(
                                           onTap: () {
                                             //_launchURL(Uri.parse('https://developmentalphawizz.com/JDX/index.php/Admin/GenerateOrderPdfs/?id=5'));
                                             launchUrl(Uri.parse('${ApiPath.imgUrl}index.php/Admin/GenerateOrderPdfs?id=${item.orderId}'),mode:  LaunchMode.externalApplication);
@@ -713,7 +723,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                               ),
                                             ),
                                           ),
-                                        ) : SizedBox()
+                                        ) : SizedBox()*/
 
                                       ],
                                     ),
