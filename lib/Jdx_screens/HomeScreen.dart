@@ -459,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? const Center(
                                   child: CircularProgressIndicator(),
                                 )
-                              : parcelhistory?.data?.isEmpty ?? false
+                              : (parcelhistory?.data?.isEmpty ?? false) || (parcelhistory?.data?[0].parcelDetails?.isEmpty ??true)
                                   ? const Center(
                                       child: Text(
                                         "Not any order",
@@ -495,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               i]
                                                                           .orderId,
                                                                   isFromParcelHistory:
-                                                                      true,
+                                                                      true,segment: selectedSegmentVal,
                                                                 )));
                                                   },
                                                   child: Card(

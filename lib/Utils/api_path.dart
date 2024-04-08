@@ -23,6 +23,7 @@
 class ApiPath{
 
   static const String baseUrl ="https://developmentalphawizz.com/JDX/api/";
+
   static const String imgUrl = 'https://developmentalphawizz.com/JDX/';
   static const String imgUrl1 = 'https://developmentalphawizz.com/';
 

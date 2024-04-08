@@ -29,8 +29,9 @@ import 'package:http/http.dart ' as http;
 class ParceldetailsScreen extends StatefulWidget {
   final String? orderid;
   final bool isFromParcelHistory;
+  final int? segment;
 
-  ParceldetailsScreen({this.orderid, required this.isFromParcelHistory});
+  ParceldetailsScreen({this.orderid, required this.isFromParcelHistory,this.segment});
 
   //const ParceldetailsScreen({Key? key}) : super(key: key);
 
@@ -342,7 +343,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                 const Text("Parcel Id",
                                                     style: TextStyle(
                                                         color: Colors.red)),
-                                                Text("${item.parcelHistory}"),
+                                                Text("${item.saleId}"),
                                               ],
                                             ),
                                             Column(
@@ -1104,6 +1105,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     request.fields.addAll({
       'user_id': "${userid}",
       'order_id': widget.orderid ?? '',
+      'status': (widget.segment ?? 0) == 0 ? '1' :'2' ,
     });
     request.headers.addAll(headers);
     print("request param ${request.fields}");

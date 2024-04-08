@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -65,7 +66,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
   List receiverList = [];
 
   // List<String>  selectedvalue = [];
-
+bool isSendParcel = false ;
   senParcel() async {
     if (receiverList.isEmpty) {
       receiverList.add({
@@ -81,13 +82,14 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       });
       parcelImageList.add(imageFile);
     }
-
+setState(() {
+  isSendParcel = true ;
+});
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userid = prefs.getString('userid');
     String? orderid = prefs.getString("orderid");
 
     print("User Id ${userid.toString()}");
-    // print("this is my order id>>>>>>>>>>>>>>${orderid}");
     print("Register and Sender Parcel");
     var headers = {
       'Content-Type': 'application/json',
@@ -105,11 +107,13 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       "user_id": "${userid}",
       "data_arr": receiverList,
     });
-    print("This is request here>>>>>>>>${request.body}");
+    log("This is request here>>>>>>>>${request.body}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
+
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
+
       final jsonResponse =
           Registerparcelmodel.fromJson(json.decode(finalResult));
       String orderid = jsonResponse.orderId.toString();
@@ -121,15 +125,19 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       // print("Result Noww@@@@@@ ${finalResult}");
       setState(() {
         parcelDetailsModel = jsonResponse;
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ParceldetailsScreen(
-                      orderid: orderid,
-                      isFromParcelHistory: false,
-                    )));
+        isSendParcel = false;
       });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ParceldetailsScreen(
+                orderid: orderid,
+                isFromParcelHistory: false,
+              )));
     } else {
+      setState(() {
+        isSendParcel = false ;
+      });
       print(response.reasonPhrase);
     }
   }
@@ -1212,9 +1220,10 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                     const SizedBox(
                       height: 50,
                     ),
-                    InkWell(
-                      onTap: () {
-                        /* "receiver_name": "${recipientNameController
+                    isSendParcel ? const Center(child: CircularProgressIndicator(color: CustomColors.accentColor,),) :Column(children: [
+                      InkWell(
+                        onTap: () {
+                          /* "receiver_name": "${recipientNameController
                                 .text}",
                             "receiver_phone": "${recipientMobileController
                                 .text}",
@@ -1229,126 +1238,95 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                 .toString()} kg",
                           }*/
 
-                        if (_formKey.currentState!.validate()) {
-                          if(imageFile != null ){
-                            setState(() {
-                              receiverList.add({
-                                "meterial_category":
-                                "${selectedValue.toString()}",
-                                "parcel_weight": "${selectedValue1.toString()}",
-                                "receiver_address": "${recipientAddressCtr.text}",
-                                "receiver_latitude": "${lat2}",
-                                "receiver_longitude": "${long2}",
-                                "receiver_name":
-                                "${recipientNameController.text}",
-                                "receiver_phone":
-                                "${recipientMobileController.text}",
-                                "reciver_full_address":
-                                "${receiverfulladdressCtr.text}",
-                                "pacel_value": "${valueController.text}"
+                          if (_formKey.currentState!.validate()) {
+                            if(imageFile != null ){
+                              setState(() {
+                                receiverList.add({
+                                  "meterial_category":
+                                  "${selectedValue.toString()}",
+                                  "parcel_weight": "${selectedValue1.toString()}",
+                                  "receiver_address": "${recipientAddressCtr.text}",
+                                  "receiver_latitude": "${lat2}",
+                                  "receiver_longitude": "${long2}",
+                                  "receiver_name":
+                                  "${recipientNameController.text}",
+                                  "receiver_phone":
+                                  "${recipientMobileController.text}",
+                                  "reciver_full_address":
+                                  "${receiverfulladdressCtr.text}",
+                                  "pacel_value": "${valueController.text}"
+                                });
                               });
-                            });
-                            parcelImageList.add(imageFile);
+                              parcelImageList.add(imageFile);
 
-                            imageFile = null ;
+                              imageFile = null ;
 
 
-                            recipientNameController.clear();
-                            recipientnewAddressCtr.clear();
-                            recipientAddressCtr.clear();
-                            recipientMobileController.clear();
-                            receiverfulladdressCtr.clear();
-                            valueController.clear();
-                          }else {
-                            Fluttertoast.showToast(msg: 'Please add parcel image');
-                          }
-
-                        }
-                        // Navigator.pop(context);
-                        // setState(() {});
-                        //
-                        // int materialValue = 0;
-                        // int parcelValue = 0;
-                        // int recnameValue = 0;
-                        // int recaddValue = 0;
-                        // int recmobValue = 0;
-                        // int recfulladdValue = 0;
-                        //
-                        // setState(() {
-                        // });
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   materialValue = int.parse(receiverList[i][''].toString());
-                        //   print("Material Valueee ${materialValue}");
-                        //   setState(() {});
-                        // }
-                        // setState(() {});
-                        //
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   parcelValue = int.parse(receiverList[i][''].toString());
-                        //   print("Parcel Details Value ${parcelValue}");
-                        //   setState(() {});
-                        // }
-                        // setState(() {});
-                        //
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   recnameValue = int.parse(receiverList[i][''].toString());
-                        //   print("Parcel Details Value ${recnameValue}");
-                        //   setState(() {});
-                        // }
-                        // setState(() {});
-                        //
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   recaddValue = int.parse(receiverList[i][''].toString());
-                        //   print("Parcel Details Value ${recaddValue}");
-                        //   setState(() {});
-                        // }
-                        // setState(() {});
-                        //
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   recfulladdValue = int.parse(receiverList[i][''].toString());
-                        //   print("Parcel Details Value ${recfulladdValue}");
-                        //   setState(() {});
-                        // }
-                        // setState(() {});
-                        //
-                        // for(var i=0; i<receiverList.length; i++){
-                        //   recmobValue = int.parse(receiverList[i][''].toString());
-                        //   print("Parcel Details Value ${recmobValue}");
-                        //   setState(() {});
-                        // }
-
-                        //  Get.to(MyStatefulWidget());
-                      },
-                      child: Container(
-                        height: 45,
-                        width: MediaQuery.of(context).size.width / 1.2,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Secondry),
-                        child: const Text(
-                          "Add More",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          if (receiverList.isEmpty) {
-                            if (_formKey.currentState!.validate()) {
-                              senParcel();
-                              // Get.to(ParceldetailsScreen());
+                              recipientNameController.clear();
+                              recipientnewAddressCtr.clear();
+                              recipientAddressCtr.clear();
+                              recipientMobileController.clear();
+                              receiverfulladdressCtr.clear();
+                              valueController.clear();
+                            }else {
+                              Fluttertoast.showToast(msg: 'Please add parcel image');
                             }
-                          } else {
-                            senParcel();
+
                           }
+                          // Navigator.pop(context);
+                          // setState(() {});
+                          //
+                          // int materialValue = 0;
+                          // int parcelValue = 0;
+                          // int recnameValue = 0;
+                          // int recaddValue = 0;
+                          // int recmobValue = 0;
+                          // int recfulladdValue = 0;
+                          //
+                          // setState(() {
+                          // });
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   materialValue = int.parse(receiverList[i][''].toString());
+                          //   print("Material Valueee ${materialValue}");
+                          //   setState(() {});
+                          // }
+                          // setState(() {});
+                          //
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   parcelValue = int.parse(receiverList[i][''].toString());
+                          //   print("Parcel Details Value ${parcelValue}");
+                          //   setState(() {});
+                          // }
+                          // setState(() {});
+                          //
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   recnameValue = int.parse(receiverList[i][''].toString());
+                          //   print("Parcel Details Value ${recnameValue}");
+                          //   setState(() {});
+                          // }
+                          // setState(() {});
+                          //
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   recaddValue = int.parse(receiverList[i][''].toString());
+                          //   print("Parcel Details Value ${recaddValue}");
+                          //   setState(() {});
+                          // }
+                          // setState(() {});
+                          //
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   recfulladdValue = int.parse(receiverList[i][''].toString());
+                          //   print("Parcel Details Value ${recfulladdValue}");
+                          //   setState(() {});
+                          // }
+                          // setState(() {});
+                          //
+                          // for(var i=0; i<receiverList.length; i++){
+                          //   recmobValue = int.parse(receiverList[i][''].toString());
+                          //   print("Parcel Details Value ${recmobValue}");
+                          //   setState(() {});
+                          // }
+
+                          //  Get.to(MyStatefulWidget());
                         },
                         child: Container(
                           height: 45,
@@ -1358,14 +1336,46 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               borderRadius: BorderRadius.circular(30),
                               color: Secondry),
                           child: const Text(
-                            "save",
+                            "Add More",
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
                           ),
-                        )),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            if (receiverList.isEmpty) {
+                              if (_formKey.currentState!.validate()) {
+                                senParcel();
+                                // Get.to(ParceldetailsScreen());
+                              }
+                            } else {
+                              senParcel();
+                            }
+                          },
+                          child: Container(
+                            height: 45,
+                            width: MediaQuery.of(context).size.width / 1.2,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Secondry),
+                            child: const Text(
+                              "save",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                          )),
+                    ],)
                   ],
                 )),
                 // Center(

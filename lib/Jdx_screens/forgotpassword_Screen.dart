@@ -50,11 +50,16 @@
 //     ));
 //   }
 // }
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:job_dekho_app/Utils/api_path.dart';
 
-import '../Utils/CustomWidgets/TextFields/customTextFormField.dart';
 import '../Utils/color.dart';
+import 'package:http/http.dart' as http;
+
 
 
 
@@ -80,7 +85,7 @@ class _ForgetState extends State<Forget> {
                 Container(
                   height: 200,
                   width: 400,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -91,7 +96,7 @@ class _ForgetState extends State<Forget> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, top: 150),
-                  child: Container(
+                  child: SizedBox(
                     height: 370,
                     width: 340,
                     child: Card(
@@ -129,7 +134,7 @@ class _ForgetState extends State<Forget> {
                             child: TextField(
                               controller: emailController,
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                     borderSide: BorderSide.none
                                 ),
                                 hintText: "Enter Email",
@@ -137,14 +142,17 @@ class _ForgetState extends State<Forget> {
                               ),),),
                         ),
                       ),
-                      SizedBox(height: 30,),
+                      const SizedBox(height: 30,),
                       InkWell(
                         onTap: (){
-                          // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
-                          setState(() {
-                            isloader = true;
-                          });
-                          // emailPasswordLogin();
+                          if(emailController.text.contains('@')){
+                            setState(() {
+                              isloader = true;
+                            });
+                            forgotPassword();
+                          }else{
+                            Fluttertoast.showToast(msg: 'please enter correct email');
+                          }
                         },
                         child: Container(
                           height: 45,
@@ -154,7 +162,7 @@ class _ForgetState extends State<Forget> {
                             borderRadius: BorderRadius.circular(10),
                             color: Secondry,
                           ),
-                          child: isloader == true ? Center(child: CircularProgressIndicator(color: Colors.white,),):
+                          child: isloader == true ? const Center(child: CircularProgressIndicator(color: Colors.white,),):
                           const Text("Send",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,fontFamily: 'Lora'),),
                         ),
                       ),
@@ -190,5 +198,37 @@ class _ForgetState extends State<Forget> {
         ),
       ),
     );
+  }
+
+
+  Future<void> forgotPassword() async{
+    var request = http.MultipartRequest('POST',
+        Uri.parse('${ApiPath.baseUrl}Authentication/ResetPassword'));
+    request.fields.addAll(
+        {'email': emailController.text});
+
+    print('${request.fields}');
+    print('${request.url}');
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var data = await response.stream.bytesToString();
+      var result = jsonDecode(data);
+      ScaffoldMessenger.of(context)
+          .showSnackBar( SnackBar(content: Text('${result['message']}')));
+
+      setState(() {
+        isloader = false;
+      });
+    } else {
+      var data = await response.stream.bytesToString();
+      var result = jsonDecode(data);
+      ScaffoldMessenger.of(context)
+          .showSnackBar( SnackBar(content: Text('${result['message']}')));
+      setState(() {
+        isloader = false;
+      });
+      print(response.reasonPhrase);
+    }
   }
 }
