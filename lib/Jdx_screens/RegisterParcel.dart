@@ -66,8 +66,11 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
   List receiverList = [];
 
   // List<String>  selectedvalue = [];
-bool isSendParcel = false ;
+  bool isSendParcel = false;
   senParcel() async {
+    setState(() {
+      isSendParcel = true;
+    });
     if (receiverList.isEmpty) {
       receiverList.add({
         "meterial_category": "${selectedValue.toString()}",
@@ -82,12 +85,9 @@ bool isSendParcel = false ;
       });
       parcelImageList.add(imageFile);
     }
-setState(() {
-  isSendParcel = true ;
-});
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userid = prefs.getString('userid');
-    String? orderid = prefs.getString("orderid");
 
     print("User Id ${userid.toString()}");
     print("Register and Sender Parcel");
@@ -131,12 +131,12 @@ setState(() {
           context,
           MaterialPageRoute(
               builder: (context) => ParceldetailsScreen(
-                orderid: orderid,
-                isFromParcelHistory: false,
-              )));
+                    orderid: orderid,
+                    isFromParcelHistory: false,
+                  )));
     } else {
       setState(() {
-        isSendParcel = false ;
+        isSendParcel = false;
       });
       print(response.reasonPhrase);
     }
@@ -197,30 +197,22 @@ setState(() {
     };
     var request = http.MultipartRequest(
         'Post', Uri.parse('${ApiPath.baseUrl}Payment/send_image'));
-    request.fields.addAll({
-      'order_id': orderId
-    });
+    request.fields.addAll({'order_id': orderId});
 
     request.headers.addAll(headers);
 
+    for (int i = 0; i < parcelImageList.length; i++) {
+      request.files.add(await http.MultipartFile.fromPath(
+          'images[]', parcelImageList[i]?.path ?? ''));
+    }
 
-
-       for(int i=0; i<parcelImageList.length; i++){
-         request.files.add(await http.MultipartFile.fromPath(
-             'images[]', parcelImageList[i]?.path ?? ''));
-       }
-
-       print('${request.files.length}__________________');
-
+    print('${request.files.length}__________________');
 
     http.StreamedResponse response = await request.send();
     print('${response.statusCode}__________________');
     print('${await response.stream.bytesToString()}__________________');
 
-    if (response.statusCode == 200) {
-
-
-    }
+    if (response.statusCode == 200) {}
   }
 
   @override
@@ -337,7 +329,7 @@ setState(() {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Material(
@@ -470,32 +462,154 @@ setState(() {
                 ),
 
                 ///Card Generate
-                Container(
-                  // color: Colors.cyan,
-                  // height: 100,
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: receiverList.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            elevation: 2,
-                            color: splashcolor,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.1,
-                              // height: 230,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-
-                                    Row(
+                ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: receiverList.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          elevation: 2,
+                          color: splashcolor,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.1,
+                            // height: 230,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 8.0),
+                                            child: Text("Recipient Name",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331))),
+                                          ),
+                                          Text(
+                                              "${receiverList[index]['receiver_name']}"),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: 60,
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 28.0),
+                                        child: InkWell(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  barrierDismissible: false,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text(
+                                                          "Delete Account"),
+                                                      content: Text(
+                                                          "Are you sure you want to delete the order"),
+                                                      actions: <Widget>[
+                                                        ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                            primary: Color(
+                                                                0xFFBF2331),
+                                                          ),
+                                                          child: Text("YES"),
+                                                          onPressed: () {
+                                                            receiverList
+                                                                .removeAt(
+                                                                    index);
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            setState(() {});
+                                                            // deleteAccount();
+                                                            // SystemNavigator.pop();
+                                                            // Navigator.pop(context, MaterialPageRoute(builder: (context) => Login()));
+                                                          },
+                                                        ),
+                                                        ElevatedButton(
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  // primary: colors.primary
+                                                                  ),
+                                                          child: Text("NO"),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        )
+                                                      ],
+                                                    );
+                                                  });
+                                              Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 10),
+                                                    child: Container(
+                                                      height: 45,
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              1.5,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
+                                                          color: Color(
+                                                              0xFFBF2331)),
+                                                      child: const Center(
+                                                        child: Text(
+                                                          "Delete Account",
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                            child: Icon(Icons.delete,
+                                                color: Color(0xFFBF2331))),
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            Get.to(EditeRecipentCart());
+                                          },
+                                          child: Icon(Icons.edit,
+                                              color: Color(0xFFBF2331))),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
@@ -505,279 +619,154 @@ setState(() {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            const Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 8.0),
-                                              child: Text("Recipient Name",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color:
-                                                          Color(0xFFBF2331))),
+                                            Text(
+                                              "Mobile No",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFBF2331)),
                                             ),
                                             Text(
-                                                "${receiverList[index]['receiver_name']}"),
+                                                "${receiverList[index]['receiver_phone']}"),
                                           ],
-                                        ),
-                                        SizedBox(
-                                          width: 60,
                                         ),
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 28.0),
-                                          child: InkWell(
-                                              onTap: () {
-                                                showDialog(
-                                                    context: context,
-                                                    barrierDismissible: false,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text(
-                                                            "Delete Account"),
-                                                        content: Text(
-                                                            "Are you sure you want to delete the order"),
-                                                        actions: <Widget>[
-                                                          ElevatedButton(
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              primary: Color(
-                                                                  0xFFBF2331),
-                                                            ),
-                                                            child: Text("YES"),
-                                                            onPressed: () {
-                                                              receiverList
-                                                                  .removeAt(
-                                                                      index);
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              setState(() {});
-                                                              // deleteAccount();
-                                                              // SystemNavigator.pop();
-                                                              // Navigator.pop(context, MaterialPageRoute(builder: (context) => Login()));
-                                                            },
-                                                          ),
-                                                          ElevatedButton(
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    // primary: colors.primary
-                                                                    ),
-                                                            child: Text("NO"),
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                          )
-                                                        ],
-                                                      );
-                                                    });
-                                                Column(
-                                                  children: [
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 10),
-                                                      child: Container(
-                                                        height: 45,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            1.5,
-                                                        decoration: BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            color: Color(
-                                                                0xFFBF2331)),
-                                                        child: const Center(
-                                                          child: Text(
-                                                            "Delete Account",
-                                                            style: TextStyle(
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                              child: Icon(Icons.delete,
-                                                  color: Color(0xFFBF2331))),
+                                              const EdgeInsets.only(right: 0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Material category",
+                                                style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Color(0xFFBF2331)),
+                                              ),
+                                              Text(
+                                                  "${receiverList[index]['meterial_category']}"),
+                                            ],
+                                          ),
                                         ),
-                                        InkWell(
-                                            onTap: () {
-                                              Get.to(EditeRecipentCart());
-                                            },
-                                            child: Icon(Icons.edit,
-                                                color: Color(0xFFBF2331))),
                                       ],
                                     ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "Mobile No",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFFBF2331)),
-                                              ),
-                                              Text(
-                                                  "${receiverList[index]['receiver_phone']}"),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Material category",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xFFBF2331)),
-                                                ),
-                                                Text(
-                                                    "${receiverList[index]['meterial_category']}"),
-                                              ],
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Recipient Address",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFBF2331)),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
+                                            SizedBox(
+                                                width: 180,
+                                                child: Text(
+                                                  "${receiverList[index]['receiver_address']}",
+                                                  maxLines: 3,
+                                                )),
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 7),
+                                          child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               const Text(
-                                                "Recipient Address",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFFBF2331)),
-                                              ),
-                                              SizedBox(
-                                                  width: 180,
-                                                  child: Text(
-                                                    "${receiverList[index]['receiver_address']}",
-                                                    maxLines: 3,
-                                                  )),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(right: 7),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  "Parcel weight",
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: Color(0xFFBF2331)),
-                                                ),
-                                                Text(
-                                                    "${receiverList[index]['parcel_weight']}"),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 6,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                "Receipient Flat Number",
+                                                "Parcel weight",
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     color: Color(0xFFBF2331)),
                                               ),
                                               Text(
-                                                  "${receiverList[index]['reciver_full_address']}"),
+                                                  "${receiverList[index]['parcel_weight']}"),
                                             ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(
-                                      height: 6,
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Receipient Flat Number",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFBF2331)),
+                                            ),
+                                            Text(
+                                                "${receiverList[index]['reciver_full_address']}"),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 0),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                "Parcel Image",
-                                                style: TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFFBF2331)),
-                                              ),
-                                              Image.file(parcelImageList[index] ?? File(''),height: 100,width: 80),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                  ),
+                                  const SizedBox(
+                                    height: 6,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0),
+                                    child: Row(
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Parcel Image",
+                                              style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFBF2331)),
+                                            ),
+                                            Image.file(
+                                                parcelImageList[index] ??
+                                                    File(''),
+                                                height: 100,
+                                                width: 80),
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      }),
-                ),
+                        ),
+                      );
+                    }),
+
                 const SizedBox(
                   height: 15,
                 ),
@@ -814,7 +803,7 @@ setState(() {
                           child: TextFormField(
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Enter Recipent Name';
+                                return 'Enter Recipient Name';
                               }
                               return null;
                             },
@@ -948,37 +937,7 @@ setState(() {
                                   },
                                   controller: receiverfulladdressCtr,
                                   decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    hintText:
-                                        "flat number,floor,building name,etc",
-                                    prefixIcon: Image.asset(
-                                      'assets/ProfileAssets/locationIcon.png',
-                                      scale: 1.7,
-                                      color: primaryColor,
-                                    ),
-                                  )))),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Material(
-                          color: splashcolor,
-                          elevation: 1,
-                          borderRadius: BorderRadius.circular(10),
-                          child: Container(
-                              width: MediaQuery.of(context).size.width / 1.2,
-                              height: 80,
-                              child: TextFormField(
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'This Field Is Required';
-                                    }
-                                    return null;
-                                  },
-                                  controller: recipientnewAddressCtr,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
+                                    border: const OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
                                     hintText:
@@ -1090,7 +1049,7 @@ setState(() {
                     const SizedBox(
                       height: 15,
                     ),
-                    Material(
+                    /*Material(
                       color: splashcolor,
                       elevation: 1,
                       borderRadius: BorderRadius.circular(10),
@@ -1135,7 +1094,7 @@ setState(() {
                         )),
                     const SizedBox(
                       height: 15,
-                    ),
+                    ),*/
                     Container(
                       height: 140,
                       width: MediaQuery.of(context).size.width / 1.2,
@@ -1143,7 +1102,7 @@ setState(() {
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: primaryColor)),
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           showModalBottomSheet(
                               context: context,
                               builder: (context) {
@@ -1155,8 +1114,9 @@ setState(() {
                                           topLeft: Radius.circular(10))),
                                   child: Column(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                        MainAxisAlignment.spaceEvenly,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text("Take Image From",
                                           style: TextStyle(
@@ -1204,26 +1164,37 @@ setState(() {
                               });
                         },
                         child: Center(
-                            child: imageFile == null ?Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Upload parcel image',
-                                  style: TextStyle(color: Colors.black38),
-                                ),
-                                SizedBox(height: 5,),
-                                Icon(Icons.drive_folder_upload)
-                              ],
-                            ) : Image.file(imageFile ?? File('path'))),
+                            child: imageFile == null
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'Upload parcel image',
+                                        style: TextStyle(color: Colors.black38),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Icon(Icons.drive_folder_upload)
+                                    ],
+                                  )
+                                : Image.file(imageFile ?? File('path'))),
                       ),
                     ),
                     const SizedBox(
                       height: 50,
                     ),
-                    isSendParcel ? const Center(child: CircularProgressIndicator(color: CustomColors.accentColor,),) :Column(children: [
-                      InkWell(
-                        onTap: () {
-                          /* "receiver_name": "${recipientNameController
+                    isSendParcel
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: CustomColors.accentColor,
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  /* "receiver_name": "${recipientNameController
                                 .text}",
                             "receiver_phone": "${recipientMobileController
                                 .text}",
@@ -1238,144 +1209,149 @@ setState(() {
                                 .toString()} kg",
                           }*/
 
-                          if (_formKey.currentState!.validate()) {
-                            if(imageFile != null ){
-                              setState(() {
-                                receiverList.add({
-                                  "meterial_category":
-                                  "${selectedValue.toString()}",
-                                  "parcel_weight": "${selectedValue1.toString()}",
-                                  "receiver_address": "${recipientAddressCtr.text}",
-                                  "receiver_latitude": "${lat2}",
-                                  "receiver_longitude": "${long2}",
-                                  "receiver_name":
-                                  "${recipientNameController.text}",
-                                  "receiver_phone":
-                                  "${recipientMobileController.text}",
-                                  "reciver_full_address":
-                                  "${receiverfulladdressCtr.text}",
-                                  "pacel_value": "${valueController.text}"
-                                });
-                              });
-                              parcelImageList.add(imageFile);
+                                  if (_formKey.currentState!.validate()) {
+                                    if (imageFile != null) {
+                                      setState(() {
+                                        receiverList.add({
+                                          "meterial_category":
+                                              "${selectedValue.toString()}",
+                                          "parcel_weight":
+                                              "${selectedValue1.toString()}",
+                                          "receiver_address":
+                                              "${recipientAddressCtr.text}",
+                                          "receiver_latitude": "${lat2}",
+                                          "receiver_longitude": "${long2}",
+                                          "receiver_name":
+                                              "${recipientNameController.text}",
+                                          "receiver_phone":
+                                              "${recipientMobileController.text}",
+                                          "reciver_full_address":
+                                              "${receiverfulladdressCtr.text}",
+                                          "pacel_value":
+                                              "${valueController.text}"
+                                        });
+                                      });
+                                      parcelImageList.add(imageFile);
 
-                              imageFile = null ;
+                                      imageFile = null;
 
+                                      recipientNameController.clear();
+                                      recipientnewAddressCtr.clear();
+                                      recipientAddressCtr.clear();
+                                      recipientMobileController.clear();
+                                      receiverfulladdressCtr.clear();
+                                      valueController.clear();
+                                    } else {
+                                      Fluttertoast.showToast(
+                                          msg: 'Please add parcel image');
+                                    }
+                                  }
+                                  // Navigator.pop(context);
+                                  // setState(() {});
+                                  //
+                                  // int materialValue = 0;
+                                  // int parcelValue = 0;
+                                  // int recnameValue = 0;
+                                  // int recaddValue = 0;
+                                  // int recmobValue = 0;
+                                  // int recfulladdValue = 0;
+                                  //
+                                  // setState(() {
+                                  // });
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   materialValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Material Valueee ${materialValue}");
+                                  //   setState(() {});
+                                  // }
+                                  // setState(() {});
+                                  //
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   parcelValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Parcel Details Value ${parcelValue}");
+                                  //   setState(() {});
+                                  // }
+                                  // setState(() {});
+                                  //
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   recnameValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Parcel Details Value ${recnameValue}");
+                                  //   setState(() {});
+                                  // }
+                                  // setState(() {});
+                                  //
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   recaddValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Parcel Details Value ${recaddValue}");
+                                  //   setState(() {});
+                                  // }
+                                  // setState(() {});
+                                  //
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   recfulladdValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Parcel Details Value ${recfulladdValue}");
+                                  //   setState(() {});
+                                  // }
+                                  // setState(() {});
+                                  //
+                                  // for(var i=0; i<receiverList.length; i++){
+                                  //   recmobValue = int.parse(receiverList[i][''].toString());
+                                  //   print("Parcel Details Value ${recmobValue}");
+                                  //   setState(() {});
+                                  // }
 
-                              recipientNameController.clear();
-                              recipientnewAddressCtr.clear();
-                              recipientAddressCtr.clear();
-                              recipientMobileController.clear();
-                              receiverfulladdressCtr.clear();
-                              valueController.clear();
-                            }else {
-                              Fluttertoast.showToast(msg: 'Please add parcel image');
-                            }
-
-                          }
-                          // Navigator.pop(context);
-                          // setState(() {});
-                          //
-                          // int materialValue = 0;
-                          // int parcelValue = 0;
-                          // int recnameValue = 0;
-                          // int recaddValue = 0;
-                          // int recmobValue = 0;
-                          // int recfulladdValue = 0;
-                          //
-                          // setState(() {
-                          // });
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   materialValue = int.parse(receiverList[i][''].toString());
-                          //   print("Material Valueee ${materialValue}");
-                          //   setState(() {});
-                          // }
-                          // setState(() {});
-                          //
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   parcelValue = int.parse(receiverList[i][''].toString());
-                          //   print("Parcel Details Value ${parcelValue}");
-                          //   setState(() {});
-                          // }
-                          // setState(() {});
-                          //
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   recnameValue = int.parse(receiverList[i][''].toString());
-                          //   print("Parcel Details Value ${recnameValue}");
-                          //   setState(() {});
-                          // }
-                          // setState(() {});
-                          //
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   recaddValue = int.parse(receiverList[i][''].toString());
-                          //   print("Parcel Details Value ${recaddValue}");
-                          //   setState(() {});
-                          // }
-                          // setState(() {});
-                          //
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   recfulladdValue = int.parse(receiverList[i][''].toString());
-                          //   print("Parcel Details Value ${recfulladdValue}");
-                          //   setState(() {});
-                          // }
-                          // setState(() {});
-                          //
-                          // for(var i=0; i<receiverList.length; i++){
-                          //   recmobValue = int.parse(receiverList[i][''].toString());
-                          //   print("Parcel Details Value ${recmobValue}");
-                          //   setState(() {});
-                          // }
-
-                          //  Get.to(MyStatefulWidget());
-                        },
-                        child: Container(
-                          height: 45,
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Secondry),
-                          child: const Text(
-                            "Add More",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      InkWell(
-                          onTap: () {
-                            if (receiverList.isEmpty) {
-                              if (_formKey.currentState!.validate()) {
-                                senParcel();
-                                // Get.to(ParceldetailsScreen());
-                              }
-                            } else {
-                              senParcel();
-                            }
-                          },
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width / 1.2,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Secondry),
-                            child: const Text(
-                              "save",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
+                                  //  Get.to(MyStatefulWidget());
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.2,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: Secondry),
+                                  child: const Text(
+                                    "Add More",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          )),
-                    ],)
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    if (receiverList.isEmpty) {
+                                      if (_formKey.currentState!.validate()) {
+                                        senParcel();
+                                        // Get.to(ParceldetailsScreen());
+                                      }
+                                    } else {
+                                      senParcel();
+                                    }
+                                  },
+                                  child: Container(
+                                    height: 45,
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.2,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: Secondry),
+                                    child: const Text(
+                                      "save",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  )),
+                            ],
+                          )
                   ],
                 )),
                 // Center(

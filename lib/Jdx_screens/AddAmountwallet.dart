@@ -10,11 +10,11 @@ import '../Utils/api_path.dart';
 import '../Utils/color.dart';
 import 'Mywallet.dart';
 import 'notification_Screen.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 
 class AddAmount extends StatefulWidget {
   const AddAmount({Key? key, this.walletBalance}) : super(key: key);
- final String? walletBalance;
+  final String? walletBalance;
   @override
   State<AddAmount> createState() => _AddAmountState();
 }
@@ -33,7 +33,6 @@ class _AddAmountState extends State<AddAmount> {
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
   }
 
-
   onSuccessAddMoney() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? userid = preferences.getString('userid');
@@ -42,7 +41,8 @@ class _AddAmountState extends State<AddAmount> {
       'Content-Type': 'text/plain',
       'Cookie': 'ci_session=a73a943cc72f7a14a48f171f18226dddd0e6a0ec'
     };
-    var request = http.Request('POST', Uri.parse('${ApiPath.baseUrl}Payment/add_money_to_wallet'));
+    var request = http.Request(
+        'POST', Uri.parse('${ApiPath.baseUrl}Payment/add_money_to_wallet'));
     request.body = json.encode({
       "user_id": userid.toString(),
       "amount": amountCtr.text,
@@ -57,13 +57,13 @@ class _AddAmountState extends State<AddAmount> {
       print('User Id Is Here>>>>>>>>>${userid}');
       var finalResult = await response.stream.bytesToString();
       final jsonResponse = AddMoneyModel.fromJson(json.decode(finalResult));
-      setState((){
+      setState(() {
         Addwallet = jsonResponse;
       });
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> MyWallet()));
+
+      Navigator.pop(context);
       // Fluttertoast.showToast(msg: '${jsonResponse['message']}');
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
@@ -77,13 +77,17 @@ class _AddAmountState extends State<AddAmount> {
         centerTitle: true,
         backgroundColor: primaryColor,
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
           },
           child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
           //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
         ),
-        title:  Text('Add Amount', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),),
+        title: Text(
+          'Add Amount',
+          style: TextStyle(
+              color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         // actions: [
         //   Padding(
         //     padding:  EdgeInsets.only(right: 10),
@@ -101,10 +105,22 @@ class _AddAmountState extends State<AddAmount> {
           key: _formKey,
           child: Column(
             children: [
-              Center(child: Text("Add money to wallet",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
-              Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
-              Text(widget.walletBalance??'---',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-              SizedBox(height: 20,),
+              Center(
+                  child: Text(
+                "Add money to wallet",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              )),
+              Text(
+                "Available Balance",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                widget.walletBalance ?? '---',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                height: 20,
+              ),
               Material(
                 elevation: 10,
                 borderRadius: BorderRadius.circular(10),
@@ -115,17 +131,18 @@ class _AddAmountState extends State<AddAmount> {
                     controller: amountCtr,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
+                      border:
+                          const OutlineInputBorder(borderSide: BorderSide.none),
                       hintText: "Amount",
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   if (_formKey.currentState!.validate()) {
                     openCheckout();
                     // Get.to(ParceldetailsScreen());
@@ -138,8 +155,12 @@ class _AddAmountState extends State<AddAmount> {
                     color: primaryColor,
                   ),
                   height: 40,
-                  width: MediaQuery.of(context).size.width/2.5,
-                  child: Center(child: Text("Proceed",style: TextStyle(color: whiteColor,fontSize: 15),)),
+                  width: MediaQuery.of(context).size.width / 2.5,
+                  child: Center(
+                      child: Text(
+                    "Proceed",
+                    style: TextStyle(color: whiteColor, fontSize: 15),
+                  )),
                 ),
               ),
             ],
@@ -149,14 +170,11 @@ class _AddAmountState extends State<AddAmount> {
     );
   }
 
-
-
   void openCheckout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
     String? phone = '9074305952';
     int amt = int.parse(amountCtr.text);
-
 
     print('${email}_______________');
     print('${phone}_______________');
@@ -164,7 +182,7 @@ class _AddAmountState extends State<AddAmount> {
 
     var options = {
       'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': amt*100,
+      'amount': amt * 100,
       'name': 'jdx-user',
       'description': 'jdx-user',
       "currency": "INR",
@@ -225,5 +243,3 @@ class _AddAmountState extends State<AddAmount> {
         toastLength: Toast.LENGTH_SHORT);
   }
 }
-
-

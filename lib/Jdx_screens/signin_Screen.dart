@@ -338,85 +338,83 @@ class _SignInScreenState extends State<SignInScreen> {
                             Column(
                                 children: [
                                   /// email login section
-                                  Container(
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 20,),
-                                        Material(
-                                          elevation: 10,
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width / 1.2,
-                                            height: 50,
-                                            child: TextField(
-                                              controller: emailController,
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                    borderSide: BorderSide.none
-                                                ),
-                                                hintText: "Enter Email",
-                                                prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 1.3, color: primaryColor,),
-                                              ),),),
-                                        ),
-                                        SizedBox(height: 20,),
-                                        Material(
-                                          elevation: 10,
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Container(
-                                            width: MediaQuery.of(context).size.width / 1.2,
-                                            height: 50,
-                                            child: TextField(
-                                              obscureText: true,
-                                              controller: passwordController,
-                                              decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                    borderSide: BorderSide.none
-                                                ),
-                                                hintText: "Enter Password",
-                                                prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 1.3, color: primaryColor,),
+                                  Column(
+                                    children: [
+                                      const SizedBox(height: 20,),
+                                      Material(
+                                        elevation: 10,
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width / 1.2,
+                                          height: 55,
+                                          child: TextField(
+                                            controller: emailController,
+                                            decoration: InputDecoration(
+                                              border: const OutlineInputBorder(
+                                                  borderSide: BorderSide.none
                                               ),
+                                              hintText: "Enter Email",
+                                              prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 1.3, color: primaryColor,),
+                                            ),),),
+                                      ),
+                                      const SizedBox(height: 20,),
+                                      Material(
+                                        elevation: 10,
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width / 1.2,
+                                          height: 55,
+                                          child: TextField(
+                                            obscureText: true,
+                                            controller: passwordController,
+                                            decoration: InputDecoration(
+                                              border: const OutlineInputBorder(
+                                                  borderSide: BorderSide.none
+                                              ),
+                                              hintText: "Enter Password",
+                                              prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 1.3, color: primaryColor,),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10,),
-                                        GestureDetector(
-                                          onTap: (){
-                                            Get.to(Forget());
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 10),
-                                            child: Align(
-                                                alignment: Alignment.centerRight,
-                                                child: Text('Forgot Password?', style: TextStyle(color: primaryColor,fontWeight: FontWeight.bold,))),
-                                          ),
+                                      ),
+                                      const SizedBox(height: 10,),
+                                      GestureDetector(
+                                        onTap: (){
+                                          Get.to(Forget());
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 10),
+                                          child: Align(
+                                              alignment: Alignment.centerRight,
+                                              child: Text('Forgot Password?', style: TextStyle(color: primaryColor,fontWeight: FontWeight.bold,))),
                                         ),
-                                        const SizedBox(height: 50,),
-                                        // CustomTextButton(buttonText: 'Sign In', onTap: (){
-                                        //   emailPasswordLogin();
-                                        //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
-                                        // }),
-                                        InkWell(
-                                          onTap: (){
-                                            // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
-                                            setState(() {
-                                              isloader = true;
-                                            });
-                                            emailPasswordLogin();
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: MediaQuery.of(context).size.width/1.4,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: Secondry,
-                                            ),
-                                            child: isloader == true ? Center(child: CircularProgressIndicator(color: Colors.white,),) :
-                                            const Text("Login",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,fontFamily: 'Lora'),),
+                                      ),
+                                      const SizedBox(height: 50,),
+                                      // CustomTextButton(buttonText: 'Sign In', onTap: (){
+                                      //   emailPasswordLogin();
+                                      //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
+                                      // }),
+                                      InkWell(
+                                        onTap: (){
+                                          // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
+                                          setState(() {
+                                            isloader = true;
+                                          });
+                                          emailPasswordLogin();
+                                        },
+                                        child: Container(
+                                          height: 45,
+                                          width: MediaQuery.of(context).size.width/1.4,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(30),
+                                            color: Secondry,
                                           ),
+                                          child: isloader == true ? Center(child: CircularProgressIndicator(color: Colors.white,),) :
+                                          const Text("Login",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,fontFamily: 'Lora'),),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ]),
                             const SizedBox(

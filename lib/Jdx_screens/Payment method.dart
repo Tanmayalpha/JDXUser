@@ -20,26 +20,31 @@ class PaymentMethod extends StatefulWidget {
   final couponAmount;
   final couponName;
   final afterDiscountTotal;
-  const PaymentMethod({Key? key, this.orderid, this.totalAmount,this.couponName,this.couponAmount,this.afterDiscountTotal}) : super(key: key);
+  const PaymentMethod(
+      {Key? key,
+      this.orderid,
+      this.totalAmount,
+      this.couponName,
+      this.couponAmount,
+      this.afterDiscountTotal})
+      : super(key: key);
 
   @override
   State<PaymentMethod> createState() => _PaymentMethodState();
 }
 
 class _PaymentMethodState extends State<PaymentMethod> {
-
-  paymentType(String type) async{
+  paymentType(String type) async {
     isLoading = true;
-    setState(() {
-
-    });
+    setState(() {});
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? userid = preferences.getString('userid');
 
     var headers = {
       'Cookie': 'ci_session=c2b9ec387d53f2644408cb4191cab39d16906144'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Payment/pay_now'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiPath.baseUrl}Payment/pay_now'));
     request.fields.addAll({
       'paymenttype': type,
       'user_id': userid.toString(),
@@ -58,49 +63,44 @@ class _PaymentMethodState extends State<PaymentMethod> {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                PaymentSuccessfulScreen(),
+            builder: (context) => PaymentSuccessfulScreen(),
           ));
-      Fluttertoast.showToast(msg: 'Payment Successfully ') ;
-      setState(() {
-
-      });
-    }
-    else {
+      Fluttertoast.showToast(msg: 'Payment Successfully ');
+      setState(() {});
+    } else {
       print(response.reasonPhrase);
     }
   }
+
   List<Payments> paymentTypeList = [
     Payments(type: 'Cash On Payment', image: 'assets/cod.png'),
     Payments(type: 'Online Payment', image: 'assets/online.png'),
     Payments(type: 'Wallet', image: 'assets/wallet.png'),
   ];
 
-  bool isLoading = false ;
+  bool isLoading = false;
 
-   @override
-   void initState() {
-     walletHistroy();
-     _razorpay = Razorpay();
-     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  @override
+  void initState() {
+    walletHistroy();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
 
     super.initState();
-
-   }
+  }
 
   //List<String> paymenttypelist =["Cash On Delivery", "Online Payment", "Wallet"];
 
   WalletHistoryModel? walletHistoryModel;
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Get.back();
           },
           child: Icon(Icons.arrow_back),
@@ -108,7 +108,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
         ),
         elevation: 0,
         backgroundColor: primaryColor,
-        title: const Text("Payment Method",style: TextStyle(fontFamily: 'Lora')),
+        title:
+            const Text("Payment Method", style: TextStyle(fontFamily: 'Lora')),
         centerTitle: true,
         // actions: [
         //   Padding(
@@ -122,51 +123,51 @@ class _PaymentMethodState extends State<PaymentMethod> {
         // ],
       ),
       body: SingleChildScrollView(
-          child:  Column(
-              children: [
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
-                    itemCount: paymentTypeList.length,
-                    itemBuilder: (c,i){
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 0),
-                        child: InkWell(
+          child: Column(
+        children: [
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.vertical,
+              itemCount: paymentTypeList.length,
+              itemBuilder: (c, i) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 0),
+                  child: InkWell(
+                      onTap: () {
+                        print(
+                            '___________${paymentTypeList[i].type}__________');
+                        final value =
+                            double.parse(walletHistoryModel?.wallet ?? '0.0');
 
-                          onTap: (){
-                            print('___________${paymentTypeList[i].type}__________');
-                            final value = double.parse(walletHistoryModel?.wallet ?? '0.0') ;
-
-                            if(paymentTypeList[i].type.toString() == "Wallet") {
+                        if (paymentTypeList[i].type.toString() == "Wallet") {
                           if (value >= widget.totalAmount) {
-                            paymentType(paymentTypeList[i].type ??'');
-
-                          }else {
-                            Fluttertoast.showToast(msg: " you have not enough balance in your wallet for the order");
+                            paymentType(paymentTypeList[i].type ?? '');
+                          } else {
+                            Fluttertoast.showToast(
+                                msg:
+                                    " you have not enough balance in your wallet for the order");
                           }
-                        }else if(paymentTypeList[i].type.toString() == "Cash On Payment"){
+                        } else if (paymentTypeList[i].type.toString() ==
+                            "Cash On Payment") {
+                          paymentType(paymentTypeList[i].type ?? '');
+                        } else {
+                          openCheckout();
+                          Fluttertoast.showToast(
+                              msg: paymentTypeList[i].type ?? 'online');
+                        }
 
-                              paymentType(paymentTypeList[i].type ??'');
-
-                            }else{
-                              openCheckout();
-                              Fluttertoast.showToast(msg: paymentTypeList[i].type ?? 'online');
-                            }
-
-
-
-                            //
-                            //
-                            // Get.to(ParceldetailsScreen());
-                          },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                        //
+                        //
+                        // Get.to(ParceldetailsScreen());
+                      },
+                      child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 20),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -174,20 +175,26 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   CircleAvatar(
-                                      backgroundImage: AssetImage(paymentTypeList[i].image?? ''),
+                                    backgroundImage: AssetImage(
+                                        paymentTypeList[i].image ?? ''),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                        paymentTypeList[i].type ?? 'null',
-                                      style: const TextStyle(fontSize: 17,fontWeight: FontWeight.w500))),
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                          paymentTypeList[i].type ?? 'null',
+                                          style: const TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.w500))),
                                   const SizedBox(height: 10),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    // mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Image.asset("assets/DrawerAssets/forwardIcon.png", color: primaryColor,)
-                                    ]),
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      // mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                        Image.asset(
+                                          "assets/DrawerAssets/forwardIcon.png",
+                                          color: primaryColor,
+                                        )
+                                      ]),
                                   // Column(
                                   //   mainAxisAlignment: MainAxisAlignment.start,
                                   //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,10 +220,15 @@ class _PaymentMethodState extends State<PaymentMethod> {
                                   //   ],)
                                 ],
                               )))),
-                      );
-                    }),
-                isLoading ? const Center(child: CircularProgressIndicator(),) : SizedBox()],
-          )),
+                );
+              }),
+          isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : SizedBox()
+        ],
+      )),
     );
   }
 
@@ -228,7 +240,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
       'Content-Type': 'application/json',
       'Cookie': 'ci_session=fa798ca5ff74e60a6d79d768d0be8efac030321a'
     };
-    var request = http.Request('POST', Uri.parse('${ApiPath.baseUrl}Payment/wallet_history'));
+    var request = http.Request(
+        'POST', Uri.parse('${ApiPath.baseUrl}Payment/wallet_history'));
     request.body = json.encode({
       "user_id": userid.toString(),
     });
@@ -237,16 +250,17 @@ class _PaymentMethodState extends State<PaymentMethod> {
     if (response.statusCode == 200) {
       print('Userr Id@@@@@@@${userid}');
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = WalletHistoryModel.fromJson(json.decode(finalResult));
-      setState((){
+      final jsonResponse =
+          WalletHistoryModel.fromJson(json.decode(finalResult));
+      setState(() {
         walletHistoryModel = jsonResponse;
-        print('₹ ${walletHistoryModel?.wallet?? '---'}');
+        print('₹ ${walletHistoryModel?.wallet ?? '---'}');
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
+
   String? pricerazorpayy;
   late Razorpay _razorpay;
 
@@ -254,31 +268,30 @@ class _PaymentMethodState extends State<PaymentMethod> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString('email');
     String? phone = prefs.getString('phone');
-    int amt = widget.totalAmount.toInt() ;
+    int amt = widget.totalAmount.toInt();
 
+    print('${email}_______________');
+    print('${phone}_______________');
+    print('${widget.totalAmount.toString()}_______________');
+    print('${amt}_______________');
 
-print('${email}_______________');
-print('${phone}_______________');
-print('${widget.totalAmount.toString()}_______________');
-print('${amt}_______________');
-
-      var options = {
-        'key': 'rzp_test_1DP5mmOlF5G5ag',
-        'amount': amt*100,
-        'name': 'jdx-user',
-        'description': 'jdx-user',
+    var options = {
+      'key': 'rzp_test_1DP5mmOlF5G5ag',
+      'amount': amt * 100,
+      'name': 'jdx-user',
+      'description': 'jdx-user',
       "currency": "INR",
-        'prefill': {'contact': '$phone', 'email': '$email'},
-        'external': {
-          'wallets': ['paytm']
-        }
-      };
-      try {
-        _razorpay.open(options);
-      } catch (e) {
-        debugPrint('Error: $e');
+      'prefill': {'contact': '$phone', 'email': '$email'},
+      'external': {
+        'wallets': ['paytm']
       }
+    };
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint('Error: $e');
     }
+  }
 
   Future<void> _handlePaymentSuccess(PaymentSuccessResponse response) async {
     // RazorpayDetailApi();
@@ -324,16 +337,10 @@ print('${amt}_______________');
         msg: "EXTERNAL_WALLET: " + response.walletName!,
         toastLength: Toast.LENGTH_SHORT);
   }
-
-  }
-
-
-
-
+}
 
 class Payments {
   String? type, image;
 
   Payments({this.type, this.image});
-
 }

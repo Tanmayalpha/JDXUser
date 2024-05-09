@@ -31,7 +31,8 @@ class ParceldetailsScreen extends StatefulWidget {
   final bool isFromParcelHistory;
   final int? segment;
 
-  ParceldetailsScreen({this.orderid, required this.isFromParcelHistory,this.segment});
+  ParceldetailsScreen(
+      {this.orderid, required this.isFromParcelHistory, this.segment});
 
   //const ParceldetailsScreen({Key? key}) : super(key: key);
 
@@ -203,7 +204,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                           SizedBox(
                                               width: 100,
                                               child: Text(
-                                                  "${parceldetails!.data![0].totalAmount}")),
+                                                  "${parceldetails!.totalCost}")),
                                         ],
                                       ),
                                       Column(
@@ -230,7 +231,8 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                     height: 14,
                                   ),
                                   Row(
-                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
                                         mainAxisAlignment:
@@ -247,37 +249,36 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                       ),
                                       /*parceldetails!.data![0].status == '4' ?*/ Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start,
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              launchUrl(Uri.parse(parceldetails!.data![0].invoiceLink ?? ''),mode:LaunchMode.externalApplication );
+                                              launchUrl(
+                                                  Uri.parse(parceldetails!
+                                                          .data![0]
+                                                          .invoiceLink ??
+                                                      ''),
+                                                  mode: LaunchMode
+                                                      .externalApplication);
                                             },
                                             child: Container(
-                                              padding:
-                                              const EdgeInsets
-                                                  .only(
+                                              padding: const EdgeInsets.only(
                                                   left: 5,
                                                   right: 10,
                                                   top: 5,
                                                   bottom: 5),
                                               decoration: BoxDecoration(
                                                   borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      15),
-                                                  color:
-                                                  primaryColor),
+                                                      BorderRadius.circular(15),
+                                                  color: primaryColor),
                                               child: Row(
-                                                mainAxisSize:
-                                                MainAxisSize.min,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: const [
                                                   Icon(
                                                     Icons.download,
-                                                    color:
-                                                    Colors.white,
+                                                    color: Colors.white,
                                                   ),
                                                   SizedBox(
                                                     width: 5,
@@ -286,8 +287,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                     'Download invoice',
                                                     style: TextStyle(
                                                         fontSize: 12,
-                                                        color: Colors
-                                                            .white),
+                                                        color: Colors.white),
                                                   )
                                                 ],
                                               ),
@@ -380,11 +380,11 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.red)),
-                                                      Text(
-                                                          orderStatus(item.status ?? '')),
+                                                      Text(orderStatus(
+                                                          item.status ?? '')),
                                                     ],
                                                   ),
-                                                  driverRating.isEmpty
+                                                  /*driverRating.isEmpty
                                                       ? const SizedBox()
                                                       : Column(
                                                           crossAxisAlignment:
@@ -399,10 +399,24 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                             Text(
                                                                 "${driverRating.first}"),
                                                           ],
-                                                        ),
+                                                        ),*/
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      const Text(
+                                                          "Parcel Weight      ",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red)),
+                                                      Text(
+                                                          "${parceldetails?.data?[index].materialInfo?.parcelWeight}"),
+                                                    ],
+                                                  )
                                                 ],
                                               )
-                                            : SizedBox(),
+                                            : const SizedBox(),
                                         const SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
@@ -533,104 +547,114 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                             : Column(
                                                 children: [
                                                   widget.isFromParcelHistory
-                                                      ? item.status == '4' ? SizedBox() : Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            const Text(
-                                                                "Track Parcel:",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red)),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            InkWell(
-                                                              onTap: () async{
-                                                                String CURENT_LAT  = item
-                                                                        .senderLatitude
-                                                                        .toString() ??
-                                                                    ''; //'22.7177'; //
-                                                                String CURENT_LONG  = item
-                                                                        .senderLongitude
-                                                                        .toString() ??
-                                                                    ''; //'75.8545'; //
-                                                                String lat = item
-                                                                        .driverDetails
-                                                                        ?.latitude
-                                                                        .toString() ??
-                                                                    '';
-                                                                String lon = item
-                                                                        .driverDetails
-                                                                        ?.longitude
-                                                                        .toString() ??
-                                                                    '';
-
-                                                                final Uri url = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
-                                                                    CURENT_LAT +
-                                                                    ',' +
-                                                                    CURENT_LONG +
-                                                                    ' &destination=' +
-                                                                    lat.toString() +
-                                                                    ',' +
-                                                                    lon.toString() +
-                                                                    '&travelmode=driving&dir_action=navigate');
-
-                                                               // String url = 'https://www.google.com/maps/dir/$CURENT_LAT,$CURENT_LONG/$lat,$lon';
-
-                                                                print('${url}');
-
-                                                                if (!await launchUrl(url,
-                                                                mode:
-                                                                LaunchMode.externalApplication)) {
-                                                                throw Exception('Could not launch');
-                                                                }
-
-                                                                //_launchURL(url);
-                                                              },
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            10,
-                                                                        right:
-                                                                            10,
-                                                                        top: 5,
-                                                                        bottom:
-                                                                            5),
-                                                                decoration: BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            15),
-                                                                    color:
-                                                                        primaryColor),
-                                                                child:
+                                                      ? item.status == '4'
+                                                          ? const SizedBox()
+                                                          : item.driverDetails
+                                                                      ?.userImage !=
+                                                                  null
+                                                              ? Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
                                                                     const Text(
-                                                                  'Track',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            const SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            const Text("OTP:",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red)),
-                                                            const SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Text("${item.otp}",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black))
-                                                          ],
-                                                        )
+                                                                        "Track Parcel:",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.red)),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    InkWell(
+                                                                      onTap:
+                                                                          () async {
+                                                                        String
+                                                                            CURENT_LAT =
+                                                                            item.senderLatitude.toString() ??
+                                                                                ''; //'22.7177'; //
+                                                                        String
+                                                                            CURENT_LONG =
+                                                                            item.senderLongitude.toString() ??
+                                                                                ''; //'75.8545'; //
+                                                                        String
+                                                                            lat =
+                                                                            item.driverDetails?.latitude.toString() ??
+                                                                                '';
+                                                                        String
+                                                                            lon =
+                                                                            item.driverDetails?.longitude.toString() ??
+                                                                                '';
+
+                                                                        final Uri url = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
+                                                                            CURENT_LAT +
+                                                                            ',' +
+                                                                            CURENT_LONG +
+                                                                            ' &destination=' +
+                                                                            lat.toString() +
+                                                                            ',' +
+                                                                            lon.toString() +
+                                                                            '&travelmode=driving&dir_action=navigate');
+
+                                                                        print(
+                                                                            '${url}____________');
+
+                                                                        // String url = 'https://www.google.com/maps/dir/$CURENT_LAT,$CURENT_LONG/$lat,$lon';
+
+                                                                        print(
+                                                                            '${url}');
+
+                                                                        if (!await launchUrl(
+                                                                            url,
+                                                                            mode:
+                                                                                LaunchMode.externalApplication)) {
+                                                                          throw Exception(
+                                                                              'Could not launch');
+                                                                        }
+
+                                                                        //_launchURL(url);
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        padding: const EdgeInsets.only(
+                                                                            left:
+                                                                                10,
+                                                                            right:
+                                                                                10,
+                                                                            top:
+                                                                                5,
+                                                                            bottom:
+                                                                                5),
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(15),
+                                                                            color: primaryColor),
+                                                                        child:
+                                                                            const Text(
+                                                                          'Track',
+                                                                          style:
+                                                                              TextStyle(color: Colors.white),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    const SizedBox(
+                                                                      width: 10,
+                                                                    ),
+                                                                    const Text(
+                                                                        "OTP:",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.red)),
+                                                                    const SizedBox(
+                                                                      width: 5,
+                                                                    ),
+                                                                    Text(
+                                                                        "${item.otp}",
+                                                                        style: const TextStyle(
+                                                                            color:
+                                                                                Colors.black))
+                                                                  ],
+                                                                )
+                                                              : SizedBox()
                                                       : const SizedBox(),
                                                   widget.isFromParcelHistory
                                                       ? const Align(
@@ -645,15 +669,18 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                       : const SizedBox(),
                                                   Row(
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment.spaceBetween,
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: const [
                                                           Text("Parcel Image",
                                                               style: TextStyle(
-                                                                  color: Colors.red)),
+                                                                  color: Colors
+                                                                      .red)),
                                                           /*SizedBox(
                                                     width: 100,
                                                     child: Text(
@@ -662,7 +689,8 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                       ),
                                                       Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           /*const Text(
                                                   "Share QR",
@@ -673,18 +701,35 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                           Row(
                                                             children: [
                                                               InkWell(
-                                                                  onTap: () {
-                                                                  },
-                                                                  child: Image.network(item.parcelPhoto ?? '',height: 100,width: 100,errorBuilder: (context, error, stackTrace) => Image.asset('assets/ezgif.com-crop.gif', height: 100,width: 100),)
-                                                              ),
+                                                                  onTap: () {},
+                                                                  child: Image
+                                                                      .network(
+                                                                    item.parcelPhoto ??
+                                                                        '',
+                                                                    height: 100,
+                                                                    width: 100,
+                                                                    errorBuilder: (context,
+                                                                            error,
+                                                                            stackTrace) =>
+                                                                        Image.asset(
+                                                                            'assets/ezgif.com-crop.gif',
+                                                                            height:
+                                                                                100,
+                                                                            width:
+                                                                                100),
+                                                                  )),
                                                             ],
                                                           ),
                                                         ],
                                                       ),
                                                     ],
                                                   ),
-                                                  widget.isFromParcelHistory && item.driverDetails?.userImage !=null && item.status !='4'
-                                                      ?    drivercard(
+                                                  widget.isFromParcelHistory &&
+                                                          item.driverDetails
+                                                                  ?.userImage !=
+                                                              null &&
+                                                          item.status != '4'
+                                                      ? drivercard(
                                                           image: item
                                                               .driverDetails
                                                               ?.userImage,
@@ -725,7 +770,6 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                             ),
                                           ),
                                         ) : SizedBox()*/
-
                                       ],
                                     ),
                                   ),
@@ -735,47 +779,55 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       },
                     ),
                   ),
-                  widget.isFromParcelHistory ? const SizedBox.shrink() : Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 20),
-                    child: Card(
-                      color: splashcolor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 15),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Coupon',
-                                style: TextStyle(
-                                    color: Colors.black54.withOpacity(0.8)),
-                              ),
-                              InkWell(
-                                onTap: (){
+                  widget.isFromParcelHistory
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 20),
+                          child: Card(
+                            color: splashcolor,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 15),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Coupon',
+                                      style: TextStyle(
+                                          color:
+                                              Colors.black54.withOpacity(0.8)),
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CouponScreen(
+                                                      totalPrice:
+                                                          totalPrice ?? 0.0),
+                                            )).then((value) {
+                                          if (value != null) {
+                                            couponValue = value[0];
+                                            couponName = value[1];
 
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  CouponScreen(totalPrice: totalPrice ?? 0.0),)).then((value) {
-                                    if(value !=null){
+                                            _calculateFinalPrice();
 
-                                      couponValue = value[0];
-                                      couponName =  value[1];
-
-                                      _calculateFinalPrice();
-
-                                      couponSucsessFullyApplyed();
-
-                                    }
-
-                                  });
-
-                                },
-                                child: Text('Apply Coupon',
-                                    style: TextStyle(color: primaryColor,fontWeight: FontWeight.w700)),
-                              )
-                            ]),
-                      ),
-                    ),
-                  ),
+                                            couponSucsessFullyApplyed();
+                                          }
+                                        });
+                                      },
+                                      child: Text('Apply Coupon',
+                                          style: TextStyle(
+                                              color: primaryColor,
+                                              fontWeight: FontWeight.w700)),
+                                    )
+                                  ]),
+                            ),
+                          ),
+                        ),
                   /*widget.isFromParcelHistory
                       ? const SizedBox.shrink()
                       : SizedBox(
@@ -890,9 +942,12 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       ? const SizedBox.shrink()
                       : InkWell(
                           onTap: () {
-                            Get.to( PaymentMethod(
+                            Get.to(PaymentMethod(
                               orderid: parceldetails?.data![0].orderId,
-                              totalAmount: _finalPrice,couponAmount: couponValue,couponName: couponName,afterDiscountTotal: totalPrice,
+                              totalAmount: _finalPrice,
+                              couponAmount: couponValue,
+                              couponName: couponName,
+                              afterDiscountTotal: totalPrice,
                             ));
                             // emailPasswordLogin();
                           },
@@ -1105,7 +1160,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
     request.fields.addAll({
       'user_id': "${userid}",
       'order_id': widget.orderid ?? '',
-      'status': (widget.segment ?? 0) == 0 ? '1' :'2' ,
+      'status': (widget.segment ?? 0) == 0 ? '1' : '2',
     });
     request.headers.addAll(headers);
     print("request param ${request.fields}");
@@ -1201,9 +1256,6 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
       print(response.reasonPhrase);
     }
   }
-
-
-
 
   String calculateDistance(late1, lone1, late2, lone2) {
     double lat1, lat2, lon1, lon2;
@@ -1315,7 +1367,6 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
       print(response.reasonPhrase);
     }
   }
-
 
   Future couponSucsessFullyApplyed() {
     return Get.defaultDialog(

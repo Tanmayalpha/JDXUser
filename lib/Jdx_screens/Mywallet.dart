@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../Utils/api_path.dart';
 import '../Utils/color.dart';
 import 'AddAmountwallet.dart';
 import 'notification_Screen.dart';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 
 class MyWallet extends StatefulWidget {
   const MyWallet({Key? key}) : super(key: key);
@@ -22,7 +21,6 @@ class MyWallet extends StatefulWidget {
 }
 
 class _MyWalletState extends State<MyWallet> {
-
   TextEditingController amountController = TextEditingController();
 
   WalletHistoryModel? walletHistorymodel;
@@ -35,7 +33,8 @@ class _MyWalletState extends State<MyWallet> {
       'Content-Type': 'application/json',
       'Cookie': 'ci_session=fa798ca5ff74e60a6d79d768d0be8efac030321a'
     };
-    var request = http.Request('POST', Uri.parse('${ApiPath.baseUrl}Payment/wallet_history'));
+    var request = http.Request(
+        'POST', Uri.parse('${ApiPath.baseUrl}Payment/wallet_history'));
     request.body = json.encode({
       "user_id": userid.toString(),
     });
@@ -44,12 +43,12 @@ class _MyWalletState extends State<MyWallet> {
     if (response.statusCode == 200) {
       print('Userr Id@@@@@@@${userid}');
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = WalletHistoryModel.fromJson(json.decode(finalResult));
-      setState((){
+      final jsonResponse =
+          WalletHistoryModel.fromJson(json.decode(finalResult));
+      setState(() {
         walletHistorymodel = jsonResponse;
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
@@ -71,21 +70,31 @@ class _MyWalletState extends State<MyWallet> {
         centerTitle: true,
         backgroundColor: primaryColor,
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pop(context);
           },
           child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
           //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
         ),
-        title:  Text('My Wallet', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),),
+        title: Text(
+          'My Wallet',
+          style: TextStyle(
+              color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         actions: [
           Padding(
-            padding:  const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10),
             child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const NotificationScreen()));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationScreen()));
                 },
-                child: const Icon(Icons.notifications,color: Colors.white,)),
+                child: const Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                )),
           ),
         ],
       ),
@@ -95,14 +104,26 @@ class _MyWalletState extends State<MyWallet> {
           key: _formKey,
           child: Column(
             children: [
-              const Center(child: Text("Available Balance",style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),)),
-              Text("₹ ${walletHistorymodel?.wallet?? '---'}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
-             const SizedBox(height: 20,),
+              const Center(
+                  child: Text(
+                "Available Balance",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              )),
+              Text(
+                "₹ ${walletHistorymodel?.wallet ?? '---'}",
+                style:
+                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               InkWell(
-                onTap: (){
+                onTap: () {
                   if (_formKey.currentState!.validate()) {
                     //walletHistroy();
-                    Get.to(AddAmount(walletBalance: walletHistorymodel?.wallet??'--',))?.then((value) => walletHistroy() );
+                    Get.to(AddAmount(
+                      walletBalance: walletHistorymodel?.wallet ?? '--',
+                    ))?.then((value) => walletHistroy());
                   }
                   // addMoney();
                 },
@@ -112,70 +133,98 @@ class _MyWalletState extends State<MyWallet> {
                     color: primaryColor,
                   ),
                   height: 40,
-                  width: MediaQuery.of(context).size.width/2.5,
+                  width: MediaQuery.of(context).size.width / 2.5,
                   child: Center(
-                      child: Text(
-                        "Add Money",
-                        style: TextStyle(color: whiteColor,fontSize: 15),
-                      ),
+                    child: Text(
+                      "Add Money",
+                      style: TextStyle(color: whiteColor, fontSize: 15),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 20,),
-               Align(
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
                 alignment: Alignment.topLeft,
-                  child: Row(children: [
-                    Icon(Icons.account_balance_wallet, color: primaryColor,),
-                    const SizedBox(width: 10,),
-                    const Text("WalletHistory",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
-                  ],),),
-              walletHistorymodel?.data == null ? Center(child: CircularProgressIndicator(color: splashcolor,),) : walletHistorymodel?.data?.isEmpty ?? true ?
-              const Text("Not Available",): ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: walletHistorymodel?.data?.length,
-                itemBuilder: (context, index) {
-                var item = walletHistorymodel?.data?[index];
-                return Card(
-                  elevation: 2.0,
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Amount: ${item?.amount}',
-                          style: const TextStyle(
-                              fontSize: 14.0, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 5.0),
-                        Text(
-                          'Payment Type: ${item?.paymentType}',
-                          style: const TextStyle(fontSize: 14.0),
-                        ),
-                        const SizedBox(height: 5.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.account_balance_wallet,
+                      color: primaryColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const Text(
+                      "WalletHistory",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              walletHistorymodel?.data == null
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: splashcolor,
+                      ),
+                    )
+                  : walletHistorymodel?.data?.isEmpty ?? true
+                      ? const Text(
+                          "Not Available",
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: walletHistorymodel?.data?.length,
+                          itemBuilder: (context, index) {
+                            var item = walletHistorymodel?.data?[index];
+                            return Card(
+                              elevation: 2.0,
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Amount: ${item?.amount}',
+                                      style: const TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    Text(
+                                      'Payment Type: ${item?.paymentType}',
+                                      style: const TextStyle(fontSize: 14.0),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    /*
                         Text(
                           'Status: ${item?.status}',
                           style: const TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Date : ${item?.createDt}',
-                              style: const TextStyle(
-                                  fontSize: 14.0, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },)
+                        ),*/
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          'Date : ${item?.createDt}',
+                                          style: const TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        )
             ],
           ),
         ),

@@ -249,8 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   border: const OutlineInputBorder(
                                       borderSide: BorderSide.none),
                                   hintText: "Current Location",
-                                  hintStyle:
-                                      const TextStyle(fontWeight: FontWeight.bold),
+                                  hintStyle: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                   prefixIcon: Image.asset(
                                     'assets/ProfileAssets/locationIcon.png',
                                     scale: 1.6,
@@ -289,7 +289,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const MyWallet()));
+                                          builder: (context) =>
+                                              const MyWallet()));
                                 },
                                 child: Container(
                                     padding: const EdgeInsets.only(right: 10),
@@ -459,7 +460,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? const Center(
                                   child: CircularProgressIndicator(),
                                 )
-                              : (parcelhistory?.data?.isEmpty ?? false) || (parcelhistory?.data?[0].parcelDetails?.isEmpty ??true)
+                              : (parcelhistory?.data?.isEmpty ?? false) ||
+                                      (parcelhistory?.data?[0].parcelDetails
+                                              ?.isEmpty ??
+                                          true)
                                   ? const Center(
                                       child: Text(
                                         "Not any order",
@@ -495,7 +499,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               i]
                                                                           .orderId,
                                                                   isFromParcelHistory:
-                                                                      true,segment: selectedSegmentVal,
+                                                                      true,
+                                                                  segment:
+                                                                      selectedSegmentVal,
                                                                 )));
                                                   },
                                                   child: Card(
@@ -753,7 +759,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   ? InkWell(
                                                                       onTap:
                                                                           () {
-                                                                        shoCancelDialog(parcelhistory!.data![i].orderId ?? '44',i);
+                                                                        shoCancelDialog(
+                                                                            parcelhistory!.data![i].orderId ??
+                                                                                '44',
+                                                                            i);
                                                                         /* cancelOrder(
                                                                             parcelhistory!.data![i].orderId ??
                                                                                 '44',
@@ -805,7 +814,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String orderStatus(String status) {
-    print('__________${status}_____________');
     if (status == '0') {
       return 'Searching Driver';
     } else if (status == '1') {
@@ -949,12 +957,11 @@ class _HomeScreenState extends State<HomeScreen> {
         'POST', Uri.parse('${ApiPath.baseUrl}payment/parcel_history'));
     request.fields
         .addAll({'user_id': userid.toString(), 'status': status.toString()});
+
     print("${request.fields}");
-    print("${request}");
 
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
-    print("thi555555555555555=?>${response.statusCode}");
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
       final jsonResponse =
@@ -974,8 +981,12 @@ class _HomeScreenState extends State<HomeScreen> {
     print('_____________');
     var request = http.MultipartRequest('POST',
         Uri.parse('${ApiPath.baseUrl}Authentication/update_parcel_status'));
-    request.fields.addAll(
-        {'user_id': userid ?? '315', 'order_id': orderId, 'status': '7', 'cancel_reason' : _selectedValue.toString()});
+    request.fields.addAll({
+      'user_id': userid ?? '315',
+      'order_id': orderId,
+      'status': '7',
+      'cancel_reason': _selectedValue.toString()
+    });
 
     print('${request.fields}');
     print('${request.url}');
@@ -983,8 +994,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (response.statusCode == 200) {
       print(await response.stream.bytesToString());
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Order Cancel successfully')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Order Cancel successfully')));
 
       parcelhistory?.data?.removeAt(i);
       setState(() {});
@@ -1017,37 +1028,35 @@ class _HomeScreenState extends State<HomeScreen> {
   shoCancelDialog(String orderId, int i) async {
     await showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, myState) {
-          return AlertDialog(
-              title: const Text('Select cancel reason'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: List<Widget>.generate(
-                cancelReasonResponse?.data?.length ?? 0,
-                    (index) => RadioListTile(
-                  title: Text('${cancelReasonResponse?.data?[index].title}'),
-                  // Display the title for option 1
-                  //subtitle: Text('Subtitle for Option 1'),
-                  // Display a subtitle for option 1
-                  value: cancelReasonResponse?.data?[index].title,
-                  // Assign a value of 1 to this option
-                  groupValue: _selectedValue,
-                  // Use _selectedValue to track the selected option
-                  onChanged: (value) {
-
-                    _selectedValue = value.toString() ?? '';
-                    print(_selectedValue.toString());
-                    myState((){});
-                    // Update _selectedValue when option 1 is selected
-
-                  },
-                ),
-              ),),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
+      builder: (context) => StatefulBuilder(builder: (context, myState) {
+        return AlertDialog(
+          title: const Text('Select cancel reason'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List<Widget>.generate(
+              cancelReasonResponse?.data?.length ?? 0,
+              (index) => RadioListTile(
+                title: Text('${cancelReasonResponse?.data?[index].title}'),
+                // Display the title for option 1
+                //subtitle: Text('Subtitle for Option 1'),
+                // Display a subtitle for option 1
+                value: cancelReasonResponse?.data?[index].title,
+                // Assign a value of 1 to this option
+                groupValue: _selectedValue,
+                // Use _selectedValue to track the selected option
+                onChanged: (value) {
+                  _selectedValue = value.toString() ?? '';
+                  print(_selectedValue.toString());
+                  myState(() {});
+                  // Update _selectedValue when option 1 is selected
+                },
+              ),
+            ),
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
                 Container(
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
@@ -1059,20 +1068,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                     child: Text(
                       "Back",
-                      style: TextStyle(color: whiteColor,fontSize: 15),
+                      style: TextStyle(color: whiteColor, fontSize: 15),
                     ),
                   ),
                 ),
                 InkWell(
-                onTap: (){
-                  if(_selectedValue != null){
-                    Navigator.pop(context);
-                    cancelOrder( orderId,  i);
-                  }else {
-                    Fluttertoast.showToast(msg: 'Please select a cancel reason!');
-                  }
-
-                },
+                  onTap: () {
+                    if (_selectedValue != null) {
+                      Navigator.pop(context);
+                      cancelOrder(orderId, i);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: 'Please select a cancel reason!');
+                    }
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
@@ -1084,21 +1093,22 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Center(
                       child: Text(
                         "Cancel",
-                        style: TextStyle(color: whiteColor,fontSize: 15),
+                        style: TextStyle(color: whiteColor, fontSize: 15),
                       ),
                     ),
                   ),
                 )
-              ],),
-              const SizedBox(height: 20,)
-            ],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
-            actionsPadding: EdgeInsets.zero,
-
-
-          );
-        }
-      ),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            )
+          ],
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+          actionsPadding: EdgeInsets.zero,
+        );
+      }),
     );
   }
 }
