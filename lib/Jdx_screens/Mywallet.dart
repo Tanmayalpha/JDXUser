@@ -178,6 +178,7 @@ class _MyWalletState extends State<MyWallet> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: walletHistorymodel?.data?.length,
+                          reverse: true,
                           itemBuilder: (context, index) {
                             var item = walletHistorymodel?.data?[index];
                             return Card(

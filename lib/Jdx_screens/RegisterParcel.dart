@@ -108,6 +108,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       "data_arr": receiverList,
     });
     log("This is request here>>>>>>>>${request.body}");
+    print("This is request here>>>>>>>>${request.body}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
 
@@ -133,7 +134,9 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
               builder: (context) => ParceldetailsScreen(
                     orderid: orderid,
                     isFromParcelHistory: false,
-                  )));
+                  ))).then((value) {
+        receiverList = [];
+      });
     } else {
       setState(() {
         isSendParcel = false;
@@ -230,6 +233,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
 
   final _formKey = GlobalKey<FormState>();
   String? selectedValue;
+  String? selectedCategoryName;
   String? selectedValue1;
   String? amt;
   double? lat;
@@ -242,6 +246,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
+
         backgroundColor: primaryColor,
         /*leading: GestureDetector(
           onTap: () {
@@ -405,7 +410,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                       Navigator.of(context).pop();
                                     },
                                     initialPosition:
-                                        LatLng(22.719568, 75.857727),
+                                        const LatLng(22.719568, 75.857727),
                                     useCurrentLocation: true,
                                   ),
                                 ),
@@ -619,7 +624,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
+                                            const Text(
                                               "Mobile No",
                                               style: TextStyle(
                                                   fontSize: 13,
@@ -638,14 +643,14 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
+                                              const Text(
                                                 "Material category",
                                                 style: TextStyle(
                                                     fontSize: 13,
                                                     color: Color(0xFFBF2331)),
                                               ),
                                               Text(
-                                                  "${receiverList[index]['meterial_category']}"),
+                                                  "${receiverList[index]['cat_name']}"),
                                             ],
                                           ),
                                         ),
@@ -718,7 +723,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             const Text(
-                                              "Receipient Flat Number",
+                                              "Recipient Flat Number",
                                               style: TextStyle(
                                                   fontSize: 13,
                                                   color: Color(0xFFBF2331)),
@@ -1003,6 +1008,12 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                           onChanged: (newValue) {
                             setState(() {
                               selectedValue = newValue!;
+                              int? value = materialCategoryModel?.data!
+                                  .indexWhere(
+                                      (element) => element.id == selectedValue);
+                              selectedCategoryName =
+                                  materialCategoryModel?.data![value!].title ??
+                                      '';
                             });
                           },
                         ),
@@ -1108,7 +1119,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               builder: (context) {
                                 return Container(
                                   height: 250,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       borderRadius: BorderRadius.only(
                                           topRight: Radius.circular(10),
                                           topLeft: Radius.circular(10))),
@@ -1118,7 +1129,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text("Take Image From",
+                                      const Text("Take Image From",
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 15)),
@@ -1127,7 +1138,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                           'assets/ProfileAssets/cameraicon.png',
                                           scale: 1.5,
                                         ),
-                                        title: Text('Camera',
+                                        title: const Text('Camera',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold)),
                                         onTap: () {
@@ -1215,6 +1226,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                         receiverList.add({
                                           "meterial_category":
                                               "${selectedValue.toString()}",
+                                          "cat_name": "${selectedCategoryName}",
                                           "parcel_weight":
                                               "${selectedValue1.toString()}",
                                           "receiver_address":

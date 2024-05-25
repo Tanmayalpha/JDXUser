@@ -25,52 +25,73 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
         centerTitle: true,
         backgroundColor: primaryColor,
         leading: GestureDetector(
-          onTap: (){
-            Get.to(MyStatefulWidget());
+          onTap: () {
+            Get.to(DashboardView());
           },
           child: Icon(Icons.arrow_back, color: whiteColor, size: 20),
           //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
         ),
-        title:  Text('Recipient Details', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
+        title: Text(
+          'Recipient Details',
+          style: TextStyle(
+              color: whiteColor,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Lora'),
+        ),
         actions: [
           Padding(
-            padding:  EdgeInsets.only(right: 10),
+            padding: EdgeInsets.only(right: 10),
             child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationScreen()));
                 },
-                child: Icon(Icons.notifications,color: Colors.white,)),
+                child: Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                )),
           ),
         ],
       ),
-      body:SingleChildScrollView(
+      body: SingleChildScrollView(
         // child:  parcelDetailsModel == null || parcelDetailsModel == "" ? Center(child: CircularProgressIndicator(),) :
-      child:  Form(
+        child: Form(
           child: Container(
-            child:
-            Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
 
                 ///recipentdetails
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 30.0),
-                      child: Text("Recipient Details",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Recipient Details",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
                 Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
-
                         elevation: 1,
                         borderRadius: BorderRadius.circular(10),
                         child: Container(
@@ -86,15 +107,20 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                             // controller: recipientNameController,
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none
-                              ),
+                                  borderSide: BorderSide.none),
                               hintText: "Recipient Name",
-                              prefixIcon: Image.asset('assets/AuthAssets/Icon awesome-user.png', scale: 2.1, color: primaryColor,),
+                              prefixIcon: Image.asset(
+                                'assets/AuthAssets/Icon awesome-user.png',
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         color: splashcolor,
                         elevation: 1,
@@ -116,14 +142,18 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                                 borderSide: BorderSide.none,
                               ),
                               hintText: "Recipient Mobile No.",
-                              prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-call.png', scale: 2.1, color: primaryColor,),
+                              prefixIcon: Image.asset(
+                                'assets/AuthAssets/Icon ionic-ios-call.png',
+                                scale: 2.1,
+                                color: primaryColor,
+                              ),
                             ),
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 20,),
-
+                      SizedBox(
+                        height: 20,
+                      ),
                       Material(
                           color: splashcolor,
                           elevation: 1,
@@ -131,7 +161,7 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                           child: Container(
                               width: MediaQuery.of(context).size.width / 1.2,
                               height: 80,
-                              child:  TextFormField(
+                              child: TextFormField(
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Cant Empty';
@@ -143,26 +173,40 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                                     border: OutlineInputBorder(
                                       borderSide: BorderSide.none,
                                     ),
-                                    hintText: "flat number,floor,building name,etc",
-                                    prefixIcon: Image.asset('assets/ProfileAssets/locationIcon.png', scale: 1.7, color: primaryColor,
+                                    hintText:
+                                        "flat number,floor,building name,etc",
+                                    prefixIcon: Image.asset(
+                                      'assets/ProfileAssets/locationIcon.png',
+                                      scale: 1.7,
+                                      color: primaryColor,
                                     ),
                                   )))),
-                    ],),
+                    ],
+                  ),
                 ),
+
                 ///parceldetails
-                SizedBox(height: 20,),
+                SizedBox(
+                  height: 20,
+                ),
                 Column(
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 30.0),
-                      child: Text("Parcel Details ",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                      child: Text(
+                        "Parcel Details ",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
                 Center(
                   child: Column(
                     children: [
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Material(
                         elevation: 10,
                         borderRadius: BorderRadius.circular(10),
@@ -192,7 +236,9 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30,),
+                      const SizedBox(
+                        height: 30,
+                      ),
                       Material(
                         elevation: 10,
                         borderRadius: BorderRadius.circular(10),
@@ -222,27 +268,33 @@ class _EditeRecipentCartState extends State<EditeRecipentCart> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30,),
+                      const SizedBox(
+                        height: 30,
+                      ),
                       InkWell(
-                          onTap: (){
+                          onTap: () {
                             // parcelDetails();
                             Get.to(RegistParcelScreen());
                           },
                           child: Container(
                             height: 45,
-                            width: MediaQuery.of(context).size.width/1.2,
+                            width: MediaQuery.of(context).size.width / 1.2,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Secondry
+                                color: Secondry),
+                            child: Text(
+                              "Save Details",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
-                            child: Text("Save Details",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14,),),
                           )),
-
-                    ],),
+                    ],
+                  ),
                 ),
-
-
               ],
             ),
           ),

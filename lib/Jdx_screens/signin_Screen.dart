@@ -136,7 +136,6 @@
 //   }
 // }
 
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -181,7 +180,6 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController mobileController = TextEditingController();
 
-
   String? token;
 
   getToken() async {
@@ -193,16 +191,17 @@ class _SignInScreenState extends State<SignInScreen> {
   }
   // String? userid;
 
-  emailPasswordLogin() async{
-    SharedPreferences prefs  = await SharedPreferences.getInstance();
+  emailPasswordLogin() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var headers = {
       'Cookie': 'ci_session=7324f9ce3bb7ccbd4b7dc0920071bc3c06f3ca51'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/login'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiPath.baseUrl}Authentication/login'));
     request.fields.addAll({
       'email': '${emailController.text}',
       'password': '${passwordController.text}',
-      'token':token.toString(),
+      'token': token.toString(),
     });
     print("Checking all fields here ${request.fields}");
     request.headers.addAll(headers);
@@ -211,7 +210,7 @@ class _SignInScreenState extends State<SignInScreen> {
       var finalResponse = await response.stream.bytesToString();
       final jsonResponse = json.decode(finalResponse);
 
-      if(jsonResponse['status'] == true){
+      if (jsonResponse['status'] == true) {
         Fluttertoast.showToast(msg: '${jsonResponse['message']}');
         print("json response new one here ${jsonResponse}");
         String userid = jsonResponse['data']['user_id'];
@@ -227,16 +226,15 @@ class _SignInScreenState extends State<SignInScreen> {
           print("final response>>>>> ${jsonResponse}");
         });
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MyStatefulWidget()));
-      }
-      else{
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => DashboardView()));
+      } else {
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
         setState(() {
           isloader = false;
         });
       }
-    }
-    else {
+    } else {
       setState(() {
         isloader = false;
       });
@@ -244,46 +242,52 @@ class _SignInScreenState extends State<SignInScreen> {
       final jsonResponse = json.decode(finalResponse);
       print(jsonResponse.toString());
       Fluttertoast.showToast(msg: "${jsonResponse['message']}");
-
     }
   }
-
-
-
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getToken();
-
   }
 
   Future<bool> showExitPopup() async {
-    return await showDialog( //show confirm dialogue
-      //the return value will be from "Yes" or "No" options
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Exit App',style: TextStyle(fontFamily: 'Lora'),),
-        content: Text('Do you want to exit an App?'),
-        actions:[
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            //return false when click on "NO"
-            child:Text('No',style: TextStyle(fontFamily: 'Lora'),),
+    return await showDialog(
+          //show confirm dialogue
+          //the return value will be from "Yes" or "No" options
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Exit App',
+              style: TextStyle(fontFamily: 'Lora'),
+            ),
+            content: Text('Do you want to exit an App?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                //return false when click on "NO"
+                child: Text(
+                  'No',
+                  style: TextStyle(fontFamily: 'Lora'),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  exit(0);
+                  // Navigator.pop(context,true);
+                  // Navigator.pop(context,true);
+                },
+                //return true when click on "Yes"
+                child: Text(
+                  'Yes',
+                  style: TextStyle(fontFamily: 'Lora'),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: (){
-              exit(0);
-              // Navigator.pop(context,true);
-              // Navigator.pop(context,true);
-            },
-            //return true when click on "Yes"
-            child:Text('Yes',style: TextStyle(fontFamily: 'Lora'),),
-          ),
-        ],
-      ),
-    )??false; //if showDialouge had returned null, then return false
+        ) ??
+        false; //if showDialouge had returned null, then return false
   }
 
   @override
@@ -293,7 +297,7 @@ class _SignInScreenState extends State<SignInScreen> {
       onWillPop: showExitPopup,
       child: SafeArea(
           child: Scaffold(
-              backgroundColor:splashcolor,
+              backgroundColor: splashcolor,
               body: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -308,115 +312,158 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Text(
                           'Login',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22,fontFamily: 'Lora',color: whiteColor),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              fontFamily: 'Lora',
+                              color: whiteColor),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30,),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 20.0,right: 20,top: 10),
+                      padding:
+                          const EdgeInsets.only(left: 20.0, right: 20, top: 10),
                       child: Container(
                         padding: EdgeInsets.all(14),
                         width: size.width,
                         height: size.height / 1.6,
                         decoration: BoxDecoration(
                           color: whiteColor,
-                          borderRadius:
-                          const BorderRadius.only(topRight: Radius.circular(30), topLeft: Radius.circular(30),
-                            bottomLeft: Radius.circular(30),bottomRight: Radius.circular(30),),
+                          borderRadius: const BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30),
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
                         ),
                         child: ListView(
                           // mainAxisAlignment: MainAxisAlignment.start,
                           shrinkWrap: true,
                           children: [
                             const Align(
-                              alignment:Alignment.center,
+                              alignment: Alignment.center,
                             ),
                             const SizedBox(
                               height: 30,
                             ),
-                            Column(
+                            Column(children: [
+                              /// email login section
+                              Column(
                                 children: [
-                                  /// email login section
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 20,),
-                                      Material(
-                                        elevation: 10,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width / 1.2,
-                                          height: 55,
-                                          child: TextField(
-                                            controller: emailController,
-                                            decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                  borderSide: BorderSide.none
-                                              ),
-                                              hintText: "Enter Email",
-                                              prefixIcon: Image.asset('assets/AuthAssets/Icon material-email.png', scale: 1.3, color: primaryColor,),
-                                            ),),),
-                                      ),
-                                      const SizedBox(height: 20,),
-                                      Material(
-                                        elevation: 10,
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width / 1.2,
-                                          height: 55,
-                                          child: TextField(
-                                            obscureText: true,
-                                            controller: passwordController,
-                                            decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                  borderSide: BorderSide.none
-                                              ),
-                                              hintText: "Enter Password",
-                                              prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 1.3, color: primaryColor,),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Get.to(Forget());
-                                        },
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                          child: Align(
-                                              alignment: Alignment.centerRight,
-                                              child: Text('Forgot Password?', style: TextStyle(color: primaryColor,fontWeight: FontWeight.bold,))),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 50,),
-                                      // CustomTextButton(buttonText: 'Sign In', onTap: (){
-                                      //   emailPasswordLogin();
-                                      //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
-                                      // }),
-                                      InkWell(
-                                        onTap: (){
-                                          // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
-                                          setState(() {
-                                            isloader = true;
-                                          });
-                                          emailPasswordLogin();
-                                        },
-                                        child: Container(
-                                          height: 45,
-                                          width: MediaQuery.of(context).size.width/1.4,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(30),
-                                            color: Secondry,
-                                          ),
-                                          child: isloader == true ? Center(child: CircularProgressIndicator(color: Colors.white,),) :
-                                          const Text("Login",style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600,fontFamily: 'Lora'),),
-                                        ),
-                                      ),
-                                    ],
+                                  const SizedBox(
+                                    height: 20,
                                   ),
-                                ]),
+                                  Material(
+                                    elevation: 10,
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width /
+                                          1.2,
+                                      height: 55,
+                                      child: TextField(
+                                        controller: emailController,
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(
+                                              borderSide: BorderSide.none),
+                                          hintText: "Enter Email",
+                                          prefixIcon: Image.asset(
+                                            'assets/AuthAssets/Icon material-email.png',
+                                            scale: 1.3,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Material(
+                                    elevation: 10,
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width /
+                                          1.2,
+                                      height: 55,
+                                      child: TextField(
+                                        obscureText: true,
+                                        controller: passwordController,
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(
+                                              borderSide: BorderSide.none),
+                                          hintText: "Enter Password",
+                                          prefixIcon: Image.asset(
+                                            'assets/AuthAssets/Icon ionic-ios-lock.png',
+                                            scale: 1.3,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Get.to(Forget());
+                                    },
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text('Forgot Password?',
+                                              style: TextStyle(
+                                                color: primaryColor,
+                                                fontWeight: FontWeight.bold,
+                                              ))),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 50,
+                                  ),
+                                  // CustomTextButton(buttonText: 'Sign In', onTap: (){
+                                  //   emailPasswordLogin();
+                                  //   // Navigator.push(context, MaterialPageRoute(builder: (context)=> SeekerDrawerScreen()));
+                                  // }),
+                                  InkWell(
+                                    onTap: () {
+                                      // Navigator.push(context, MaterialPageRoute(builder:(context)=> MyStatefulWidget()));
+                                      setState(() {
+                                        isloader = true;
+                                      });
+                                      emailPasswordLogin();
+                                    },
+                                    child: Container(
+                                      height: 45,
+                                      width: MediaQuery.of(context).size.width /
+                                          1.4,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: Secondry,
+                                      ),
+                                      child: isloader == true
+                                          ? Center(
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                              ),
+                                            )
+                                          : const Text(
+                                              "Login",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: 'Lora'),
+                                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ]),
                             const SizedBox(
                               height: 20,
                             ),
@@ -425,8 +472,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               children: [
                                 const Text(
                                   "Don't have an account? ",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 GestureDetector(
                                   onTap: () {
@@ -447,8 +493,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ],
                 ),
-              ))
-      ),
+              ))),
     );
   }
 }

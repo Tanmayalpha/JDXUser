@@ -92,7 +92,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(Icons.arrow_back),
+          child: const Icon(Icons.arrow_back),
           // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
         ),
         elevation: 0,
@@ -104,7 +104,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
         centerTitle: true,
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.only(right: 10),
             child: InkWell(
                 onTap: () {
                   Navigator.push(
@@ -380,8 +380,14 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                           style: TextStyle(
                                                               color:
                                                                   Colors.red)),
-                                                      Text(orderStatus(
-                                                          item.status ?? '')),
+                                                      Text(
+                                                          orderStatus(
+                                                              item.status ??
+                                                                  ''),
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700)),
                                                     ],
                                                   ),
                                                   /*driverRating.isEmpty
@@ -912,7 +918,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                         ),
                         SizedBox(height: 10.0),*/
                               Text(
-                                'Extra Charge: ₹ $_extaPrice',
+                                'Fix Charge: ₹ $_extaPrice',
                                 style: const TextStyle(fontSize: 20.0),
                               ),
                               const SizedBox(height: 10.0),
@@ -1377,14 +1383,18 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
           Container(
             // height: 270,
             width: Get.size.width,
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
             child: Column(
               children: [
                 Container(
                   height: 80,
                   width: 100,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Colors.transparent,
                     image: DecorationImage(
                       image: AssetImage("assets/discount-voucher.png"),
@@ -1392,7 +1402,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
                 Text(
@@ -1403,7 +1413,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                     fontSize: 20,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 Text(
@@ -1431,10 +1441,6 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                   ),
                 )
               ],
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(15),
             ),
           ),
           Positioned(

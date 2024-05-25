@@ -249,7 +249,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           ),*/
               elevation: 0,
               backgroundColor: primaryColor,
-              title: Text(
+              title: const Text(
                 "My Account",
                 style: TextStyle(fontFamily: 'Lora'),
               ),
@@ -268,7 +268,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
             backgroundColor: whiteColor,
             body: SingleChildScrollView(
               child: getprofile == null || getprofile == ""
-                  ? Center(
+                  ? const Center(
                       child: CircularProgressIndicator(),
                     )
                   : Column(
@@ -384,20 +384,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                   children: [
                                     Text(
                                       "${getprofile!.data![0].userFullname}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Text(
                                       "${getprofile?.data![0].userEmail}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w500),
                                     ),
                                     // Text("Jdx1234@gmail.com",),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 InkWell(
@@ -430,7 +430,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 color: primaryColor,
                               ),
                               onTap: () {
-                                Get.to(ParcelHistory());
+                                Get.to(const ParcelHistory());
                               },
                             ),
                             CustomDrawerTile(
@@ -441,7 +441,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 scale: 1.3,
                               ),
                               onTap: () {
-                                Get.to(ChangePasswordScreen());
+                                Get.to(const ChangePasswordScreen());
                               },
                             ),
                             // CustomDrawerTile(tileName: 'Generate Ticket', tileIcon: Image.asset(changepasswordIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(GenerateTicket());},),
@@ -453,7 +453,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 scale: 1.3,
                               ),
                               onTap: () {
-                                Get.to(MyWallet());
+                                Get.to(const MyWallet());
                               },
                             ),
                             // CustomDrawerTile(tileName: 'Support', tileIcon: Image.asset(shareappIconR,color: primaryColor, scale: 1.3,),onTap: (){Get.to(share());},),
@@ -465,7 +465,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                 scale: 1.3,
                               ),
                               onTap: () {
-                                Get.to(SupportScreens());
+                                Get.to(const SupportScreens());
                               },
                             ),
                             // CustomDrawerTile(tileName: 'Feedback', tileIcon: Image.asset(privactpolicyIconR,color: primaryColor, scale: 1.3,), onTap: (){Get.to(FeedbackScreen());},),

@@ -29,10 +29,10 @@ class PaymentSuccessfulScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18, color: Colors.grey),
             ),
             const SizedBox(height: 30),
-
             InkWell(
-              onTap: (){
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyStatefulWidget()));
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => DashboardView()));
               },
               child: Container(
                 height: 45,
@@ -42,7 +42,7 @@ class PaymentSuccessfulScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                   color: Secondry,
                 ),
-                child:  const Text(
+                child: const Text(
                   "Back to Home",
                   style: TextStyle(
                       fontSize: 16,
@@ -51,7 +51,6 @@ class PaymentSuccessfulScreen extends StatelessWidget {
                 ),
               ),
             ),
-
           ],
         ),
       ),

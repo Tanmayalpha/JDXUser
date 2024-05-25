@@ -12,9 +12,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   String? userid;
-  void checkLogin()async{
+  void checkLogin() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     userid = pref.getString('userid');
   }
@@ -24,34 +23,36 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     //Timer(Duration(seconds: 5), () {Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SignInScreen()));});
     super.initState();
-    Future.delayed(Duration(milliseconds: 300),(){
+    Future.delayed(Duration(milliseconds: 300), () {
       return checkLogin();
     });
 
-    Future.delayed(Duration(seconds: 2),(){
-      if(userid == null || userid == ""){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const SignInScreen()));
-      }
-      else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MyStatefulWidget()));
+    Future.delayed(Duration(seconds: 2), () {
+      if (userid == null || userid == "") {
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const SignInScreen()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => DashboardView()));
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         body: Container(
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                image:DecorationImage(
-                    image:AssetImage('assets/splash screen.png', ),
-                    fit: BoxFit.cover
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: AssetImage(
+                  'assets/splash screen.png',
                 ),
-            ),
+                fit: BoxFit.cover),
+          ),
         ),
       ),
     );
   }
 }
-

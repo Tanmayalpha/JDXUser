@@ -5,23 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:job_dekho_app/Jdx_screens/feedbackscreen.dart';
 
-
-
 class LocalNotificationService {
   BuildContext? context;
   static final FlutterLocalNotificationsPlugin
-  _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+      _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   static void initialize() async {
     const InitializationSettings initializationSettings =
-    InitializationSettings(
-        android: AndroidInitializationSettings(
-            "@mipmap/ic_launcher"),
-        iOS: DarwinInitializationSettings());
+        InitializationSettings(
+            android: AndroidInitializationSettings("@mipmap/ic_launcher"),
+            iOS: DarwinInitializationSettings());
     _flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
     NotificationSettings settings =
-    await FirebaseMessaging.instance.requestPermission(
+        await FirebaseMessaging.instance.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -38,15 +35,20 @@ class LocalNotificationService {
     );
 
     FirebaseMessaging.instance.getInitialMessage().then(
-          (message) {
+      (message) {
         print("FirebaseMessaging.instance.getInitialMessage");
         if (message != null) {
           print("New Notification");
           print('${message.notification}_________3________');
           print('${message.notification!.body}_________body3____');
           print("message.data13 ${message.data}");
-          if(message.data['delivery_boy_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
+          if (message.data['delivery_boy_id'] != null &&
+              message.data['delivery_boy_id'] != "") {
+            Get.to(FeedbackScreen(
+              driverId: message.data['delivery_boy_id'],
+              driverName: message.data['delivery_name'],
+              parcelId: message.data['parcel_id'],
+            ));
           }
           // if (message.data['_id'] != null) {
           //   Navigator.of(context).push(
@@ -62,64 +64,67 @@ class LocalNotificationService {
     );
 
     FirebaseMessaging.onMessage.listen(
-          (message) {
+      (message) {
         print("FirebaseMessaging.onMessage______________");
         if (message.notification != null) {
           print('${message.notification}___________1______');
           print('${message.notification!.body}_________body____');
-         // print("message.data11 ${message.data['driver_id']}");
+          // print("message.data11 ${message.data['driver_id']}");
           print("message.data11 ${message.data}");
-         // print("message.data11 ${message.data['user_fullname']}");
-          if(message.data['delivery_boy_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
+          // print("message.data11 ${message.data['user_fullname']}");
+          if (message.data['delivery_boy_id'] != null &&
+              message.data['delivery_boy_id'] != "") {
+            Get.to(FeedbackScreen(
+              driverId: message.data['delivery_boy_id'],
+              driverName: message.data['delivery_name'],
+              parcelId: message.data['parcel_id'],
+            ));
           }
-           display(message);
+          display(message);
 
           handleNotification(message.data);
-
         }
       },
     );
 
     FirebaseMessaging.onMessageOpenedApp.listen(
-          (message) {
+      (message) {
         print("FirebaseMessaging.onMessageOpenedApp___________");
         if (message.notification != null) {
           print('_____________${message.notification}______2_________');
           print('_____________${message.notification?.title}_______________');
           print(message.notification!.body);
           print("message.data22 ${message.data}");
-          if(message.data['delivery_boy_id']!= null) {
-            Get.to( FeedbackScreen(driverId:  message.data['delivery_boy_id'],driverName: message.data['delivery_name'],parcelId: message.data['parcel_id'] ,));
+          if (message.data['delivery_boy_id'] != null &&
+              message.data['delivery_boy_id'] != "") {
+            Get.to(FeedbackScreen(
+              driverId: message.data['delivery_boy_id'],
+              driverName: message.data['delivery_name'],
+              parcelId: message.data['parcel_id'],
+            ));
           }
 
           // Get.to(FeedbackScreen());
           handleNotification(message.data);
 
-         // HomeScreenState().setSegmentValue(2) ;
-
-
-
-
+          // HomeScreenState().setSegmentValue(2) ;
         }
       },
     );
-
-
   }
-  static  Future<void> handleNotification(Map<String, dynamic> message) async {
+
+  static Future<void> handleNotification(Map<String, dynamic> message) async {
     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-    await _flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+        await _flutterLocalNotificationsPlugin
+            .getNotificationAppLaunchDetails();
 
     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
       // App was opened from a notification
       // TODO: handle the notification
-
     } else {
       // App was opened normally
     }
   }
-
 
   static void display(RemoteMessage message) async {
     try {
@@ -129,14 +134,14 @@ class LocalNotificationService {
       int id = random.nextInt(1000);
       const NotificationDetails notificationDetails = NotificationDetails(
           android: AndroidNotificationDetails(
-            "default_notification_channel",
-            "JdxApp",
-            importance: Importance.max,
-            priority: Priority.max,
-            playSound:true,
-            sound: RawResourceAndroidNotificationSound('test'),
-           // icon: '@mipmap/ic_launcher'
-          ));
+        "default_notification_channel",
+        "JdxApp",
+        importance: Importance.max,
+        priority: Priority.max,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound('test'),
+        // icon: '@mipmap/ic_launcher'
+      ));
       //print("my id is ${id.toString()}");
       await _flutterLocalNotificationsPlugin.show(
           id,
@@ -148,10 +153,4 @@ class LocalNotificationService {
       print('Error>>>$e');
     }
   }
-
-
-
 }
-
-
-

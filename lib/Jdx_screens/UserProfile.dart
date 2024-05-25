@@ -13,11 +13,12 @@ import '../Model/getprofilemodel.dart';
 import '../Model/updateprofilemodel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
+import 'Dashbord.dart';
 
 class UserProfile extends StatefulWidget {
   Getprofilemodel? getprofile;
 
-  UserProfile({this.id, this.getprofile});
+  UserProfile({super.key, this.id, this.getprofile});
 
   final String? id;
 
@@ -38,7 +39,7 @@ class _UserProfileState extends State<UserProfile> {
 
   var gaurdianData;
 
-  UpDateprofile() async {
+  updateProfile() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String? userid = preferences.getString('userid');
     print('This is user id===============>${userid}');
@@ -55,25 +56,25 @@ class _UserProfileState extends State<UserProfile> {
       'user_id': userid.toString()
     });
 
-
     request.headers.addAll(headers);
 
-    request.files.add(await http.MultipartFile.fromPath(
-        'user_image', imageFile?.path ?? ''));
-
+    if (imageFile?.path != null) {
+      request.files.add(await http.MultipartFile.fromPath(
+          'user_image', imageFile?.path ?? ''));
+    }
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
       var finalResponse = await response.stream.bytesToString();
-      final jsonResponse = json.decode(finalResponse);
       // final result = await response.stream.bytesToString();
       var userprofile = Updateprofilemodel.fromJson(jsonDecode(finalResponse));
-      print("prfile===================>${Updateprofilemodel}");
       setState(() {
         update = userprofile;
       });
 
-      Get.to(DrawerScreen());
+      Get.offAll(DashboardView(
+        selectedIndex: 2,
+      ));
       // Fluttertoast.showToast(msg: '${jsonResponse['message']}');
     } else {
       Fluttertoast.showToast(msg: '${update?.message ?? ''}');
@@ -111,20 +112,15 @@ class _UserProfileState extends State<UserProfile> {
         text: widget.getprofile?.data![0].userFullname.toString());
     mobileController = TextEditingController(
         text: widget.getprofile!.data![0].userPhone.toString());
-
   }
 
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
   var profileImage;
 
-
-
-
-
   _getFromGallery() async {
     final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
@@ -135,9 +131,8 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   _getFromCamera() async {
-
     final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
 
     if (pickedFile != null) {
       setState(() {
@@ -153,11 +148,11 @@ class _UserProfileState extends State<UserProfile> {
           //the return value will be from "Yes" or "No" options
           context: context,
           builder: (context) => AlertDialog(
-            title: Text(
+            title: const Text(
               'Exit App',
               style: TextStyle(fontFamily: 'Lora'),
             ),
-            content: Text(
+            content: const Text(
               'Do you want to exit an App?',
               style: TextStyle(fontFamily: 'Lora'),
             ),
@@ -165,7 +160,7 @@ class _UserProfileState extends State<UserProfile> {
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 //return false when click on "NO"
-                child: Text(
+                child: const Text(
                   'No',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -177,7 +172,7 @@ class _UserProfileState extends State<UserProfile> {
                   // Navigator.pop(context,true);
                 },
                 //return true when click on "Yes"
-                child: Text(
+                child: const Text(
                   'Yes',
                   style: TextStyle(fontFamily: 'Lora'),
                 ),
@@ -199,7 +194,7 @@ class _UserProfileState extends State<UserProfile> {
                 onTap: () async {
                   Get.back();
                 },
-                child: Icon(Icons.arrow_back_sharp),
+                child: const Icon(Icons.arrow_back_sharp),
               ),
               elevation: 0,
               backgroundColor: primaryColor,
@@ -233,7 +228,7 @@ class _UserProfileState extends State<UserProfile> {
                             builder: (context) {
                               return Container(
                                 height: 250,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     borderRadius: BorderRadius.only(
                                         topRight: Radius.circular(10),
                                         topLeft: Radius.circular(10))),
@@ -242,7 +237,7 @@ class _UserProfileState extends State<UserProfile> {
                                       MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Take Image From",
+                                    const Text("Take Image From",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15)),
@@ -251,7 +246,7 @@ class _UserProfileState extends State<UserProfile> {
                                         'assets/ProfileAssets/cameraicon.png',
                                         scale: 1.5,
                                       ),
-                                      title: Text('Camera',
+                                      title: const Text('Camera',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold)),
                                       onTap: () {
@@ -306,21 +301,20 @@ class _UserProfileState extends State<UserProfile> {
                                           fit: BoxFit.fill,
                                         )),
                                   )
-                                :  Container(
-                                        width: 120,
-                                        height: 120,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: whiteColor),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          child: Image.file(
-                                            imageFile ?? File(''),
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
+                                : Container(
+                                    width: 120,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: whiteColor),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Image.file(
+                                        imageFile ?? File(''),
+                                        fit: BoxFit.fill,
                                       ),
+                                    ),
+                                  ),
                             Positioned(
                               bottom: 20,
                               right: 10,
@@ -343,13 +337,13 @@ class _UserProfileState extends State<UserProfile> {
                     const SizedBox(
                       height: 10,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Material(
                       elevation: 10,
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width / 1.2,
                         height: 50,
                         child: TextField(
@@ -373,7 +367,7 @@ class _UserProfileState extends State<UserProfile> {
                     Material(
                       elevation: 10,
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width / 1.2,
                         height: 50,
                         child: TextField(
@@ -391,18 +385,18 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Material(
                       elevation: 10,
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width / 1.2,
                         height: 50,
                         child: TextField(
                           keyboardType: TextInputType.number,
-                          readOnly: true,
+                          //readOnly: true,
                           controller: mobileController,
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(
@@ -417,7 +411,7 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     // Material(
@@ -444,8 +438,7 @@ class _UserProfileState extends State<UserProfile> {
                     ),
                     InkWell(
                       onTap: () {
-                        UpDateprofile();
-
+                        updateProfile();
                       },
                       child: Container(
                         height: 50,
@@ -454,7 +447,7 @@ class _UserProfileState extends State<UserProfile> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
                             color: Secondry),
-                        child: Text(
+                        child: const Text(
                           "Edit And Save",
                           style: TextStyle(
                             color: Colors.black,
