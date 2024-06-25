@@ -1,13 +1,11 @@
-
 import 'package:flutter/cupertino.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:location/location.dart';
 
-class GetLocation{
+class GetLocation {
   LocationData? _currentPosition;
   late String _address = "";
   Location location1 = Location();
-  String firstLocation = "",lat = "",lng = "";
+  String firstLocation = "", lat = "", lng = "";
   ValueChanged onResult;
 
   var latitude;
@@ -36,28 +34,26 @@ class GetLocation{
 
     location1.onLocationChanged.listen((LocationData currentLocation) {
       print("${currentLocation.latitude} : ${currentLocation.longitude}");
-      _currentPosition = currentLocation;print(currentLocation.latitude);
+      _currentPosition = currentLocation;
+      print(currentLocation.latitude);
 
-      _getAddress(_currentPosition!.latitude,
-          _currentPosition!.longitude)
-          .then((value) {
-        _address = "${value.first.coordinates.longitude}";
-        firstLocation = value.first.subLocality.toString();
-        lat = _currentPosition!.latitude.toString();
-        lng = _currentPosition!.longitude.toString();
-        if(latitude==0){
-          onResult(value);
-        }
-      });
+      /*_getAddress(_currentPosition!.latitude, _currentPosition!.longitude)
+            .then((value) {
+          _address = ''; //"${value.first.coordinates.longitude}";
+          firstLocation = ''; //value.first.subLocality.toString();
+          lat = _currentPosition!.latitude.toString();
+          lng = _currentPosition!.longitude.toString();
+          if (latitude == 0) {
+            onResult(value);
+          }
+        });*/
     });
   }
 
-  Future<List<Address>> _getAddress(double? lat, double? lang) async {
-    final coordinates = new Coordinates(lat, lang);
-    List<Address> add =
-    await Geocoder.local.findAddressesFromCoordinates(coordinates);
+  /*Future<List<Address>> _getAddress(double? lat, double? lang) async {
+    final coordinates = Coordinates(latitude: lat, longitude: lang);
+    List<Address> add = [];
+    // await Geocoder.local.findAddressesFromCoordinates(coordinates);
     return add;
-  }
-
-
+  }*/
 }

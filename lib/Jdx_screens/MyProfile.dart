@@ -98,12 +98,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
                       alignment: Alignment.center,
-                      height: 50,
+                      height: 40,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6),
                         color: Colors.green,
                       ),
-                      child: Text(
+                      child: const Text(
                         "Confirm",
                         style: TextStyle(
                             color: Colors.white,
@@ -113,7 +113,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   InkWell(
