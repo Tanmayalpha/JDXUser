@@ -225,12 +225,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   var gaurdianData;
 
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(milliseconds: 300), () {
-      return getuserProfile();
-    });
+
+    getuserProfile();
   }
 
   @override

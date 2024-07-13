@@ -591,15 +591,9 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                                             item.driverDetails?.longitude.toString() ??
                                                                                 '';
 
-                                                                        final Uri url = Uri.parse('https://www.google.com/maps/dir/?api=1&origin=' +
-                                                                            CURENT_LAT +
-                                                                            ',' +
-                                                                            CURENT_LONG +
-                                                                            ' &destination=' +
-                                                                            lat.toString() +
-                                                                            ',' +
-                                                                            lon.toString() +
-                                                                            '&travelmode=driving&dir_action=navigate');
+                                                                        final Uri
+                                                                            url =
+                                                                            Uri.parse('https://www.google.com/maps/dir/?api=1&origin=$CURENT_LAT,$CURENT_LONG &destination=$lat,$lon&travelmode=driving&dir_action=navigate');
 
                                                                         print(
                                                                             '${url}____________');

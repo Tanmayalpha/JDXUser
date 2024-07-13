@@ -209,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     topLeft: Radius.circular(10),
                                     bottomLeft: Radius.circular(10))),
                             width: MediaQuery.of(context).size.width / 1.26,
-                            height: 55,
+                            height: 60,
                             child: TextField(
                               readOnly: true,
                               controller: addressC,
@@ -1042,18 +1042,23 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: primaryColor,
-                  ),
-                  height: 40,
-                  width: 80,
-                  child: Center(
-                    child: Text(
-                      "Back",
-                      style: TextStyle(color: whiteColor, fontSize: 15),
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: primaryColor,
+                    ),
+                    height: 40,
+                    width: 80,
+                    child: Center(
+                      child: Text(
+                        "Back",
+                        style: TextStyle(color: whiteColor, fontSize: 15),
+                      ),
                     ),
                   ),
                 ),

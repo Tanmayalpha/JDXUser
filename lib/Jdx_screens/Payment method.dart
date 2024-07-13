@@ -103,7 +103,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
           onTap: () {
             Get.back();
           },
-          child: Icon(Icons.arrow_back),
+          child: const Icon(Icons.arrow_back),
           // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
         ),
         elevation: 0,
@@ -132,7 +132,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
               itemCount: paymentTypeList.length,
               itemBuilder: (c, i) {
                 return Padding(
-                  padding: EdgeInsets.only(bottom: 0),
+                  padding: const EdgeInsets.only(bottom: 0),
                   child: InkWell(
                       onTap: () {
                         print(
@@ -166,7 +166,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           child: Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 20),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
@@ -270,9 +270,6 @@ class _PaymentMethodState extends State<PaymentMethod> {
     String? phone = prefs.getString('phone');
     int amt = widget.totalAmount.toInt();
 
-    print('${email}_______________');
-    print('${phone}_______________');
-    print('${widget.totalAmount.toString()}_______________');
     print('${amt}_______________');
 
     var options = {
@@ -320,8 +317,6 @@ class _PaymentMethodState extends State<PaymentMethod> {
     //     msg: "ERROR: " + response.code.toString() + " - " + response.message!,
     //     toastLength: Toast.LENGTH_SHORT);
 
-    print('${response.error}________error_________');
-    print('${response.code}________code_________');
     Fluttertoast.showToast(
         msg: "Payment cancelled by user",
         toastLength: Toast.LENGTH_SHORT,

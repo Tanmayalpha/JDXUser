@@ -55,6 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String userCity = '';
   String userPic = '';
   String wallet = '';
+  Position? location;
 
   String? token;
 
@@ -67,7 +68,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   registerUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //SharedPreferences prefs = await SharedPreferences.getInstance();
     var headers = {
       'Cookie': 'ci_session=aa0c171db25cefd1a0e5b170be945d1492f56aba'
     };
@@ -82,6 +83,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'user_bdate': '5',
       'referral_code': '5',
       'user_city': '${addressC.text}',
+      'latitude': lat.toString(),
+      'longitude': long.toString(),
     });
     print("Checking All Details fields ${request.fields}");
     request.headers.addAll(headers);
@@ -689,6 +692,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void init() async {
     Position location = await _determinePosition();
+    lat = location.latitude;
+    long = location.longitude;
 
     List<Placemark> placemarks =
         await placemarkFromCoordinates(location.latitude, location.longitude);
