@@ -58,6 +58,8 @@ class _UserProfileState extends State<UserProfile> {
 
     request.headers.addAll(headers);
 
+    print('${request.fields}______________');
+
     if (imageFile?.path != null) {
       request.files.add(await http.MultipartFile.fromPath(
           'user_image', imageFile?.path ?? ''));

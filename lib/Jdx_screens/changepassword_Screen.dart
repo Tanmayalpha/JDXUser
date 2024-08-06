@@ -145,10 +145,10 @@
 //   }
 // }
 
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:job_dekho_app/Jdx_screens/signin_Screen.dart';
 import 'package:job_dekho_app/Utils/CustomWidgets/customTextButton.dart';
 import 'package:get/get.dart';
@@ -168,15 +168,17 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-
   TextEditingController oldpswController = TextEditingController();
   TextEditingController newpswController = TextEditingController();
 
   SnackBar snackBar = const SnackBar(
-    content: Text('Password Change Successfully',),
+    content: Text(
+      'Password Change Successfully',
+    ),
   );
 
   ChangepasswordModel? changepasswordModel;
+
   changePassword() async {
     print("Change Password");
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -184,71 +186,85 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     var headers = {
       'Cookie': 'ci_session=2642df063cc1a98b4a32209e7aa3505d7f4932a1'
     };
-    var request = http.MultipartRequest('POST',Uri.parse('${ApiPath.baseUrl}Authentication/changePassword'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiPath.baseUrl}Authentication/changePassword'));
     request.fields.addAll({
       'user_id': '${userid}',
       'password': newpswController.text,
+      'old_password': oldpswController.text
     });
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {
       var finalResult = await response.stream.bytesToString();
-      final jsonResponse = ChangepasswordModel.fromJson(json.decode(finalResult));
+
+      final jsonResponse = json.decode(finalResult);
       print("final change passsowrd result>>>>>>> ${finalResult.toString()}");
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-
-      Get.to(SignInScreen());
-      setState(() {
-        changepasswordModel = jsonResponse;
-      });
-    }
-    else {
+      if (jsonResponse['status']) {
+        Fluttertoast.showToast(msg: jsonResponse['message']);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.clear();
+        Get.to(const SignInScreen());
+      } else {
+        Fluttertoast.showToast(msg: jsonResponse['message']);
+      }
+    } else {
       print(response.reasonPhrase);
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SafeArea(child: Scaffold(
+    return SafeArea(
+        child: Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: (){
+          onTap: () {
             Get.back();
           },
           child: Icon(Icons.arrow_back),
         ),
         elevation: 0,
         backgroundColor: primaryColor,
-        title: Text('Change Password',style: TextStyle(fontFamily: 'Lora'),),
+        title: Text(
+          'Change Password',
+          style: TextStyle(fontFamily: 'Lora'),
+        ),
         centerTitle: true,
         actions: [
           Padding(
-            padding:  EdgeInsets.only(right: 10),
+            padding: EdgeInsets.only(right: 10),
             child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => NotificationScreen()));
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationScreen()));
                 },
-                child: Icon(Icons.notifications,color: Colors.white,)),
+                child: Icon(
+                  Icons.notifications,
+                  color: Colors.white,
+                )),
           )
         ],
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height/1.1,
+          height: MediaQuery.of(context).size.height / 1.1,
           padding: EdgeInsets.symmetric(horizontal: 12),
           width: size.width,
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(0))
-          ),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(0))),
           //padding: EdgeInsets.symmetric(vertical: 30),
           child: Column(
             children: [
-              SizedBox(height: 70,),
+              const SizedBox(
+                height: 70,
+              ),
               Material(
                 elevation: 10,
                 borderRadius: BorderRadius.circular(10),
@@ -258,16 +274,21 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   child: TextField(
                     controller: oldpswController,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
+                      border:
+                          const OutlineInputBorder(borderSide: BorderSide.none),
                       hintText: "Old Password",
-                      prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+                      prefixIcon: Image.asset(
+                        'assets/AuthAssets/Icon ionic-ios-lock.png',
+                        scale: 2.1,
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 40,),
+              const SizedBox(
+                height: 40,
+              ),
               Material(
                 elevation: 10,
                 borderRadius: BorderRadius.circular(10),
@@ -277,20 +298,35 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   child: TextField(
                     controller: newpswController,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
+                      border:
+                          const OutlineInputBorder(borderSide: BorderSide.none),
                       hintText: "New Password",
-                      prefixIcon: Image.asset('assets/AuthAssets/Icon ionic-ios-lock.png', scale: 2.1, color: primaryColor,),
+                      prefixIcon: Image.asset(
+                        'assets/AuthAssets/Icon ionic-ios-lock.png',
+                        scale: 2.1,
+                        color: primaryColor,
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 40,),
-              CustomTextButton(buttonText: "save", onTap: (){
-                changePassword();
-                // Get.to(DrawerScreen());
-              },),
+              const SizedBox(
+                height: 40,
+              ),
+              CustomTextButton(
+                buttonText: "save",
+                onTap: () {
+                  if (oldpswController.text.isEmpty) {
+                    Fluttertoast.showToast(msg: 'Enter old password');
+                  } else if (newpswController.text.isEmpty) {
+                    Fluttertoast.showToast(msg: 'Enter new password');
+                  } else {
+                    changePassword();
+                  }
+
+                  // Get.to(DrawerScreen());
+                },
+              ),
             ],
           ),
         ),

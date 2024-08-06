@@ -243,8 +243,14 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                           const Text("Flat and floor no.",
                                               style:
                                                   TextStyle(color: Colors.red)),
-                                          Text(
-                                              "${parceldetails?.data![0].senderFulladdress}"),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                2.5,
+                                            child: Text(
+                                                "${parceldetails?.data![0].senderFulladdress}"),
+                                          ),
                                         ],
                                       ),
                                       /*parceldetails!.data![0].status == '4' ?*/ Column(

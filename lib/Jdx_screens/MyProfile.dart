@@ -93,7 +93,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           MaterialPageRoute(
                               builder: (context) => SignInScreen()));
                       prefs.setString('userid', "");
-                      setState(() {});
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 10),
