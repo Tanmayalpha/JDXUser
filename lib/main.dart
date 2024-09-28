@@ -3,30 +3,39 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:job_dekho_app/Jdx_screens/feedbackscreen.dart';
 import 'package:job_dekho_app/Jdx_screens/splash_Screen.dart';
 
 import 'Services/notification_service.dart';
 
 @pragma('vm:entry-point')
 Future<void> backgroundHandler(RemoteMessage message) async {
-
-
+  if (message.data['delivery_boy_id'] != null &&
+      message.data['delivery_boy_id'] != "") {
+    Get.to(FeedbackScreen(
+      driverId: message.data['delivery_boy_id'],
+      driverName: message.data['delivery_name'],
+      parcelId: message.data['parcel_id'],
+    ));
+  }
 }
-void main()async{
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   LocalNotificationService.initialize();
 
   FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 
-  try{
+  try {
     String? token = await FirebaseMessaging.instance.getToken();
     print("-----------token:-----${token}");
-  } on FirebaseException{
+  } on FirebaseException {
     print('__________FirebaseException_____________');
   }
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   // This widget is the root of your application.
@@ -35,7 +44,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'JDX',
-      theme: ThemeData (
+      theme: ThemeData(
         fontFamily: GoogleFonts.poppins().fontFamily,
         primarySwatch: Colors.blue,
       ),

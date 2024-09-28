@@ -710,22 +710,39 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   fontFamily:
                                                                       'Lora'),
                                                             ),
-                                                            Text(
-                                                              orderStatus(
-                                                                  parcelhistory!
-                                                                          .data![
-                                                                              i]
-                                                                          .orderStatus ??
-                                                                      'cancel'),
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  fontFamily:
-                                                                      'Lora'),
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 10,
+                                                                      right: 10,
+                                                                      top: 2,
+                                                                      bottom:
+                                                                          2),
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              15),
+                                                                  color: CustomColors
+                                                                      .LightblueColor),
+                                                              child: Text(
+                                                                orderStatus(parcelhistory!
+                                                                        .data![
+                                                                            i]
+                                                                        .orderStatus ??
+                                                                    'cancel'),
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    fontFamily:
+                                                                        'Lora'),
+                                                              ),
                                                             ),
                                                             const SizedBox(
                                                               height: 5,
@@ -819,12 +836,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color changeColorStatus(String status) {
+    print('${status}_______status________');
+
     if (status == '0') {
       return Colors.white;
     } else if (status == '1') {
       return Colors.white;
     } else if (status == '2') {
-      return Colors.white;
+      return Colors.yellow.withOpacity(0.5);
     } else if (status == '3') {
       return Colors.green;
     } else if (status == '4') {

@@ -103,8 +103,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Fluttertoast.showToast(msg: '${jsonResponse['message']}');
         setState(() {});
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => SignInScreen()));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const SignInScreen()));
       } else {
         Fluttertoast.showToast(msg: "${jsonResponse['message']}");
         setState(() {});
@@ -137,16 +137,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             appBar: AppBar(
               leading: GestureDetector(
                 onTap: () {
-                  Get.to(SignInScreen());
+                  Get.to(const SignInScreen());
                 },
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_back,
                   size: 25,
                 ),
               ),
               elevation: 0,
               backgroundColor: primaryColor,
-              title: Text(
+              title: const Text(
                 'SignUp',
                 style: TextStyle(fontFamily: 'Lora'),
               ),
@@ -204,7 +204,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 height: size.height / 1.3,
                                 decoration: BoxDecoration(
                                   color: whiteColor,
-                                  borderRadius: BorderRadius.only(
+                                  borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(30),
                                       topLeft: Radius.circular(30),
                                       bottomRight: Radius.circular(30),
@@ -214,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   const Align(
                                     alignment: Alignment.center,
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 30,
                                   ),
                                   Column(
@@ -222,14 +222,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       Container(
                                         child: Column(
                                           children: [
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             ),
                                             Material(
                                               elevation: 10,
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: Container(
+                                              child: SizedBox(
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width /
@@ -312,7 +312,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               elevation: 10,
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: Container(
+                                              child: SizedBox(
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width /
@@ -326,12 +326,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                     }
                                                     return null;
                                                   },
+                                                  maxLength: 10,
                                                   keyboardType:
                                                       TextInputType.number,
                                                   autovalidateMode:
                                                       AutovalidateMode.disabled,
                                                   controller: mobileController,
                                                   decoration: InputDecoration(
+                                                    counter: const SizedBox(),
                                                     border:
                                                         const OutlineInputBorder(
                                                             borderSide:
@@ -347,7 +349,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             ),
                                             // _addressField(context),
@@ -355,7 +357,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               elevation: 10,
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: Container(
+                                              child: SizedBox(
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width /
@@ -409,7 +411,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                                 .pop();
                                                           },
                                                           initialPosition:
-                                                              LatLng(22.719568,
+                                                              const LatLng(
+                                                                  22.719568,
                                                                   75.857727),
                                                           useCurrentLocation:
                                                               true,
@@ -435,14 +438,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 ),
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             ),
                                             Material(
                                               elevation: 10,
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: Container(
+                                              child: SizedBox(
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width /
@@ -517,7 +520,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                             30),
                                                     color: Secondry),
                                                 // child: isloader == true ? Center(child: CircularProgressIndicator(color: Colors.white,),) :
-                                                child: Text(
+                                                child: const Text(
                                                   "Sign up",
                                                   style: TextStyle(
                                                     color: Colors.black,
@@ -542,7 +545,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             //     child: Text("Sign up",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 14,),),
                                             //   ),
                                             // ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             ),
                                             Row(
@@ -557,7 +560,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                 ),
                                                 GestureDetector(
                                                   onTap: () {
-                                                    Get.to(SignInScreen());
+                                                    Get.to(
+                                                        const SignInScreen());
                                                   },
                                                   child: Text(
                                                     "Login",

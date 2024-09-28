@@ -14,7 +14,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class Chat extends StatefulWidget {
   final String? id, status;
   const Chat({Key? key, this.id, this.status}) : super(key: key);
@@ -26,7 +25,7 @@ class Chat extends StatefulWidget {
 StreamController<String>? chatstreamdata;
 
 class _ChatState extends State<Chat> {
-  TextEditingController msgController =  TextEditingController();
+  TextEditingController msgController = TextEditingController();
   List<File> files = [];
   List<dynamic> chatList = [];
   List<ChatDataList> finalChatList = [];
@@ -34,7 +33,7 @@ class _ChatState extends State<Chat> {
   String _filePath = "";
   bool isLoading = false;
 
-  ScrollController _scrollController =  ScrollController();
+  ScrollController _scrollController = ScrollController();
 
   String? roles;
   String? uid;
@@ -42,8 +41,6 @@ class _ChatState extends State<Chat> {
   String? userName;
   String? userPic;
   String? wallet;
-
-
 
   getSharedData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -60,7 +57,7 @@ class _ChatState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    downloadlist =  Map<String?, String>();
+    downloadlist = Map<String?, String>();
     //CUR_TICK_ID = widget.id;
     // FlutterDownloader.registerCallback(downloadCallback);
     // setupChannel();
@@ -72,7 +69,7 @@ class _ChatState extends State<Chat> {
 
   @override
   void dispose() {
-   // CUR_TICK_ID = '';
+    // CUR_TICK_ID = '';
     if (chatstreamdata != null) chatstreamdata!.sink.close();
 
     super.dispose();
@@ -88,13 +85,12 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
+        backgroundColor: primaryColor,
         appBar: AppBar(
           backgroundColor: primaryColor,
           elevation: 0,
           centerTitle: true,
           title: const Text("Chat"),
-
         ),
         // getAppBar(getTranslated(context, 'CHAT')!, context),
         body: Container(
@@ -109,7 +105,7 @@ class _ChatState extends State<Chat> {
             child: Container(
               // height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.4),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(45),
@@ -155,15 +151,13 @@ class _ChatState extends State<Chat> {
     );
   }
 
-  Widget msgItem(int index,ChatDataList message)
-  {
+  Widget msgItem(int index, ChatDataList message) {
     // if (message.uid == context.read<SettingProvider>().userId) {
     //Own message
     return Row(
-      mainAxisAlignment:
-      message.userType == 'user' ?
-          MainAxisAlignment.end
-       : MainAxisAlignment.start,
+      mainAxisAlignment: message.userType == 'user'
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
       children: <Widget>[
         // Flexible(
         //   flex: 1,
@@ -175,11 +169,9 @@ class _ChatState extends State<Chat> {
         ),
       ],
     );
-
   }
 
   Widget MsgContent(int index, ChatDataList message) {
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: message.userType == 'user'
@@ -193,9 +185,7 @@ class _ChatState extends State<Chat> {
           padding: EdgeInsets.only(top: 10),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-
-            ],
+            children: <Widget>[],
           ),
         ),
         SizedBox(
@@ -224,7 +214,6 @@ class _ChatState extends State<Chat> {
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start,
                     children: <Widget>[
-
                       Text("${message.message}",
                           style: TextStyle(
                               color: message.userType == 'user'
@@ -260,7 +249,7 @@ class _ChatState extends State<Chat> {
       }
 
       String fileName = url!.substring(url.lastIndexOf("/") + 1);
-      File file =  File(_filePath + "/" + fileName);
+      File file = File(_filePath + "/" + fileName);
       bool hasExisted = await file.exists();
 
       if (downloadlist.containsKey(mid)) {
@@ -340,59 +329,78 @@ class _ChatState extends State<Chat> {
     else
       icon = "assets/images/zip.png";
 
-
     return file == null
         ? Container()
         : Stack(
-      alignment: Alignment.bottomRight,
-      children: <Widget>[
-        Card(
-          //margin: EdgeInsets.only(right: message.sender_id == myid ? 10 : 50, left: message.sender_id == myid ? 50 : 10, bottom: 10),
-          elevation: 0.0,
-          color: message.userType == "user"
-              ? Colors.white.withOpacity(0.1)
-              : Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: Column(
-              crossAxisAlignment:  message.userType == "user"
-                  ? CrossAxisAlignment.end
-                  : CrossAxisAlignment.start,
-              children: <Widget>[
-                //_messages[index].issend ? Container() : Center(child: SizedBox(height:20,width: 20,child: new CircularProgressIndicator(backgroundColor: ColorsRes.secondgradientcolor,))),
+            alignment: Alignment.bottomRight,
+            children: <Widget>[
+              Card(
+                //margin: EdgeInsets.only(right: message.sender_id == myid ? 10 : 50, left: message.sender_id == myid ? 50 : 10, bottom: 10),
+                elevation: 0.0,
+                color: message.userType == "user"
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    crossAxisAlignment: message.userType == "user"
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      //_messages[index].issend ? Container() : Center(child: SizedBox(height:20,width: 20,child: new CircularProgressIndicator(backgroundColor: ColorsRes.secondgradientcolor,))),
 
-                GestureDetector(
-                  onTap: () {
-                   // _requestDownload(attach[index].media, message.id);
-                  },
-                  child: Image.network(file,
-                      width: 120,
-                      height: 150,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Image.asset('assets/order_confirmed.png'))
-                      /*: Image.asset(
+                      GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Image.network(
+                                    file ?? '',
+                                    // height: 100,
+                                    //width: 100,
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Image.asset(
+                                      'assets/order_confirmed.png',
+
+                                      /// height: 100,
+                                      // width: 100,
+                                    ),
+                                  ),
+                                  actions: [],
+                                );
+                              },
+                            );
+                            // _requestDownload(attach[index].media, message.id);
+                          },
+                          child: Image.network(file,
+                              width: 120,
+                              height: 150,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Image.asset('assets/order_confirmed.png'))
+                          /*: Image.asset(
                     icon,
                     width: 100,
                     height: 100,
                   ),*/
+                          ),
+                    ],
+                  ),
                 ),
-        ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Text(message.dateCreated!,
-                style: const TextStyle(
-                    color: Colors.black26,
-                    fontSize: 9)),
-          ),
-        ),
-      ],
-    );
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(message.dateCreated!,
+                      style:
+                          const TextStyle(color: Colors.black26, fontSize: 9)),
+                ),
+              ),
+            ],
+          );
   }
 
 /*  _imgFromGallery() async {
@@ -472,127 +480,138 @@ class _ChatState extends State<Chat> {
   }*/
 
   setSnackbar(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar( SnackBar(
-      content:  Text(
-        msg,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: Colors.black45),
-      ),
-      backgroundColor: Colors.white
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          msg,
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.black45),
+        ),
+        backgroundColor: Colors.white));
   }
 
   msgRow() {
     return /*widget.status != "4"
-        ?*/ Align(
-            alignment: Alignment.bottomLeft,
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              color: Colors.white,
-              child: Column(
-
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(children: imageList.map((e) => Padding(
-
-                      padding: const EdgeInsets.only(left: 5),
-                      child: Stack(children: [
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-
-                            child: Image.file(e,scale: 3,height: 100,width: 100,fit: BoxFit.fill,)),
-                        Positioned(
-                          right: 0,
-                            top: -1,
-                            child: InkWell(
-                              onTap: (){
-                                imageList.removeWhere((element) => e == element);
-                                setState(() {
-
-                                });
-                              },
-                                child: const Icon(Icons.close, size: 20,)))
-                      ],),
-                    )).toList()),
+        ?*/
+        Align(
+      alignment: Alignment.bottomLeft,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        width: double.infinity,
+        color: Colors.white,
+        child: Column(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                  children: imageList
+                      .map((e) => Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.file(
+                                      e,
+                                      scale: 3,
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.fill,
+                                    )),
+                                Positioned(
+                                    right: 0,
+                                    top: -1,
+                                    child: InkWell(
+                                        onTap: () {
+                                          imageList.removeWhere(
+                                              (element) => e == element);
+                                          setState(() {});
+                                        },
+                                        child: const Icon(
+                                          Icons.close,
+                                          size: 20,
+                                        )))
+                              ],
+                            ),
+                          ))
+                      .toList()),
+            ),
+            Row(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    //_imgFromGallery();
+                    _getFromGallery();
+                  },
+                  child: Container(
+                    height: 30,
+                    width: 30,
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
-                  Row(
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          //_imgFromGallery();
-                          _getFromGallery();
-                        },
-                        child: Container(
-                          height: 30,
-                          width: 30,
-                          decoration: BoxDecoration(
-                            color: primaryColor,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Icon(
-                            Icons.add,
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: msgController,
+                    maxLines: null,
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                    decoration: InputDecoration(
+                        hintText: "Write message...",
+                        hintStyle: TextStyle(color: Colors.black45),
+                        border: InputBorder.none),
+                  ),
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                FloatingActionButton(
+                  mini: true,
+                  onPressed: () {
+                    sendMessage(msgController.text.trim());
+                  },
+                  backgroundColor: primaryColor,
+                  elevation: 0,
+                  child: isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
                             color: Colors.white,
-                            size: 20,
                           ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          controller: msgController,
-                          maxLines: null,
-                          style: TextStyle(
-                            color: Colors.grey,
-                          ),
-                          decoration: InputDecoration(
-                              hintText: "Write message...",
-                              hintStyle: TextStyle(
-                                  color: Colors.black45),
-                              border: InputBorder.none),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 15,
-                      ),
-                      FloatingActionButton(
-                        mini: true,
-                        onPressed: () {
-
-                            sendMessage(msgController.text.trim());
-
-                        },
-                        backgroundColor: primaryColor,
-                        elevation: 0,
-                        child:isLoading ? const Center(child: CircularProgressIndicator(color: Colors.white,),) : const Icon(
+                        )
+                      : const Icon(
                           Icons.send,
                           color: Colors.white,
                           size: 18,
                         ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 
-  void getChatMessage() async{
+  void getChatMessage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     uid = prefs.getString('userid');
 
     var headers = {
       'Cookie': 'ci_session=fb1e834ed7716c84e9817e5d5a9db04cde5fc664'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/get_message'));
-    request.fields.addAll({
-      'user_id': uid ?? '',
-      'ticket_id': widget.id ?? ''
-    });
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiPath.baseUrl}Authentication/get_message'));
+    request.fields.addAll({'user_id': uid ?? '', 'ticket_id': widget.id ?? ''});
 
     print('__________${request.fields}_____________');
     request.headers.addAll(headers);
@@ -600,28 +619,27 @@ class _ChatState extends State<Chat> {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      var result =   await response.stream.bytesToString();
+      var result = await response.stream.bytesToString();
       print('___________${result}__________');
       var finalResult = GetChatMessage.fromJson(jsonDecode(result));
       setState(() {
-        finalChatList = finalResult.data ?? [] ;
+        finalChatList = finalResult.data ?? [];
         finalChatList.reversed;
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
   }
 
-  void sendMessage(String trim) async{
+  void sendMessage(String trim) async {
     isLoading = true;
     setState(() {});
-
 
     var headers = {
       'Cookie': 'ci_session=a66a01d29b720c4b249aa1c631d2cb4db94b8ba1'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}Authentication/send_message'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('${ApiPath.baseUrl}Authentication/send_message'));
     request.fields.addAll({
       'user_type': 'user',
       'user_id': uid ?? '315',
@@ -629,17 +647,16 @@ class _ChatState extends State<Chat> {
       'message': trim
     });
 
-    if(imageList.isNotEmpty){
-      imageList.forEach((element) async{
-        request.files.add(
-            await http.MultipartFile.fromPath('attachments[]', imageFile!.path));
+    if (imageList.isNotEmpty) {
+      imageList.forEach((element) async {
+        request.files.add(await http.MultipartFile.fromPath(
+            'attachments[]', imageFile!.path));
       });
     }
 
-   /* imageFile!=null ?
+    /* imageFile!=null ?
       request.files.add(
           await http.MultipartFile.fromPath('attachments[]', imageFile!.path)) : null;*/
-
 
     /*imageList.forEach((element) async{
 
@@ -651,7 +668,6 @@ class _ChatState extends State<Chat> {
 
     http.StreamedResponse response = await request.send();
 
-
     msgController.clear();
     imageList.clear();
     if (response.statusCode == 200) {
@@ -662,28 +678,27 @@ class _ChatState extends State<Chat> {
       setState(() {
         isLoading = false;
       });
-    }
-    else {
+    } else {
       print(response.reasonPhrase);
     }
-
   }
 
   ImagePicker _picker = ImagePicker();
-File ? imageFile ;
-List <File> imageList = [] ;
+  File? imageFile;
+  List<File> imageList = [];
   _getFromGallery() async {
-    final XFile? pickedFile =
-    await _picker.pickImage(source: ImageSource.gallery, imageQuality: 80, maxHeight: 480,maxWidth: 480);
+    final XFile? pickedFile = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+        maxHeight: 480,
+        maxWidth: 480);
     if (pickedFile != null) {
       setState(() {
         imageFile = File(pickedFile.path);
         print('${imageFile}gggggg');
-        imageList.add(imageFile ?? File(''))  ;
+        imageList.add(imageFile ?? File(''));
       });
       //Navigator.pop(context);
     }
   }
-
-
 }

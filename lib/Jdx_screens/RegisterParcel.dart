@@ -230,7 +230,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
       return parcelWeight();
     });
     init();
-    //_getCompensationAmmount();
+    _getCompensationAmmount();
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -1056,7 +1056,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                   const SizedBox(
                     height: 15,
                   ),
-                  /*Material(
+                  Material(
                     color: splashcolor,
                     elevation: 1,
                     borderRadius: BorderRadius.circular(10),
@@ -1093,7 +1093,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                       child: Text(
                         'We will compensate the value of lost item '
                         'within three working days according to rules. '
-                        'maximum compensation -${amt}',
+                        'maximum compensation -₹${amt}',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Colors.grey,
@@ -1101,7 +1101,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                       )),
                   const SizedBox(
                     height: 15,
-                  ),*/
+                  ),
                   Container(
                     height: 140,
                     width: MediaQuery.of(context).size.width / 1.2,

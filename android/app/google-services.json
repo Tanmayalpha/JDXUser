@@ -1,65 +1,26 @@
 {
   "project_info": {
-    "project_number": "949841450937",
-    "project_id": "jdxuser-58387",
-    "storage_bucket": "jdxuser-58387.appspot.com"
+    "project_number": "29892292334",
+    "project_id": "courier-delivery-2ba8d",
+    "storage_bucket": "courier-delivery-2ba8d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:949841450937:android:8f82bc998680414ad44868",
+        "mobilesdk_app_id": "1:29892292334:android:f0375e1ebeee396bb58dff",
         "android_client_info": {
           "package_name": "com.jdxconnect.user"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "949841450937-qj7rddcopaik3nr8notl1v5h0ddh7j3t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCLEM-0fSRsnibkMqRUsffzra-Ik_6K-P8"
+          "current_key": "AIzaSyCwx9lJDK_0xffUevJJl-umpRnfUte7_Io"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "949841450937-qj7rddcopaik3nr8notl1v5h0ddh7j3t.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:949841450937:android:87e9d85a55261234d44868",
-        "android_client_info": {
-          "package_name": "com.jdxdriver"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "949841450937-qj7rddcopaik3nr8notl1v5h0ddh7j3t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCLEM-0fSRsnibkMqRUsffzra-Ik_6K-P8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "949841450937-qj7rddcopaik3nr8notl1v5h0ddh7j3t.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
