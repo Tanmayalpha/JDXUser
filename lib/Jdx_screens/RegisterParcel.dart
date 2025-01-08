@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -398,8 +399,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               MaterialPageRoute(
                                 builder: (context) => PlacePicker(
                                   apiKey: Platform.isAndroid
-                                      ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                      : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                                      ? "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0"
+                                      : "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0",
                                   onPlacePicked: (result) {
                                     print(result.formattedAddress);
                                     setState(() {
@@ -413,6 +414,9 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                   initialPosition:
                                       const LatLng(22.719568, 75.857727),
                                   useCurrentLocation: true,
+                                  selectInitialPosition: true,
+                                  usePlaceDetailSearch: true,
+                                  forceSearchOnZoomChanged: true,
                                 ),
                               ),
                             );
@@ -438,7 +442,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                       color: splashcolor,
                       elevation: 1,
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width / 1.2,
                         height: 80,
                         child: TextFormField(
@@ -510,7 +514,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                             "${receiverList[index]['receiver_name']}"),
                                       ],
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 60,
                                     ),
                                     Padding(
@@ -524,9 +528,9 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                 builder:
                                                     (BuildContext context) {
                                                   return AlertDialog(
-                                                    title:
-                                                        Text("Delete Account"),
-                                                    content: Text(
+                                                    title: const Text(
+                                                        "Delete Account"),
+                                                    content: const Text(
                                                         "Are you sure you want to delete the order"),
                                                     actions: <Widget>[
                                                       ElevatedButton(
@@ -535,7 +539,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                           primary:
                                                               Color(0xFFBF2331),
                                                         ),
-                                                        child: Text("YES"),
+                                                        child:
+                                                            const Text("YES"),
                                                         onPressed: () {
                                                           receiverList
                                                               .removeAt(index);
@@ -799,7 +804,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                       color: splashcolor,
                       elevation: 1,
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width / 1.2,
                         height: 60,
                         child: TextFormField(
@@ -885,8 +890,8 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                               MaterialPageRoute(
                                 builder: (context) => PlacePicker(
                                   apiKey: Platform.isAndroid
-                                      ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                      : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                                      ? "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0"
+                                      : "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0",
                                   onPlacePicked: (result) {
                                     print(result.formattedAddress);
                                     setState(() {
@@ -897,8 +902,12 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                     });
                                     Navigator.of(context).pop();
                                   },
-                                  initialPosition: LatLng(22.719568, 75.857727),
+                                  initialPosition:
+                                      const LatLng(22.719568, 75.857727),
                                   useCurrentLocation: true,
+                                  selectInitialPosition: true,
+                                  usePlaceDetailSearch: true,
+                                  forceSearchOnZoomChanged: true,
                                 ),
                               ),
                             );
@@ -1532,17 +1541,56 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
 
   void init() async {
     await getuserProfile();
+    Position position = await _determinePosition();
 
     if ((getprofile?.data?.isNotEmpty ?? false) &&
         getprofile!.data![0].latitude!.isNotEmpty) {
       lat1 = double.parse(getprofile?.data?[0].latitude ?? '0.0');
       long1 = double.parse(getprofile?.data?[0].longitude ?? '0.0');
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat1, long1);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
 
       senderAddressCtr.text =
           '${placemarks.first.name}, ${placemarks.first.subLocality}, ${placemarks.first.locality}, ${placemarks.first.administrativeArea}, ${placemarks.first.postalCode}';
     }
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition();
   }
 }
 

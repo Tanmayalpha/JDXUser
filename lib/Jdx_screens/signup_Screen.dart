@@ -387,8 +387,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                             PlacePicker(
                                                           apiKey: Platform
                                                                   .isAndroid
-                                                              ? "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY"
-                                                              : "AIzaSyB0uPBgryG9RisP8_0v50Meds1ZePMwsoY",
+                                                              ? "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0"
+                                                              : "AIzaSyB6Q9MvTpJeex5oDISDFJ6dny488rQfKb0",
                                                           onPlacePicked:
                                                               (result) {
                                                             print(result
@@ -415,6 +415,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                                                   22.719568,
                                                                   75.857727),
                                                           useCurrentLocation:
+                                                              true,
+                                                          selectInitialPosition:
+                                                              true,
+                                                          usePlaceDetailSearch:
+                                                              true,
+                                                          forceSearchOnZoomChanged:
                                                               true,
                                                         ),
                                                       ),
