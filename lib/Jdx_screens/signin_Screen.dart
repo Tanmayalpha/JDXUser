@@ -204,6 +204,7 @@ class _SignInScreenState extends State<SignInScreen> {
       'token': token.toString(),
     });
     print("Checking all fields here ${request.fields}");
+    print("Checking all fields here ${request.url}");
     request.headers.addAll(headers);
     http.StreamedResponse response = await request.send();
     if (response.statusCode == 200) {

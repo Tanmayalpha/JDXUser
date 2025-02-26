@@ -217,120 +217,119 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SafeArea(
-        child: Scaffold(
-      backgroundColor: primaryColor,
-      appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Get.back();
-          },
-          child: Icon(Icons.arrow_back),
-        ),
-        elevation: 0,
-        backgroundColor: primaryColor,
-        title: Text(
-          'Change Password',
-          style: TextStyle(fontFamily: 'Lora'),
-        ),
-        centerTitle: true,
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
-                },
-                child: Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                )),
-          )
+    return Scaffold(
+          backgroundColor: primaryColor,
+          appBar: AppBar(
+    leading: GestureDetector(
+      onTap: () {
+        Get.back();
+      },
+      child: Icon(Icons.arrow_back,color: CustomColors.White),
+    ),
+    elevation: 0,
+    backgroundColor: primaryColor,
+    title: Text(
+      'Change Password',
+      style: TextStyle(fontFamily: 'Lora',color: CustomColors.White,fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+    centerTitle: true,
+    actions: [
+      Padding(
+        padding: EdgeInsets.only(right: 10),
+        child: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NotificationScreen()));
+            },
+            child: Icon(
+              Icons.notifications,
+              color: Colors.white,
+            )),
+      )
+    ],
+          ),
+          body: SingleChildScrollView(
+    child: Container(
+      height: MediaQuery.of(context).size.height / 1.1,
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      width: size.width,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topRight: Radius.circular(0))),
+      //padding: EdgeInsets.symmetric(vertical: 30),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 70,
+          ),
+          Material(
+            elevation: 10,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: MediaQuery.of(context).size.width / 1.2,
+              height: 50,
+              child: TextField(
+                controller: oldpswController,
+                decoration: InputDecoration(
+                  border:
+                      const OutlineInputBorder(borderSide: BorderSide.none),
+                  hintText: "Old Password",
+                  prefixIcon: Image.asset(
+                    'assets/AuthAssets/Icon ionic-ios-lock.png',
+                    scale: 2.1,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          Material(
+            elevation: 10,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              width: MediaQuery.of(context).size.width / 1.2,
+              height: 50,
+              child: TextField(
+                controller: newpswController,
+                decoration: InputDecoration(
+                  border:
+                      const OutlineInputBorder(borderSide: BorderSide.none),
+                  hintText: "New Password",
+                  prefixIcon: Image.asset(
+                    'assets/AuthAssets/Icon ionic-ios-lock.png',
+                    scale: 2.1,
+                    color: primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          CustomTextButton(
+            buttonText: "save",
+            onTap: () {
+              if (oldpswController.text.isEmpty) {
+                Fluttertoast.showToast(msg: 'Enter old password');
+              } else if (newpswController.text.isEmpty) {
+                Fluttertoast.showToast(msg: 'Enter new password');
+              } else {
+                changePassword();
+              }
+
+              // Get.to(DrawerScreen());
+            },
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height / 1.1,
-          padding: EdgeInsets.symmetric(horizontal: 12),
-          width: size.width,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(0))),
-          //padding: EdgeInsets.symmetric(vertical: 30),
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 70,
-              ),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 50,
-                  child: TextField(
-                    controller: oldpswController,
-                    decoration: InputDecoration(
-                      border:
-                          const OutlineInputBorder(borderSide: BorderSide.none),
-                      hintText: "Old Password",
-                      prefixIcon: Image.asset(
-                        'assets/AuthAssets/Icon ionic-ios-lock.png',
-                        scale: 2.1,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Material(
-                elevation: 10,
-                borderRadius: BorderRadius.circular(10),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 1.2,
-                  height: 50,
-                  child: TextField(
-                    controller: newpswController,
-                    decoration: InputDecoration(
-                      border:
-                          const OutlineInputBorder(borderSide: BorderSide.none),
-                      hintText: "New Password",
-                      prefixIcon: Image.asset(
-                        'assets/AuthAssets/Icon ionic-ios-lock.png',
-                        scale: 2.1,
-                        color: primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              CustomTextButton(
-                buttonText: "save",
-                onTap: () {
-                  if (oldpswController.text.isEmpty) {
-                    Fluttertoast.showToast(msg: 'Enter old password');
-                  } else if (newpswController.text.isEmpty) {
-                    Fluttertoast.showToast(msg: 'Enter new password');
-                  } else {
-                    changePassword();
-                  }
-
-                  // Get.to(DrawerScreen());
-                },
-              ),
-            ],
+    ),
           ),
-        ),
-      ),
-    ));
+        );
   }
 }

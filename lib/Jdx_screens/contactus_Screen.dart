@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import '../Model/contactus.dart';
 import '../Utils/api_path.dart';
@@ -89,8 +90,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
             title:  Text('JDX Connect', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
           ),
             body: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
                   color: Colors.white
               ),
@@ -99,7 +100,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
               child: Contact ==  null || Contact == "" ? Center(child: CircularProgressIndicator(),) : ListView(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Html(data: "${Contact!.data!.pgDescri}"),
+                  HtmlWidget("${Contact!.data!.pgDescri}"),
                 ],
               ),
             )

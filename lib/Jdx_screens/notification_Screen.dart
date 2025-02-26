@@ -56,102 +56,101 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SafeArea(
-        child: Scaffold(
-            backgroundColor: primaryColor,
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: primaryColor,
-              leading: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-                //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-              ),
-              title: Text(
-                'Notification',
-                style: TextStyle(
-                    color: whiteColor,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Lora'),
-              ),
-            ),
-            // body: Column(
-            //   children: [
-            //     // child: Text("${parcelhistory.data![0].orderId}")
-            //
-            //     Text("${notificationhistory!.data![0].notification}")
-            //   ],
-            // ),
-            body: Container(
-                padding: const EdgeInsets.only(top: 0, bottom: 20),
-                decoration: const BoxDecoration(
-                    borderRadius:
-                        BorderRadius.only(topRight: Radius.circular(0)),
-                    color: Color(0xffF9F9F9)),
-                width: size.width,
-                height: size.height,
-                child: notificationhistory == null
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : notificationhistory!.data == null
-                        ? const Center(child: Text('Not available'))
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: notificationhistory!.data!.length,
-                            itemBuilder: (c, i) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 5),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+        backgroundColor: primaryColor,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: primaryColor,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
+            //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
+          ),
+          title: Text(
+            'Notification',
+            style: TextStyle(
+                color: whiteColor,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lora'),
+          ),
+        ),
+        // body: Column(
+        //   children: [
+        //     // child: Text("${parcelhistory.data![0].orderId}")
+        //
+        //     Text("${notificationhistory!.data![0].notification}")
+        //   ],
+        // ),
+        body: Container(
+            padding: const EdgeInsets.only(top: 0, bottom: 20),
+            decoration: const BoxDecoration(
+                borderRadius:
+                    BorderRadius.only(topRight: Radius.circular(0)),
+                color: Color(0xffF9F9F9)),
+            width: size.width,
+            height: size.height,
+            child: notificationhistory == null
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : notificationhistory!.data == null
+                    ? const Center(child: Text('Not available'))
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const ScrollPhysics(),
+                        itemCount: notificationhistory!.data!.length,
+                        itemBuilder: (c, i) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 5),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 10),
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                              child: Text(
-                                            "${notificationhistory!.data![i].notification}",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Lora'),
-                                          )),
-                                          Expanded(
-                                              child: Text(
-                                            "${notificationhistory!.data![i].date}",
-                                            style: TextStyle(
-                                                color: greyColor2,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'Lora'),
-                                          )),
-                                        ],
-                                      ),
-                                      Text(
+                                      Expanded(
+                                          child: Text(
                                         "${notificationhistory!.data![i].notification}",
-                                        maxLines: 2,
-                                        style: TextStyle(fontFamily: 'Lora'),
-                                      )
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Lora'),
+                                      )),
+                                      Expanded(
+                                          child: Text(
+                                        "${notificationhistory!.data![i].date}",
+                                        style: TextStyle(
+                                            color: greyColor2,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Lora'),
+                                      )),
                                     ],
                                   ),
-                                ),
-                              );
-                            }))));
+                                  Text(
+                                    "${notificationhistory!.data![i].notification}",
+                                    maxLines: 2,
+                                    style: TextStyle(fontFamily: 'Lora'),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        })));
   }
 }

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:job_dekho_app/Jdx_screens/MyProfile.dart';
 import 'package:http/http.dart' as http;
+import 'package:job_dekho_app/Utils/api_path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -41,7 +42,7 @@ class _GenerateTicketState extends State<GenerateTicket> {
     var headers = {
       'Cookie': 'ci_session=06a91dd0ddd716e023384ea9614a0ea35f29c7f4'
     };
-    var request = http.MultipartRequest('POST', Uri.parse('https://developmentalphawizz.com/JDX/api/Products/parcel_feedback'));
+    var request = http.MultipartRequest('POST', Uri.parse('${ApiPath.baseUrl}/Products/parcel_feedback'));
     request.fields.addAll({
       'user_id': userid.toString(),
       'parcel_id': '1',

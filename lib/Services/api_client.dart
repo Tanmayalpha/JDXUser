@@ -12,7 +12,7 @@ class ApiClient{
 
   ApiClient._internal();
 
-  static const baseAppUrl = 'https://developmentalphawizz.com/JDX/api/';
+  static const baseAppUrl = 'https://jdxconnect.com/api/';
 
   Future<String> postMethod({
     required method,

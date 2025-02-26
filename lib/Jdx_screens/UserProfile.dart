@@ -196,13 +196,13 @@ class _UserProfileState extends State<UserProfile> {
                 onTap: () async {
                   Get.back();
                 },
-                child: const Icon(Icons.arrow_back_sharp),
+                child: const Icon(Icons.arrow_back_sharp,color: CustomColors.White),
               ),
               elevation: 0,
               backgroundColor: primaryColor,
-              title: const Text(
+              title:  Text(
                 'My Profile',
-                style: TextStyle(fontFamily: 'Lora'),
+                style: TextStyle(fontFamily: 'Lora',fontSize: 18, fontWeight: FontWeight.bold,color: whiteColor),
               ),
               centerTitle: true,
             ),

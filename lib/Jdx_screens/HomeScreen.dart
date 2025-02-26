@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -23,6 +24,7 @@ import '../Model/bannerModel.dart';
 import '../Model/myPlanModel.dart';
 import '../Utils/api_path.dart';
 import '../Utils/color.dart';
+import '../Utils/global_methods.dart';
 import 'notification_Screen.dart';
 import 'signup_Screen.dart';
 
@@ -61,37 +63,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ParcelhistoryModel? parcelhistory;
   String? userid;
-
+  CurrentAddressModel? currentAddressModel;
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    getCurrent();
     parcelHistory(1);
     getbanner();
     cancelReason();
   }
 
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   PushNotificationService pushNotificationService = new PushNotificationService(context: context);
-  //   pushNotificationService.initialise();
-  //   super.initState();
-  //   Future.delayed(Duration(milliseconds: 300),(){
-  //   });
-  //
-  //   // Future.delayed(Duration(seconds: 1),(){
-  //   //   return getParentCheckStudent();
-  //   // });
-  //
-  //l
-  //
-  //   Future.delayed(Duration(milliseconds: 500),(){
-  //     return getbanner();
-  //   });
-  //   Future.delayed(Duration(milliseconds: 300),(){
-  //   });
-  // }
+  getCurrent() async {
+    currentAddressModel = await getCurrentLocation();
+    setState(() {});
+  }
 
   SliderDataResponse? bannerModel;
 
@@ -179,16 +164,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('${bannerModel?.amount}_______');
     return RefreshIndicator(
       onRefresh: _refreshLocalGallery,
       child: Scaffold(
+        // appBar: AppBar(
+        //   elevation: 0,
+        //   backgroundColor: primaryColor,
+        //   title: const Text(
+        //     "Home",
+        //     style: TextStyle(fontFamily: 'Lora',color: Colors.white),
+        //   ),
+        //   centerTitle: true,
+        // ),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Container(
                   width: MediaQuery.of(context).size.width,
                   padding:
-                      const EdgeInsets.symmetric(vertical: 18, horizontal: 3),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 3),
                   //height: MediaQuery.of(context).size.height / 1.1,
                   decoration: const BoxDecoration(
                       color: Color(0xffF9F9F9),
@@ -245,7 +240,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(
                                     borderSide: BorderSide.none),
-                                hintText: "Current Location",
+                                hintText: currentAddressModel == null
+                                    ? "Fetching location..."
+                                    : currentAddressModel?.address,
                                 hintStyle: const TextStyle(
                                     fontWeight: FontWeight.bold),
                                 prefixIcon: Image.asset(
@@ -259,7 +256,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.only(right: 10),
-                              height: 55,
+                              height: 60,
                               decoration: BoxDecoration(
                                   color: splashcolor,
                                   borderRadius: const BorderRadius.only(
@@ -291,7 +288,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               },
                               child: Container(
                                   padding: const EdgeInsets.only(right: 10),
-                                  height: 55,
+                                  height: 60,
                                   decoration: BoxDecoration(
                                       color: splashcolor,
                                       borderRadius: const BorderRadius.only(
@@ -306,32 +303,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
 
-                      /*Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: splashcolor,
-                          ),
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          height: 50,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              hintText: "Search ",
-                              prefixIcon: Icon(
-                                Icons.search,
-                                color: primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),*/
                       const SizedBox(
                         height: 15,
                       ),
@@ -508,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               10)),
                                                   child: Container(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 10,
                                                         vertical: 10),
                                                     decoration: BoxDecoration(
@@ -713,7 +687,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             Container(
                                                               padding:
                                                                   const EdgeInsets
-                                                                          .only(
+                                                                      .only(
                                                                       left: 10,
                                                                       right: 10,
                                                                       top: 2,
@@ -770,8 +744,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     },
                                                                     child:
                                                                         Container(
-                                                                      padding: const EdgeInsets
-                                                                              .only(
+                                                                      padding: const EdgeInsets.only(
                                                                           left:
                                                                               10,
                                                                           right:
@@ -836,8 +809,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color changeColorStatus(String status) {
-    print('${status}_______status________');
-
     if (status == '0') {
       return Colors.white;
     } else if (status == '1') {
@@ -852,24 +823,6 @@ class _HomeScreenState extends State<HomeScreen> {
       return Colors.grey;
     }
   }
-
-  /* _getLocation() async {
-    LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => PlacePicker(
-              "AIzaSyCqQW9tN814NYD_MdsLIb35HRY65hHomco",
-            )));
-    print(
-        "checking adderss detail ${result.country!.name.toString()} and ${result.locality.toString()} and ${result.country!.shortName.toString()} ");
-    setState(() {
-      addressC.text = result.formattedAddress.toString();
-      cityC.text = result.locality.toString();
-      stateC.text = result.administrativeAreaLevel1!.name.toString();
-      countryC.text = result.country!.name.toString();
-      lat = result.latLng!.latitude;
-      long = result.latLng!.longitude;
-      pincodeC.text = result.postalCode.toString();
-    });
-  }*/
 
   setSegmentValue(int i) {
     selectedSegmentVal = i;
@@ -982,7 +935,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   cancelOrder(String orderId, int i) async {
-    print('_____________');
     var request = http.MultipartRequest('POST',
         Uri.parse('${ApiPath.baseUrl}Authentication/update_parcel_status'));
     request.fields.addAll({
@@ -1120,4 +1072,9 @@ class _HomeScreenState extends State<HomeScreen> {
       }),
     );
   }
+
+  //
+  // getCurrentLocation() async{
+  //
+  // }
 }

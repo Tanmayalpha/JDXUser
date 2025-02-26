@@ -67,14 +67,14 @@ class _ParcelHistoryState extends State<ParcelHistory> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: const Icon(Icons.arrow_back),
+          child:  Icon(Icons.arrow_back,color: whiteColor,),
           // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
         ),
         elevation: 0,
         backgroundColor: primaryColor,
-        title: const Text(
+        title:  Text(
           "Parcel History",
-          style: TextStyle(fontFamily: 'Lora'),
+          style: TextStyle(fontFamily: 'Lora',fontSize: 18, fontWeight: FontWeight.bold,color: whiteColor),
         ),
         centerTitle: true,
         actions: [
@@ -99,11 +99,11 @@ class _ParcelHistoryState extends State<ParcelHistory> {
               // child: Text("${parcelhistory!.data![0].orderId}")
               children: [
             parcelhistory == null
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : parcelhistory! == null
-                    ? Center(
+                    ? const Center(
                         child: Text(
                           "No data to show",
                           style: TextStyle(fontFamily: 'Lora'),

@@ -30,7 +30,7 @@ class CustomDrawerTile extends StatelessWidget {
                   color: primaryColor,
                   borderRadius: BorderRadius.circular(100)
               ),
-              child: Image.asset('assets/DrawerAssets/forwardIcon.png', scale: 1.3,),
+              child: Image.asset('assets/DrawerAssets/forwardIcon.png', scale: 1.3,color: CustomColors.White,),
             ),
           ],
         ),

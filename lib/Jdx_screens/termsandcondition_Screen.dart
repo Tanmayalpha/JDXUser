@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:get/get.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:job_dekho_app/Utils/api_path.dart';
-import 'package:job_dekho_app/Jdx_screens/MyProfile.dart';
 
 import '../Model/GetTmc.dart';
 import '../Utils/color.dart';
@@ -98,7 +96,7 @@ class _TermsAndConditionScreenState extends State<TermsAndConditionScreen> {
               child: gettmc ==  null || gettmc == "" ? Center(child: CircularProgressIndicator(),) : ListView(
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Html(data: "${gettmc!.data!.pgDescri}"),
+                HtmlWidget("${gettmc!.data!.pgDescri}"),
                 ],
               ),
             )

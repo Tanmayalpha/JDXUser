@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:get/get.dart';
 import 'package:job_dekho_app/Utils/api_path.dart';
 
@@ -65,42 +65,41 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SafeArea(
-        child: Scaffold(
-            backgroundColor: whiteColor,
-            appBar: AppBar(
-              elevation: 0,
-              centerTitle: true,
-              backgroundColor: primaryColor,
-              leading: GestureDetector(
-                onTap: (){
-                  Get.back();
-                },
-                child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
-                //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-              ),
-              title:  Text('Privacy Policy', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
+    return Scaffold(
+        backgroundColor: whiteColor,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: primaryColor,
+          leading: GestureDetector(
+            onTap: (){
+              Get.back();
+            },
+            child: Icon(Icons.arrow_back_ios, color: whiteColor, size: 20),
+            //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
+          ),
+          title:  Text('Privacy Policy', style: TextStyle(color: whiteColor, fontSize: 18, fontWeight: FontWeight.bold,fontFamily: 'Lora'),),
 
+        ),
+        body: privacyData == null || privacyData == "" ? Center(child: CircularProgressIndicator(),) : Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
+              color: Colors.white
+          ),
+          width: size.width,
+          height: size.height,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Html(data: "${privacyData}"),
+                Text('${privacyData?.pgDescri}', style:  TextStyle(fontSize: 16,),),
+
+              ],
             ),
-            body: privacyData == null || privacyData == "" ? Center(child: CircularProgressIndicator(),) : Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(0)),
-                  color: Colors.white
-              ),
-              width: size.width,
-              height: size.height,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Html(data: "${privacyData}"),
-                    Text('${privacyData?.pgDescri}', style:  TextStyle(fontSize: 16,),),
-
-                  ],
-                ),
-              ),
-            )
-        ));;
+          ),
+        )
+    );;
   }
 }

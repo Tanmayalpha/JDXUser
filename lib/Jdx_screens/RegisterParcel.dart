@@ -251,13 +251,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
         centerTitle: true,
 
         backgroundColor: primaryColor,
-        /*leading: GestureDetector(
-          onTap: () {
-            Get.to(MyStatefulWidget());
-          },
-          child: Icon(Icons.arrow_back, color: whiteColor, size: 20),
-          //Icon(Icons.arrow_back_ios, color: whiteColor, size: 22),
-        ),*/
+
         title: Text(
           'Register Parcel',
           style: TextStyle(
@@ -266,17 +260,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
               fontWeight: FontWeight.bold,
               fontFamily: 'Lora'),
         ),
-        // actions: [
-        //   Padding(
-        //     padding: EdgeInsets.only(right: 10),
-        //     child: InkWell(
-        //         onTap: () {
-        //           Navigator.push(context, MaterialPageRoute(
-        //               builder: (context) => NotificationScreen()));
-        //         },
-        //         child: Icon(Icons.notifications, color: Colors.white,)),
-        //   ),
-        // ],
+
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -536,8 +520,7 @@ class _RegistParcelScreenState extends State<RegistParcelScreen> {
                                                       ElevatedButton(
                                                         style: ElevatedButton
                                                             .styleFrom(
-                                                          primary:
-                                                              Color(0xFFBF2331),
+                                                          backgroundColor: Color(0xFFBF2331),
                                                         ),
                                                         child:
                                                             const Text("YES"),

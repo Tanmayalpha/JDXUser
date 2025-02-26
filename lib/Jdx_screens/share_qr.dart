@@ -11,8 +11,9 @@ import 'package:permission_handler/permission_handler.dart' as permission;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:share/share.dart';
+// import 'package:share/share.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ShareQRCode extends StatefulWidget {
   const ShareQRCode({Key? key, this.parcel, this.appUrl}) : super(key: key);
@@ -130,8 +131,8 @@ class _ShareQRCodeState extends State<ShareQRCode> {
             final imagePath = await File('$directory/$fileName.png').create();
             if (imagePath != null) {
               await imagePath.writeAsBytes(image);
-              await Share.shareFiles(
-                [imagePath.path],
+              await Share.shareXFiles(
+                [XFile(imagePath.path)],
                 text: '${widget.appUrl}\nOTP: ${widget.parcel?.otp}',
                 subject: 'Parcel QR Code and OTP',
               );

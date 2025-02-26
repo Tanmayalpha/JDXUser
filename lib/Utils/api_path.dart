@@ -22,10 +22,11 @@
 
 class ApiPath{
 
-  static const String baseUrl ="https://developmentalphawizz.com/JDX/api/";
+ // static const String baseUrl ="https://developmentalphawizz.com/JDX/api/";
+  static const String baseUrl ="https://jdxconnect.com/api/";
 
-  static const String imgUrl = 'https://developmentalphawizz.com/JDX/';
-  static const String imgUrl1 = 'https://developmentalphawizz.com/';
+  static const String imgUrl = 'https://jdxconnect.com/';
+  static const String imgUrl1 = 'https://jdxconnect.com/';
 
   static const String login = baseUrl +'Authentication/login';
   static const String registration = baseUrl +'Authentication/ragistration';

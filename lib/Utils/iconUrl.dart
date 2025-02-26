@@ -33,7 +33,8 @@ String locationIcon = "assets/ProfileAssets/locationIcon.png";
 String ruppeeIcon = "assets/ProfileAssets/ruppeeIcon.png";
 String experienceIcon = "assets/ProfileAssets/experienceIcon.png";
 String editIcon = "assets/ProfileAssets/editIcon.png";
-String deleteIcon = "'assets/DrawerAssets/deleteIcon.png'";
+String deleteIcon = 'assets/DrawerAssets/deleteIcon.png';
+
 String sharefileIcon = "assets/ProfileAssets/sharefileIcon.png";
 
 

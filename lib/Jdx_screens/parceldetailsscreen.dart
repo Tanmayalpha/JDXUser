@@ -86,20 +86,21 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
           onTap: () {
             Navigator.pop(context);
           },
-          child: const Icon(Icons.arrow_back),
+          child:  Icon(Icons.arrow_back,color: whiteColor),
           // child: Image.asset('assets/ProfileAssets/menu_icon.png', scale: 1.6,),
         ),
         elevation: 0,
         backgroundColor: primaryColor,
-        title: const Text(
+        title:  Text(
           "Parcel Details",
-          style: TextStyle(fontFamily: 'Lora'),
+          style: TextStyle(fontFamily: 'Lora',fontSize: 18, fontWeight: FontWeight.bold,color: whiteColor),
         ),
         centerTitle: true,
         actions: [
@@ -110,7 +111,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
+                          builder: (context) => const NotificationScreen()));
                 },
                 child: const Icon(
                   Icons.notifications,
@@ -279,9 +280,9 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                   borderRadius:
                                                       BorderRadius.circular(15),
                                                   color: primaryColor),
-                                              child: Row(
+                                              child: const Row(
                                                 mainAxisSize: MainAxisSize.min,
-                                                children: const [
+                                                children: [
                                                   Icon(
                                                     Icons.download,
                                                     color: Colors.white,
@@ -525,10 +526,10 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                                         15),
                                                             color:
                                                                 primaryColor),
-                                                        child: Row(
+                                                        child: const Row(
                                                           mainAxisSize:
                                                               MainAxisSize.min,
-                                                          children: const [
+                                                          children: [
                                                             Icon(
                                                               Icons.arrow_back,
                                                               color:
@@ -660,7 +661,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                                                 Colors.black))
                                                                   ],
                                                                 )
-                                                              : SizedBox()
+                                                              : const SizedBox()
                                                       : const SizedBox(),
                                                   widget.isFromParcelHistory
                                                       ? const Align(
@@ -678,11 +679,11 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      Column(
+                                                      const Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
                                                                 .start,
-                                                        children: const [
+                                                        children: [
                                                           Text("Parcel Image",
                                                               style: TextStyle(
                                                                   color: Colors
@@ -1011,7 +1012,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                   CircleAvatar(
                     backgroundColor: splashcolor.withOpacity(0.5),
                     backgroundImage: NetworkImage(
-                        'https://developmentalphawizz.com/JDX/${image}'),
+                        '${ApiPath.imgUrl}${image}'),
                     radius: 30,
                   ),
                   const SizedBox(width: 10),
@@ -1021,7 +1022,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                       children: [
                         Text(
                           'Name: $name',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
                           ),
@@ -1064,7 +1065,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                         const SizedBox(height: 5),
                         Text(
                           'Vehicle: $vehicleNo',
-                          style: TextStyle(fontSize: 14),
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     ),
@@ -1097,7 +1098,7 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
         await launch(whatsappURl_android);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Whatsapp does not exist in this device")));
+            const SnackBar(content: Text("Whatsapp does not exist in this device")));
       }
     }
   }
@@ -1409,14 +1410,14 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                   "${"Yey! You've saved ${couponValue} ${"With this coupon"}"}",
                   textAlign: TextAlign.center,
                   maxLines: 3,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                Text(
+                const Text(
                   "Supporting small businesses has never been so rewarding!",
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -1425,14 +1426,14 @@ class _ParceldetailsScreenState extends State<ParceldetailsScreen> {
                     fontSize: 15,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 InkWell(
                   onTap: () {
                     Get.back();
                   },
-                  child: Text(
+                  child: const Text(
                     "Awesome!",
                     style: TextStyle(
                       color: gradient.defoultColor,
